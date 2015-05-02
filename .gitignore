@@ -6,3 +6,8 @@ inalan.csproj.user
 *.cs
 *.config
 
+bin/inalan.dll
+bin/inalan.pdb
+obj/Debug/inalan.csproj.FileListAbsolute.txt
+obj/Debug/inalan.dll
+obj/Debug/inalan.pdb

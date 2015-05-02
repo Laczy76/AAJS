@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Test page</title>
+    
+    <script src="src/Stage.js"></script>
+    <script src="src/Data.js"></script>
+
+    <script>
+
+        var init = function () {
+
+            var stage = new inalan.Stage("myCanvas");
+
+            stage.canvas.fillStyle = "#FF0000";
+            stage.canvas.fillRect(110, 110, 150, 75);
+
+        }
+
+    </script>
+
+</head>
+<body onload="init();">
+
+    <canvas id="myCanvas" width="600" height="500" style="border:1px solid black"></canvas>
+    
+</body>
+</html>
