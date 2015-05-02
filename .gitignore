@@ -5,7 +5,6 @@ inalan.csproj.user
 *.cache
 *.cs
 *.config
-
 bin/inalan.dll
 bin/inalan.pdb
 obj/Debug/inalan.csproj.FileListAbsolute.txt

@@ -4,16 +4,27 @@
     <title>Test page</title>
     
     <script src="src/Stage.js"></script>
-    <script src="src/Data.js"></script>
+    <script src="src/VisuData.js"></script>        
+    <script src="src/VisuVariable.js"></script>
+    <script src="src/VisuArray.js"></script>
 
     <script>
 
         var init = function () {
 
             var stage = new inalan.Stage("myCanvas");
+            
+            var d = new inalan.VisuVariable("max", 110);
+            d.x = 50;
+            d.y = 50;
+            stage.add(d);
 
-            stage.canvas.fillStyle = "#FF0000";
-            stage.canvas.fillRect(110, 110, 150, 75);
+            var d = new inalan.VisuArray("a", [50, 90, 100, 70, 30, 50, 110]);
+            d.x = 100;
+            d.y = 50;
+            stage.add(d);
+            
+            stage.render();
 
         }
 
@@ -22,7 +33,7 @@
 </head>
 <body onload="init();">
 
-    <canvas id="myCanvas" width="600" height="500" style="border:1px solid black"></canvas>
+    <canvas id="myCanvas" width="800" height="500" style="border:1px solid black"></canvas>
     
 </body>
 </html>
