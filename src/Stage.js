@@ -1,6 +1,6 @@
 ﻿/*
 *
-* Copyright (c) 2015- Ladislav Végh, Komárno, Slovakia
+* Copyright (c) 2015- Ladislav Vegh, Komarno, Slovakia
 *
 * Distributed under the terms of the MIT license.
 * http://www.opensource.org/licenses/mit-license.html
