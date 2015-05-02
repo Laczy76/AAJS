@@ -1,0 +1,8 @@
+# MS Visual Studio project files
+
+inalan.csproj
+inalan.csproj.user
+*.cache
+*.cs
+*.config
+
