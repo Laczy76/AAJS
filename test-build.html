@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Test page</title>
+    
+    <script src="build/inalan.js"></script>
+
+    <script>
+
+        var init = function () {
+
+            var stage = new inalan.Stage("myCanvas");
+            
+            var d = new inalan.VisuVariable("max", 110);
+            d.x = 50;
+            d.y = 50;
+            stage.add(d);
+
+            var d = new inalan.VisuArray("a", [50, 90, 100, 70, 30, 50, 110]);
+            d.x = 100;
+            d.y = 50;
+            stage.add(d);
+            
+            stage.render();
+
+        }
+
+    </script>
+
+</head>
+<body onload="init();">
+
+    <canvas id="myCanvas" width="800" height="500" style="border:1px solid black"></canvas>
+    
+</body>
+</html>
