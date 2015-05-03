@@ -1,4 +1,4 @@
-<h1>nothing interesting yet ;)</h1>
+<h3>nothing interesting yet ;)</h3>
 <p>
 GitHub for Windows:<br/>
 https://windows.github.com/
