@@ -1,6 +1,10 @@
+# makefile for GNU Make utility
+# http://gnuwin32.sourceforge.net/packages/make.htm
+
 # Set the source directory
 srcdir = src/
 builddir = build/
+id = $(shell date +%Y%m%d)
 
 # Create the list of modules
 modules = ${srcdir}Stage.js\
@@ -13,7 +17,7 @@ combined1 = ${builddir}_combined1.js
 combined2 = ${builddir}_combined2.js
 
 # Compressed file (output)
-output = ${builddir}inalan.js
+output = ${builddir}inalan${id}.js
 		  
 all: combine compress copyright clean1 clean2
 		  
@@ -23,7 +27,7 @@ combine:
 			
 # Compress all of the modules into inalan.js
 compress:
-    java -jar yuicompressor-2.4.7.jar ${combined1} -o ${combined2}
+	java -jar yuicompressor-2.4.7.jar ${combined1} -o ${combined2}
 
 # Add copyright notice	
 copyright:
