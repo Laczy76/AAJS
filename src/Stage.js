@@ -14,25 +14,25 @@ var inalan = inalan || {};
 inalan.Stage = function (canvasId) {
 	this.canvas = document.getElementById("myCanvas")
 	this.ctx = this.canvas.getContext("2d");
-	this.visuData = {};
+	this.visuItems = {};
 }
 
 inalan.Stage.prototype.render = function () {
 	// clear the stage
 	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	// render all objects in visuData
-	for (var index in this.visuData) {
-		if (this.visuData.hasOwnProperty(index)) {
-			this.visuData[index].render();
+	for (var index in this.visuItems) {
+	    if (this.visuItems.hasOwnProperty(index)) {
+	        this.visuItems[index].render();
 		}
 	}	
 }
 
 inalan.Stage.prototype.add = function (visuData) {
-	if (typeof(this.visuData[visuData.name]) != 'undefined') {
+    if (typeof (this.visuItems[visuData.name]) != 'undefined') {
 		throw "- Can not add '" + visuData.name + "' to the stage, object with this name already exists on the stage.";
 	}
 	visuData.ctx = this.ctx;
-	this.visuData[visuData.name] = visuData;
+	this.visuItems[visuData.name] = visuData;
 }
 

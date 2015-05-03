@@ -18,12 +18,12 @@ inalan.VisuArray = function (name, values) {
     // create subclass VisuArray from VisuData - set properties
     inalan.VisuData.call(this, name);
     // set new properties
-    this.elements = {
+    this.items = {
         length: values.length
     };
     for (var i=0; i<values.length; i++) {
-        this.elements[i] = new inalan.VisuVariable(name + "[" + i + "]", values[i]);
-        this.elements[i].textRotation = 45;
+        this.items[i] = new inalan.VisuVariable(name + "[" + i + "]", values[i]);
+        this.items[i].textRotation = 45;
     }
 }
 
@@ -35,17 +35,17 @@ inalan.VisuArray.prototype.render = function () {
     // call superclass's render function
     inalan.VisuData.prototype.render.call(this);
     // render VisuArray
-    var maxHeight = this.elements[0].height;
-    for (var i = 0; i < this.elements.length; i++) {
-        if (this.elements[i].height > maxHeight) {
-            maxHeight = this.elements[i].height;
+    var maxHeight = this.items[0].height;
+    for (var i = 0; i < this.items.length; i++) {
+        if (this.items[i].height > maxHeight) {
+            maxHeight = this.items[i].height;
         }
     }
-    for (var i = 0; i < this.elements.length; i++) {
-        this.elements[i].ctx = this.ctx;
-        this.elements[i].x = this.x + i * 22;
-        this.elements[i].y = this.y;
-        this.elements[i].height = maxHeight;
-        this.elements[i].render();
+    for (var i = 0; i < this.items.length; i++) {
+        this.items[i].ctx = this.ctx;
+        this.items[i].x = this.x + i * 22;
+        this.items[i].y = this.y;
+        this.items[i].height = maxHeight;
+        this.items[i].render();
     }
 }
