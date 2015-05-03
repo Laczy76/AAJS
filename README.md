@@ -7,3 +7,7 @@ https://windows.github.com/
 GNU Make for Windows:<br/>
 http://gnuwin32.sourceforge.net/packages/make.htm
 </p>
+<p>
+Java Runtime Environment (JRE):<br/>
+http://www.oracle.com/technetwork/java/javase/downloads/index.html
+</p>
