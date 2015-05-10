@@ -14,7 +14,10 @@
 
 var inalan = inalan || {};
 
-inalan.VisuArray = function (name, values) {
+inalan.VisuArray = function (name, values, changable) {
+    if (typeof (changable) == "undefined") {
+        changable = false;
+    }
     // create subclass VisuArray from VisuData - set properties
     inalan.VisuData.call(this, name);
     // set new properties
@@ -22,7 +25,7 @@ inalan.VisuArray = function (name, values) {
         length: values.length
     };
     for (var i=0; i<values.length; i++) {
-        this.items[i] = new inalan.VisuVariable(name + "[" + i + "]", values[i]);
+        this.items[i] = new inalan.VisuVariable(name + "[" + i + "]", values[i], changable);
         this.items[i].textRotation = 45;
     }
 }
@@ -31,6 +34,7 @@ inalan.VisuArray = function (name, values) {
 inalan.VisuArray.prototype = Object.create(inalan.VisuData.prototype);
 inalan.VisuArray.prototype.constructor = inalan.VisuArray;
 
+// redner the array by calling the render function of every item (visuVariable)
 inalan.VisuArray.prototype.render = function () {
     // call superclass's render function
     inalan.VisuData.prototype.render.call(this);
@@ -41,9 +45,13 @@ inalan.VisuArray.prototype.render = function () {
             maxHeight = this.items[i].height;
         }
     }
+    var xpos = this.x;
     for (var i = 0; i < this.items.length; i++) {
         this.items[i].ctx = this.ctx;
-        this.items[i].x = this.x + i * 22;
+        this.items[i].x = xpos;
+        if (i<this.items.length-1) {
+            xpos = xpos + this.items[i].width / 2 + this.items[i + 1].width / 2 + 2;
+        }
         this.items[i].y = this.y;
         this.items[i].height = maxHeight;
         this.items[i].render();
