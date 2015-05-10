@@ -11,15 +11,16 @@
 
 var inalan = inalan || {};
 
-inalan.Stage = function (canvasId) {
+inalan.Stage = function (canvasId) {    
     this.canvas = document.getElementById("myCanvas");
-    this.canvas.parent = this;
+    this.canvas.parent = this; // set canvas's parent property to this Stage object (needed in canvas's mouse events handling functions)
+    this.canvas.onselectstart = function () { return false; }; // prevent selecting the canvas (e.g. accidently by double click)    
     this.ctx = this.canvas.getContext("2d");
     this.visuItems = {};
-    this.canvas.addEventListener("mousemove", this.stageMouseMoveEvent, true);
-    this.canvas.addEventListener("mousedown", this.stageMouseDownEvent, true);
-    this.canvas.addEventListener("mouseout", this.stageMouseUpOrOutEvent, true);
-    this.canvas.addEventListener("mouseup", this.stageMouseUpOrOutEvent, true);
+    this.canvas.addEventListener("mousemove", this.stageMouseMoveEvent);
+    this.canvas.addEventListener("mousedown", this.stageMouseDownEvent);
+    this.canvas.addEventListener("mouseout", this.stageMouseUpOrOutEvent);
+    this.canvas.addEventListener("mouseup", this.stageMouseUpOrOutEvent);
 }
 
 // when mousemove, change the value of dragged item, or change the mouse cursor to up-down arrow
@@ -37,7 +38,7 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
         for (var index in stage.visuItems) {
             if (stage.visuItems.hasOwnProperty(index)) {
                 var obj = stage.visuItems[index];
-                // VisuVariable
+                // *** VisuVariable ***
                 if (obj instanceof inalan.VisuVariable) {
                     if (obj.dragging) {
                         if (obj.changable) {
@@ -50,7 +51,7 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                         }
                     }
                 }
-                // VisuArray
+                // *** VisuArray ***
                 if (obj instanceof inalan.VisuArray) {
                     for (var i = 0; i < obj.items.length; i++) {
                         if (obj.items[i].dragging) {
@@ -76,13 +77,13 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
         for (var index in stage.visuItems) {
             if (stage.visuItems.hasOwnProperty(index)) {
                 var obj = stage.visuItems[index];
-                // VisuVariable
+                // *** VisuVariable ***
                 if (obj instanceof inalan.VisuVariable) {
                     if (obj.changable && obj.isOver(mouseX, mouseY)) {
                         mouseCursor = "ns-resize";
                     }
                 }
-                // VisuArray
+                // *** VisuArray ***
                 if (obj instanceof inalan.VisuArray) {
                     for (var i = 0; i < obj.items.length; i++) {
                         if (obj.items[i].changable && obj.items[i].isOver(mouseX, mouseY)) {
@@ -98,27 +99,29 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
 
 // when mouseup or mousedown, set all dragging=true for the selected item
 inalan.Stage.prototype.stageMouseDownEvent = function (evt) {
-    // mouse X, Y coordinates on Canvas...
-    var canvasRect = evt.target.getBoundingClientRect();
-    var mouseX = evt.clientX - canvasRect.left;
-    var mouseY = evt.clientY - canvasRect.top;
-    // the stage object...
-    var stage = evt.target.parent;
-    // check all objects in visuItems
-    for (var index in stage.visuItems) {
-        if (stage.visuItems.hasOwnProperty(index)) {
-            var obj = stage.visuItems[index];
-            // VisuVariable
-            if (obj instanceof inalan.VisuVariable) {
-                if (obj.changable && obj.isOver(mouseX, mouseY)) {
-                    obj.dragging = true;
+    if (evt.which == 1) { // left mouse button is pushed down...
+        // mouse X, Y coordinates on Canvas...
+        var canvasRect = evt.target.getBoundingClientRect();
+        var mouseX = evt.clientX - canvasRect.left;
+        var mouseY = evt.clientY - canvasRect.top;
+        // the stage object...
+        var stage = evt.target.parent;
+        // check all objects in visuItems
+        for (var index in stage.visuItems) {
+            if (stage.visuItems.hasOwnProperty(index)) {
+                var obj = stage.visuItems[index];
+                // *** VisuVariable ***
+                if (obj instanceof inalan.VisuVariable) {
+                    if (obj.changable && obj.isOver(mouseX, mouseY)) {
+                        obj.dragging = true;
+                    }
                 }
-            }
-            // VisuArray
-            if (obj instanceof inalan.VisuArray) {
-                for (var i = 0; i < obj.items.length; i++) {
-                    if (obj.items[i].changable && obj.items[i].isOver(mouseX, mouseY)) {
-                        obj.items[i].dragging = true;
+                // *** VisuArray ***
+                if (obj instanceof inalan.VisuArray) {
+                    for (var i = 0; i < obj.items.length; i++) {
+                        if (obj.items[i].changable && obj.items[i].isOver(mouseX, mouseY)) {
+                            obj.items[i].dragging = true;
+                        }
                     }
                 }
             }
@@ -128,24 +131,26 @@ inalan.Stage.prototype.stageMouseDownEvent = function (evt) {
 
 // when mouseup or mouseout, set all dragging=false for all items
 inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
-    // mouse X, Y coordinates on Canvas...
-    var canvasRect = evt.target.getBoundingClientRect();
-    var mouseX = evt.clientX - canvasRect.left;
-    var mouseY = evt.clientY - canvasRect.top;
-    // the stage object...
-    var stage = evt.target.parent;
-    // check all objects in visuItems
-    for (var index in stage.visuItems) {
-        if (stage.visuItems.hasOwnProperty(index)) {
-            var obj = stage.visuItems[index];
-            // VisuVariable
-            if (obj instanceof inalan.VisuVariable) {
-                obj.dragging = false;
-            }
-            // VisuArray
-            if (obj instanceof inalan.VisuArray) {
-                for (var i = 0; i < obj.items.length; i++) {
-                    obj.items[i].dragging = false;
+    if (evt.type == "mouseout" || evt.which == 1) { // mouse out OR left mouse button is released down...
+        // mouse X, Y coordinates on Canvas...
+        var canvasRect = evt.target.getBoundingClientRect();
+        var mouseX = evt.clientX - canvasRect.left;
+        var mouseY = evt.clientY - canvasRect.top;
+        // the stage object...
+        var stage = evt.target.parent;
+        // check all objects in visuItems
+        for (var index in stage.visuItems) {
+            if (stage.visuItems.hasOwnProperty(index)) {
+                var obj = stage.visuItems[index];
+                // *** VisuVariable ***
+                if (obj instanceof inalan.VisuVariable) {
+                    obj.dragging = false;
+                }
+                // *** VisuArray ***
+                if (obj instanceof inalan.VisuArray) {
+                    for (var i = 0; i < obj.items.length; i++) {
+                        obj.items[i].dragging = false;
+                    }
                 }
             }
         }

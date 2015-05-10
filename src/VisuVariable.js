@@ -85,7 +85,7 @@ inalan.VisuVariable.prototype.render = function (renderText) {
 
 // is the X, Y (e.g. mouse position) over the variable (in the upper part for changing the value) ?
 inalan.VisuVariable.prototype.isOver = function (x,y) {
-    if (Math.abs(x - this.x) <= this.width / 2 && Math.abs(y - (this.y - this.value)) <= 5) {
+    if (Math.abs(x - this.x) < this.width / 2 && Math.abs(y - (this.y - this.value)) <= 5) {
             return true;
     }
     return false
