@@ -11,10 +11,10 @@
 
 var inalan = inalan || {};
 
-inalan.Stage = function (canvasId) {    
+inalan.Stage = function (canvasId) {
+    document.onselectstart = function () { return false; }; // prevention to select the document (e.g. accidently by double click)
     this.canvas = document.getElementById("myCanvas");
     this.canvas.parent = this; // set canvas's parent property to this Stage object (needed in canvas's mouse events handling functions)
-    this.canvas.onselectstart = function () { return false; }; // prevent selecting the canvas (e.g. accidently by double click)    
     this.ctx = this.canvas.getContext("2d");
     this.visuItems = {};
     this.canvas.addEventListener("mousemove", this.stageMouseMoveEvent);
