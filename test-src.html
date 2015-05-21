@@ -7,24 +7,77 @@
     <script src="src/VisuData.js"></script>        
     <script src="src/VisuVariable.js"></script>
     <script src="src/VisuArray.js"></script>
+    <script src="src/Button.js"></script>
+    <script src="src/Controller.js"></script>
 
-    <script>
+    <script>        
 
         var init = function () {
 
             var stage = new inalan.Stage("myCanvas");
-            
-            var d = new inalan.VisuVariable("max", 110, false);
-            d.x = 50;
-            d.y = 200;
-            stage.add(d);
 
-            var d = new inalan.VisuArray("a", [80, 90, 30, 70, 40, 100, 110], true);
-            d.x = 100;
-            d.y = 200;
-            stage.add(d);
+            var m = new inalan.VisuVariable("max", 0, false);
+            m.x = 50;
+            m.y = 200;
+            stage.add(m);
+
+            var a = new inalan.VisuArray("a", [80, 90, 30, 70, 40, 100, 110], true);
+            a.x = 100;
+            a.y = 200;
+            stage.add(a);
+
+            // **********************************************
+
+            var index = 0;
+
+            var findMaxReset = function () {
+                index = 0;
+                stage.get("max").value = 0;
+                stage.get("max").setDefaultColor();
+                for (var i = 0; i < stage.get("a").items.length; i++) {
+                    stage.get("a").items[i].setDefaultColor();
+                    stage.get("a").items[i].changable = true;
+                }
+            }
+
+            var findMaxCompare = function () {
+                console.log("compare");
+                stage.compare(stage.get("max"), stage.get("a").items[index]);
+            }
+
+            var findMaxCopy = function () {
+                console.log("copy");
+                stage.get("a").items[index].changable = false;
+                if (stage.get("max").value < stage.get("a").items[index].value) {                    
+                    stage.copy(stage.get("a").items[index], stage.get("max"));
+                } else {
+                    return true;
+                }
+            }
+
+            var findMaxIncrease = function () {
+                console.log("increase");
+                stage.get("max").setDefaultColor();
+                stage.get("a").items[index].setDefaultColor();
+                index++;
+                return true;
+            }
+
+            var findMaxCheck = function () {
+                return index < stage.get("a").items.length;
+            }
+
+            var findMaxFinalStep = function () {
+                console.log("final step");
+            }
             
-            stage.render();
+            stage.controller.setReset(findMaxReset);
+            stage.controller.setSteps([findMaxCompare, findMaxCopy, findMaxIncrease], findMaxCheck, findMaxFinalStep);
+
+            // stage.compare(stage.get("a").items[0], stage.get("a").items[3]);
+            // stage.copy(stage.get("a").items[2], stage.get("max"));
+            // stage.move(stage.get("a").items[2], stage.get("max"));
+            // stage.exchange(stage.get("a").items[0], stage.get("a").items[6]);
 
         }
 

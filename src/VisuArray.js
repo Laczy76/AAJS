@@ -36,8 +36,6 @@ inalan.VisuArray.prototype.constructor = inalan.VisuArray;
 
 // redner the array by calling the render function of every item (visuVariable)
 inalan.VisuArray.prototype.render = function () {
-    // call superclass's render function
-    inalan.VisuData.prototype.render.call(this);
     // render VisuArray
     var maxHeight = this.items[0].height;
     for (var i = 0; i < this.items.length; i++) {
@@ -55,5 +53,12 @@ inalan.VisuArray.prototype.render = function () {
         this.items[i].y = this.y;
         this.items[i].height = maxHeight;
         this.items[i].render();
+    }
+}
+
+// render moving rectangles when copying
+inalan.VisuArray.prototype.renderCopy = function () {
+    for (var i = 0; i < this.items.length; i++) {
+        this.items[i].renderCopy();
     }
 }

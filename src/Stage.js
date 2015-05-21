@@ -12,15 +12,48 @@
 var inalan = inalan || {};
 
 inalan.Stage = function (canvasId) {
-    document.onselectstart = function () { return false; }; // prevention to select the document (e.g. accidently by double click)
+    document.onselectstart = function () { return false; }; // prevention to select the document (e.g. accidentally by double clicking)
     this.canvas = document.getElementById("myCanvas");
     this.canvas.parent = this; // set canvas's parent property to this Stage object (needed in canvas's mouse events handling functions)
     this.ctx = this.canvas.getContext("2d");
+    // elements on stage... *****************************
     this.visuItems = {};
+    // add controller to stage... ***********************
+    this.controller = new inalan.Controller();
+    this.controller.x = 20;
+    this.controller.y = this.ctx.canvas.height - 35;
+    this.add(this.controller);
+    // event listeners **********************************
     this.canvas.addEventListener("mousemove", this.stageMouseMoveEvent);
     this.canvas.addEventListener("mousedown", this.stageMouseDownEvent);
     this.canvas.addEventListener("mouseout", this.stageMouseUpOrOutEvent);
     this.canvas.addEventListener("mouseup", this.stageMouseUpOrOutEvent);
+    // rendering setting ********************************
+    var self = this;
+    this.fps = 24;
+    this.render = function (evt) { // rendering the stage
+        // clear the stage
+        self.ctx.clearRect(0, 0, self.canvas.width, self.canvas.height);
+        // render all objects in visuData
+        for (var index in self.visuItems) {
+            if (self.visuItems.hasOwnProperty(index)) {
+                self.visuItems[index].render();
+            }
+        }
+        // render object when copying
+        for (var index in self.visuItems) {
+            if (self.visuItems.hasOwnProperty(index)) {
+                if (self.visuItems[index] instanceof inalan.VisuVariable
+                 || self.visuItems[index] instanceof inalan.VisuArray) {
+                    self.visuItems[index].renderCopy();
+                }                
+            }
+        }
+    }
+    setInterval(this.render, 1000 / this.fps);
+    // time for animations (copy/move/exchange/..) *****
+    this.animating = false; // does any object animating?
+    this.time = 1000; // speed of animation
 }
 
 // when mousemove, change the value of dragged item, or change the mouse cursor to up-down arrow
@@ -44,7 +77,6 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                         if (obj.changable) {
                             // change the value of the object and render...
                             obj.value = obj.y - mouseY;
-                            obj.render(false); // false = do not write the text under it during the rendering
                             dragging = true;
                         } else {
                             obj.dragging = false;
@@ -58,7 +90,6 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                             if (obj.items[i].changable) {
                                 // change the value of the object and render...
                                 obj.items[i].value = obj.items[i].y - mouseY;
-                                obj.items[i].render(false); // false = do not write the text under it during the rendering
                                 dragging = true;
                             } else {
                                 obj.items[i].dragging = false;
@@ -88,6 +119,32 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                     for (var i = 0; i < obj.items.length; i++) {
                         if (obj.items[i].changable && obj.items[i].isOver(mouseX, mouseY)) {
                             mouseCursor = "ns-resize";
+                        }
+                    }
+                }
+                // *** Button ***
+                if (obj instanceof inalan.Button && obj.enabled) {
+                    if (obj.isOver(mouseX, mouseY)) {
+                        obj.color = obj.overColor;
+                        mouseCursor = "pointer";
+                    } else {
+                        obj.color = obj.defaultColor;
+                    }
+                }
+                // *** Controller ***
+                if (obj instanceof inalan.Controller) {
+                    for (var i in obj) {
+                        if (obj.hasOwnProperty(i)) {
+                            var obj2 = obj[i];
+                            // button within the controller
+                            if (obj2 instanceof inalan.Button) {
+                                if (obj2.isOver(mouseX, mouseY) && obj2.enabled) {
+                                    obj2.color = obj2.overColor;
+                                    mouseCursor = "pointer";
+                                } else {
+                                    obj2.color = obj2.defaultColor;
+                                }
+                            }                            
                         }
                     }
                 }
@@ -152,19 +209,27 @@ inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
                         obj.items[i].dragging = false;
                     }
                 }
+                // *** Button ***
+                if (obj instanceof inalan.Button && obj.enabled) {
+                    if (obj.isOver(mouseX, mouseY)) {
+                        obj.onClickFnc();
+                    }
+                }
+                // *** Controller ***
+                if (obj instanceof inalan.Controller) {
+                    for (var i in obj) {
+                        if (obj.hasOwnProperty(i)) {
+                            var obj2 = obj[i];
+                            // button within the controller
+                            if (obj2 instanceof inalan.Button) {
+                                if (obj2.isOver(mouseX, mouseY) && obj2.enabled) {
+                                        obj2.onClickFnc();
+                                }
+                            }
+                        }
+                    }                    
+                }
             }
-        }
-    }
-}
-
-// render the whole stage
-inalan.Stage.prototype.render = function () {
-    // clear the stage
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    // render all objects in visuData
-    for (var index in this.visuItems) {
-        if (this.visuItems.hasOwnProperty(index)) {
-            this.visuItems[index].render();
         }
     }
 }
@@ -176,25 +241,138 @@ inalan.Stage.prototype.add = function (visuData) {
     }
     visuData.ctx = this.ctx;
     this.visuItems[visuData.name] = visuData;
+    this.visuItems[visuData.name].render();
+}
+
+// get VisuVariable or VisuArray by name
+inalan.Stage.prototype.get = function (name) {
+    return this.visuItems[name];
 }
 
 // animation of comparing two visuVariables (firstObject and secondObject)
-inalan.Stage.prototype.compare = function (firstObject, secondObject, callBackFnc) {
-
-}
-
-// animation of exchanging two visuVariables (firstObject and secondObject)
-inalan.Stage.prototype.exchange = function (firstObject, secondObject, callBackFnc) {
-
+inalan.Stage.prototype.compare = function (firstObject, secondObject) {
+    this.animating = true;
+    firstObject.setCompareColor();
+    secondObject.setCompareColor();
+    this.animating = false;
 }
 
 // animation of copying a visuVariable (firstObject to secondObject)
-inalan.Stage.prototype.copy = function (firstObject, secondObject, callBackFnc) {
-
+inalan.Stage.prototype.copy = function (firstObject, secondObject) {
+    this.animating = true;
+    var ch1 = firstObject.changable;
+    var ch2 = secondObject.changable;
+    firstObject.changable = false;
+    secondObject.changable = false;
+    var stage = this;
+    var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - secondObject.y, 2)); // distance between points
+    var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
+    var fps = this.fps; // FPS
+    var frames = Math.floor(time * fps / 1000); // how many frames
+    var intervalId = setInterval(function () { copyFnc(); }, 1000 / fps);
+    var dx = (secondObject.x - firstObject.x) / frames;
+    var dy = (secondObject.y - firstObject.y) / frames;
+    var x = firstObject.x;
+    var y = firstObject.y;
+    firstObject.setCompareColor();    
+    firstObject.startCopying();
+    var copyFnc = function () {
+        frames--;
+        if (frames > 0) {
+            firstObject.copyx += dx;
+            firstObject.copyy += dy;
+        } else if (frames <= 0) {
+            firstObject.stopCopying();
+            secondObject.value = firstObject.value;
+            secondObject.setCopyColor();     
+            clearInterval(intervalId);
+            firstObject.changable = ch1;
+            secondObject.changable = ch2;
+            stage.animating = false;
+        }
+    }
 }
 
 // animation of moving a visuVariable (firstObject to secondObject)
-inalan.Stage.prototype.move = function (firstObject, secondObject, callBackFnc) {
-
+inalan.Stage.prototype.move = function (firstObject, secondObject) {
+    this.animating = true;
+    var ch1 = firstObject.changable;
+    var ch2 = secondObject.changable;
+    firstObject.changable = false;
+    secondObject.changable = false;
+    var stage = this;
+    var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - secondObject.y, 2)); // distance between points
+    var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
+    var fps = this.fps; // FPS
+    var frames = Math.floor(time * fps / 1000); // how many frames
+    var intervalId = setInterval(function () { copyFnc(); }, 1000 / fps);
+    var dx = (secondObject.x - firstObject.x) / frames;
+    var dy = (secondObject.y - firstObject.y) / frames;
+    var x = firstObject.x;
+    var y = firstObject.y;
+    firstObject.setGrayColor();
+    firstObject.startCopying();
+    var copyFnc = function () {
+        frames--;
+        if (frames > 0) {
+            firstObject.copyx += dx;
+            firstObject.copyy += dy;
+        } else if (frames <= 0) {
+            firstObject.stopCopying();
+            secondObject.value = firstObject.value;
+            secondObject.setCopyColor();
+            clearInterval(intervalId);
+            firstObject.changable = ch1;
+            secondObject.changable = ch2;
+            stage.animating = false;         
+        }
+    }
 }
+
+// animation of exchanging two visuVariables (firstObject and secondObject)
+inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
+    this.animating = true;
+    var ch1 = firstObject.changable;
+    var ch2 = secondObject.changable;
+    firstObject.changable = false;
+    secondObject.changable = false;
+    var stage = this;
+    var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - secondObject.y, 2)); // distance between points
+    var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
+    var fps = this.fps; // FPS
+    var frames = Math.floor(time * fps / 1000); // how many frames
+    var intervalId = setInterval(function () { copyFnc(); }, 1000 / fps);
+    var dx = (secondObject.x - firstObject.x) / frames;
+    var dy = (secondObject.y - firstObject.y) / frames;
+    var x1 = firstObject.x;
+    var y1 = firstObject.y;
+    var x2 = secondObject.x;
+    var y2 = secondObject.y;
+    firstObject.setHiddenColor();
+    secondObject.setHiddenColor();
+    firstObject.startCopying();
+    secondObject.startCopying();
+    var copyFnc = function () {
+        frames--;
+        if (frames > 0) {
+            firstObject.copyx += dx;
+            firstObject.copyy += dy;
+            secondObject.copyx -= dx;
+            secondObject.copyy -= dy;
+        } else if (frames <= 0) {
+            firstObject.stopCopying();
+            secondObject.stopCopying();
+            var x = secondObject.value
+            secondObject.value = firstObject.value;
+            firstObject.value = x;
+            firstObject.setCopyColor();
+            secondObject.setCopyColor();
+            clearInterval(intervalId);
+            firstObject.changable = ch1;
+            secondObject.changable = ch2;
+            stage.animating = false;
+        }
+    }
+}
+
 

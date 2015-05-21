@@ -27,12 +27,22 @@ inalan.VisuVariable = function (name, value, changable) {
     this.value = value; // value (red column)
     this.minValue = 0; // minimum value when dragging with the mouse and trying to change it's value
     this.maxValue = value > 150 ? value : 150; // maximum value when dragging with the mouse and trying to change it's value
-    this.color = "#C00"; // default color (red)
+    this.fillColor = "#C00"; // default color (red)
+    this.strokeColor = "#000";
     this.width = 20; // width of the column
     this.height = this.maxValue; // height of the column (gray)
     this.textRotation = 0;
     this.changable = changable; // can be changed by mouse dragging
     this.dragging = false; // dragging (changing the value) with mouse
+    this.copy = false; // copiing or moving the variable (if true, it draws a rectangle to copyx, copyy coordinates)
+    this.copyx = 0;
+    this.copyy = 0;
+    // color constants
+    this.defaultColor = "#C00";
+    this.compareColor = "#FFD";
+    this.copyColor = "#FF0";
+    this.grayColor = "#CCC";
+    this.hiddenColor = "#EEE";
 }
 
 // create subclass VisuVariable from VisuData - set methods
@@ -40,53 +50,107 @@ inalan.VisuVariable.prototype = Object.create(inalan.VisuData.prototype);
 inalan.VisuVariable.prototype.constructor = inalan.VisuVariable;
 
 // render the visuvariable (draw the column)
-inalan.VisuVariable.prototype.render = function (renderText) {
-    // renderText:
-    //   Do write the text under the culomn (renderText==true)?
-    //   Or only draw the column (rednerText==false or undefined)?
-    if (typeof (renderText) == 'undefined') {
-        renderText = true;
-    }
+inalan.VisuVariable.prototype.render = function () {
     // check if value is between minValue and maxValue
     if (this.value > this.maxValue) {
         this.value = this.maxValue;
     } else if (this.value < this.minValue) {
         this.value = this.minValue;
     }
-    // call superclass's render function
-    inalan.VisuData.prototype.render.call(this);
     // draw VisuVariable
-    this.ctx.fillStyle = "#EEE";
-    this.ctx.fillRect(this.x - this.width/2 - 1, this.y - this.height - 0.5, this.width + 1, this.height);
-    this.ctx.fillStyle = this.color;
-    this.ctx.fillRect(this.x - this.width/2 - 0.5, this.y - this.value - 0.5, this.width, this.value);
-    this.ctx.strokeStyle = '#000';
+    this.ctx.fillStyle = this.hiddenColor; // backround
+    this.ctx.fillRect(this.x - this.width / 2 - 1, this.y - this.height - 1, this.width + 1, this.height);
+    this.ctx.fillStyle = this.fillColor; // column
+    this.ctx.fillRect(this.x - this.width / 2 - 0.5, this.y - this.value - 0.5, this.width, this.value);
+    this.ctx.strokeStyle = this.strokeColor;
+    this.ctx.strokeRect(this.x - this.width / 2 - 0.5, this.y - 0.5 - this.value, this.width, this.value);
+    this.ctx.strokeStyle = "#000"; // line under the column
     this.ctx.beginPath();
     this.ctx.moveTo(this.x - this.width / 2 - 3, this.y - 0.5);
     this.ctx.lineTo(this.x - this.width / 2 + this.width + 2, this.y - 0.5);
     this.ctx.stroke();
-    this.ctx.strokeRect(this.x - this.width / 2 - 0.5, this.y - 0.5 - this.value, this.width, this.value);
-    this.ctx.fillStyle = "#000";
-    if (renderText) {
-        this.ctx.font = "12px Arial";
-        if (this.textRotation == 0) {
-            this.ctx.textAlign = "center";
-            this.ctx.fillText(this.name, this.x - 0.5, this.y + 13.5);
-        } else {
-            this.ctx.save();
-            this.ctx.translate(this.x - 0.5, this.y + 13.5);
-            this.ctx.rotate(-Math.PI / 180 * this.textRotation);
-            this.ctx.textAlign = "right";
-            this.ctx.fillText(this.name, 7, 3);
-            this.ctx.restore();
-        }
+    this.ctx.fillStyle = "#000"; // text under the column
+    this.ctx.font = "12px Arial";
+    if (this.textRotation == 0) {
+        this.ctx.textAlign = "center";
+        this.ctx.fillText(this.name, this.x - 0.5, this.y + 13.5);
+    } else {
+        this.ctx.save();
+        this.ctx.translate(this.x - 0.5, this.y + 13.5);
+        this.ctx.rotate(-Math.PI / 180 * this.textRotation);
+        this.ctx.textAlign = "right";
+        this.ctx.fillText(this.name, 7, 3);
+        this.ctx.restore();
+    }
+}
+
+// render moving rectangles when copying
+inalan.VisuVariable.prototype.renderCopy = function () {
+    // draw second rectangle when copying/moving the variable
+    if (this.copy) {        
+        this.ctx.fillStyle = this.copyColor; // column
+        this.ctx.fillRect(this.copyx - this.width / 2 - 0.5, this.copyy - this.value - 0.5, this.width, this.value);
+        this.ctx.strokeStyle = "#000";
+        this.ctx.strokeRect(this.copyx - this.width / 2 - 0.5, this.copyy - 0.5 - this.value, this.width, this.value);
     }
 }
 
 // is the X, Y (e.g. mouse position) over the variable (in the upper part for changing the value) ?
-inalan.VisuVariable.prototype.isOver = function (x,y) {
+inalan.VisuVariable.prototype.isOver = function (x, y) {
     if (Math.abs(x - this.x) < this.width / 2 && Math.abs(y - (this.y - this.value)) <= 5) {
-            return true;
+        return true;
     }
-    return false
+    return false;
+}
+
+// set minimum value when dragging
+inalan.VisuVariable.prototype.setMinValue = function (minValue) {
+    this.minValue = minValue;
+    if (this.value < this.minValue) {
+        this.value = this.minValue;
+    }
+}
+// set maximum value when dragging
+inalan.VisuVariable.prototype.setMaxValue = function (maxValue) {
+    this.maxValue = maxValue;
+    if (this.value > this.maxValue) {
+        this.value = this.maxValue;
+    }
+}
+
+// set up copyx, copyy when starts copying the variable
+inalan.VisuVariable.prototype.startCopying = function () {
+    this.copyx = this.x;
+    this.copyy = this.y;
+    this.copy = true;
+}
+// stops copying the variable
+inalan.VisuVariable.prototype.stopCopying = function () {
+    this.copy = false;
+}
+
+// set default color
+inalan.VisuVariable.prototype.setDefaultColor = function () {
+    this.fillColor = this.defaultColor;
+    this.strokeColor = '#000';
+}
+// set color when comparing
+inalan.VisuVariable.prototype.setCompareColor = function () {
+    this.fillColor = this.compareColor;
+    this.strokeColor = '#000';
+}
+// set color when copying
+inalan.VisuVariable.prototype.setCopyColor = function () {
+    this.fillColor = this.copyColor;
+    this.strokeColor = '#000';
+}
+// set gray color
+inalan.VisuVariable.prototype.setGrayColor = function () {
+    this.fillColor = this.grayColor;
+    this.strokeColor = this.grayColor;
+}
+// set hidden color (hide the column)
+inalan.VisuVariable.prototype.setHiddenColor = function () {
+    this.fillColor = this.hiddenColor;
+    this.strokeColor = this.hiddenColor;
 }
