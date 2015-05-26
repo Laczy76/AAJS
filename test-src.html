@@ -8,8 +8,9 @@
     <script src="src/VisuVariable.js"></script>
     <script src="src/VisuArray.js"></script>
     <script src="src/Button.js"></script>
+    <script src="src/Scrollbar.js"></script>
     <script src="src/Controller.js"></script>
-
+    
     <script>        
 
         var init = function () {
@@ -40,12 +41,21 @@
                 }
             }
 
+            var findMaxFirstStep = function () {
+                // copy first element to max
+                console.log("first step");
+                stage.get("a").items[0].changable = false;
+                stage.copy(stage.get("a").items[0], stage.get("max"));
+            }
+
             var findMaxCompare = function () {
+                // compare max with the next element
                 console.log("compare");
                 stage.compare(stage.get("max"), stage.get("a").items[index]);
             }
 
             var findMaxCopy = function () {
+                // copy the element to max if it is bigger
                 console.log("copy");
                 stage.get("a").items[index].changable = false;
                 if (stage.get("max").value < stage.get("a").items[index].value) {                    
@@ -56,6 +66,7 @@
             }
 
             var findMaxIncrease = function () {
+                // increase the index (go to next element)
                 console.log("increase");
                 stage.get("max").setDefaultColor();
                 stage.get("a").items[index].setDefaultColor();
@@ -64,16 +75,24 @@
             }
 
             var findMaxCheck = function () {
+                // check if there are more elements in array
                 return index < stage.get("a").items.length;
-            }
-
-            var findMaxFinalStep = function () {
-                console.log("final step");
             }
             
             stage.controller.setReset(findMaxReset);
-            stage.controller.setSteps([findMaxCompare, findMaxCopy, findMaxIncrease], findMaxCheck, findMaxFinalStep);
+            stage.controller.setSteps([
+                findMaxFirstStep,
+                findMaxIncrease,
+                [findMaxCompare, findMaxCopy, findMaxIncrease], findMaxCheck                
+            ]);
 
+
+            var s = new inalan.Scrollbar("x", "Speed of animation:", 150, 500, 1000, 500);
+            s.x = 400;
+            s.y = 465;
+            stage.add(s);
+
+            // stage.get("max").setDefaultColor();
             // stage.compare(stage.get("a").items[0], stage.get("a").items[3]);
             // stage.copy(stage.get("a").items[2], stage.get("max"));
             // stage.move(stage.get("a").items[2], stage.get("max"));

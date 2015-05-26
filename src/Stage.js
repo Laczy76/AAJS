@@ -131,6 +131,15 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                         obj.color = obj.defaultColor;
                     }
                 }
+                // *** Scrollbar ***
+                if (obj instanceof inalan.Scrollbar && obj.enabled) {
+                    if (obj.isOver(mouseX, mouseY)) {
+                        obj.color = obj.overColor;
+                        mouseCursor = "pointer";
+                    } else {
+                        obj.color = obj.defaultColor;
+                    }
+                }
                 // *** Controller ***
                 if (obj instanceof inalan.Controller) {
                     for (var i in obj) {
@@ -144,7 +153,16 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                                 } else {
                                     obj2.color = obj2.defaultColor;
                                 }
-                            }                            
+                            }
+                            // scrollbar within the controller
+                            if (obj2 instanceof inalan.Scrollbar) {
+                                if (obj2.isOver(mouseX, mouseY) && obj2.enabled) {
+                                    obj2.color = obj2.overColor;
+                                    mouseCursor = "pointer";
+                                } else {
+                                    obj2.color = obj2.defaultColor;
+                                }
+                            }
                         }
                     }
                 }
@@ -374,5 +392,3 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
         }
     }
 }
-
-

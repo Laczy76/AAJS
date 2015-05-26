@@ -15,11 +15,11 @@ inalan.Controller = function () {
     // create subclass Controller from VisuData - set properties
     inalan.VisuData.call(this, name);
     // set new properties        
-    this.fncIndex = 0;
+    this.fncIndex = 0; // index in stepFncsArray
+    this.fncRepeatIndex = 0; // index in array inside stepFncsArray (for repeating some steps)
     this.resetFnc = null; // function for reseting variables (reset button)   
     this.stepFncsArray = null; // array of functions for every step
-    this.checkFnc = null; // check function - if true, reapeat the steps in stepFncsArray
-    this.finalStepFnc = null; // final step, will be run when the check function is false
+
     this.playingAnimation = false; // playing animation (Start/Stop button)
     this.waitingAnimation = false; // animation is waiting (delay between steps when automatically playing)
     this.nextStepAuto = false; // automatically play the next step
@@ -33,6 +33,7 @@ inalan.Controller = function () {
             self.playingAnimation = false;
             self.startStop.label = "Start";
             self.fncIndex = 0;
+            self.fncRepeatIndex = 0;
             self.resetFnc();
             self.startStop.enabled = true;
             self.step.enabled = true;
@@ -84,23 +85,33 @@ inalan.Controller = function () {
     }
     var stepAnimation = function () { // steps animation        
         var stage = self.ctx.canvas.parent;
-        if (!stage.animating && !self.waitingAnimation && self.stepFncsArray != null && self.checkFnc()) {
-            self.nextStepAuto = self.stepFncsArray[self.fncIndex]();
-            self.fncIndex++;
-            if (self.fncIndex >= self.stepFncsArray.length) {
-                if (self.checkFnc()) {
-                    self.fncIndex = 0;
+        if (!stage.animating && !self.waitingAnimation && self.stepFncsArray != null) {
+            if (self.stepFncsArray[self.fncIndex] instanceof Array) { // repeating some steps
+                self.nextStepAuto = self.stepFncsArray[self.fncIndex][self.fncRepeatIndex]();
+                self.fncRepeatIndex++;
+                if (self.fncRepeatIndex >= self.stepFncsArray[self.fncIndex].length) {
+                    self.fncRepeatIndex = 0;
+                    if (!self.stepFncsArray[self.fncIndex + 1]()) {
+                        self.fncIndex = self.fncIndex + 2;
+                        if (self.fncIndex >= self.stepFncsArray.length) {
+                            self.nextStepAuto = false;
+                            self.playingAnimation = false;
+                            self.step.enabled = false;
+                            self.startStop.enabled = false;
+                        }
+                    }
+                }
+            } else { // steps without repetations
+                self.nextStepAuto = self.stepFncsArray[self.fncIndex]();
+                self.fncIndex++;
+                if (self.fncIndex >= self.stepFncsArray.length) {
+                    self.nextStepAuto = false;
+                    self.playingAnimation = false;
+                    self.step.enabled = false;
+                    self.startStop.enabled = false;
                 }
             }
-            stepAnimationDoneID = setInterval(stepAnimationDone, 100);
-        } else if (!stage.animating && !self.waitingAnimation && !self.checkFnc()) {
-            if (self.finalStepFnc != null) {
-                self.finalStepFnc();
-                self.nextStepAuto = false;
-                self.playingAnimation = false;
-            }
-            self.step.enabled = false;
-            self.startStop.enabled = false;
+            stepAnimationDoneID = setInterval(stepAnimationDone, 100); // checks every 100ms if the animation is done
         }
     }
     // buttons...
@@ -135,8 +146,6 @@ inalan.Controller.prototype.setReset = function (resetFnc) {
 }
 
 // set up functions for steps, for checking (if true, repeat the steps), and for the last step
-inalan.Controller.prototype.setSteps = function (stepsFncsArray, checkFnc, lastStepFnc) {
+inalan.Controller.prototype.setSteps = function (stepsFncsArray) {
     this.stepFncsArray = stepsFncsArray;
-    this.checkFnc = checkFnc;
-    this.finalStepFnc = lastStepFnc;
 }

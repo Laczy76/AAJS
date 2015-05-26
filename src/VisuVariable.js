@@ -69,6 +69,32 @@ inalan.VisuVariable.prototype.render = function () {
     this.ctx.moveTo(this.x - this.width / 2 - 3, this.y - 0.5);
     this.ctx.lineTo(this.x - this.width / 2 + this.width + 2, this.y - 0.5);
     this.ctx.stroke();
+    if (this.changable) { // if changable, draw the mark on the top of the column
+        this.ctx.strokeStyle = "#BBB";
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.x - this.width / 5, this.y - 0.5 - this.value - 3);
+        this.ctx.lineTo(this.x, this.y - 0.5 - this.value - 6);
+        this.ctx.lineTo(this.x + this.width / 5, this.y - 0.5 - this.value - 3);
+        this.ctx.moveTo(this.x, this.y - 0.5 - this.value - 6);
+        this.ctx.lineTo(this.x, this.y - 0.5 - this.value - 2);
+        this.ctx.stroke();
+        if (this.value > 5) {
+            var r = parseInt(this.fillColor.substring(1,2), 16) - 3;
+            var g = parseInt(this.fillColor.substring(2,3), 16) - 3;
+            var b = parseInt(this.fillColor.substring(3,4), 16) - 3;
+            if (r < 0) { r = 0; }
+            if (g < 0) { g = 0; }
+            if (b < 0) { b = 0; }
+            this.ctx.strokeStyle = "#" + r.toString(16) + g.toString(16) + b.toString(16);            
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.x - this.width / 5, this.y - 0.5 - this.value + 3);
+            this.ctx.lineTo(this.x, this.y - 0.5 - this.value + 6);
+            this.ctx.lineTo(this.x + this.width / 5, this.y - 0.5 - this.value + 3);            
+            this.ctx.moveTo(this.x, this.y - 0.5 - this.value + 6);
+            this.ctx.lineTo(this.x, this.y - 0.5 - this.value + 2);
+            this.ctx.stroke();
+        }
+    }
     this.ctx.fillStyle = "#000"; // text under the column
     this.ctx.font = "12px Arial";
     if (this.textRotation == 0) {
