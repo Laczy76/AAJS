@@ -19,6 +19,7 @@ inalan.Button = function (name, label, width, onClickFnc) {
     this.width = width;
     this.height = 26;
     this.enabled = true;
+    this.pressed = false;
     this.onClickFnc = onClickFnc;
     this.color = "#FE6";
     // color constants

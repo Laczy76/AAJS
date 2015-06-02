@@ -20,7 +20,8 @@ inalan.Scrollbar = function (name, label, width, min, max, position, onChange) {
         width = 30;
     }
     this.width = width;
-    this.enabled = true;    
+    this.enabled = true;
+    this.dragging = false;
     this.min = min;
     this.max = max;
     if (position < min) { position = min; }

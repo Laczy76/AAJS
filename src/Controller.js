@@ -19,11 +19,17 @@ inalan.Controller = function () {
     this.fncRepeatIndex = 0; // index in array inside stepFncsArray (for repeating some steps)
     this.resetFnc = null; // function for reseting variables (reset button)   
     this.stepFncsArray = null; // array of functions for every step
-
     this.playingAnimation = false; // playing animation (Start/Stop button)
     this.waitingAnimation = false; // animation is waiting (delay between steps when automatically playing)
     this.nextStepAuto = false; // automatically play the next step
     var self = this;
+    // variables for button labels
+    this.resetLabel = "Reset";
+    this.startLabel = "Start";
+    this.stopLabel = "Stop";
+    this.stepLabel = "Next step";
+    this.speedLabel = "Speed of animation:";
+
     // functions to control the animation... 
     var resetAnimationWhenPossible = false;
     var resetAnimation = function () { // reset animation
@@ -31,7 +37,7 @@ inalan.Controller = function () {
         if (!stage.animating && !self.waitingAnimation && self.resetFnc != null) {
             resetAnimationWhenPossible = false;
             self.playingAnimation = false;
-            self.startStop.label = "Start";
+            self.startStop.label = self.startLabel;
             self.fncIndex = 0;
             self.fncRepeatIndex = 0;
             self.resetFnc();
@@ -46,7 +52,7 @@ inalan.Controller = function () {
         if (!self.playingAnimation) {
             // start animation
             self.playingAnimation = true;
-            self.startStop.label = "Stop";
+            self.startStop.label = self.stopLabel;
             self.step.enabled = false;
             if (!stage.animating) {
                 stepAnimation();
@@ -54,7 +60,7 @@ inalan.Controller = function () {
         } else {
             // stop animation
             self.playingAnimation = false;
-            self.startStop.label = "Start";
+            self.startStop.label = self.startLabel;
             self.step.enabled = true;
         }
     }
@@ -114,17 +120,23 @@ inalan.Controller = function () {
             stepAnimationDoneID = setInterval(stepAnimationDone, 100); // checks every 100ms if the animation is done
         }
     }
+    var changeSpeedOfAnimation = function (position) { // when the speed of animation is changed (using the scrollbar)
+        var stage = self.ctx.canvas.parent;
+        stage.time = 2000 - position;
+    }
     // buttons...
-    this.reset = new inalan.Button("reset", "Reset", 70, resetAnimation);
-    this.startStop = new inalan.Button("startStop", "Start", 70, startStopAnimation);
-    this.step = new inalan.Button("step", "Next step", 100, stepAnimation);
+    this.reset = new inalan.Button("reset", this.resetLabel, 70, resetAnimation);
+    this.startStop = new inalan.Button("startStop", this.startLabel, 70, startStopAnimation);
+    this.step = new inalan.Button("step", this.stepLabel, 100, stepAnimation);
+    // scrollbar...
+    this.speed = new inalan.Scrollbar("speed", this.speedLabel, 150, 0, 2000, 1000, changeSpeedOfAnimation);
 }
 
 // create subclass VisuButton from VisuData - set methods
 inalan.Controller.prototype = Object.create(inalan.VisuData.prototype);
 inalan.Controller.prototype.constructor = inalan.Controller;
 
-inalan.Controller.prototype.render = function () {
+inalan.Controller.prototype.render = function () {    
     // draw the buttons
     this.reset.ctx = this.ctx;
     this.reset.x = this.x + this.reset.width / 2;
@@ -135,9 +147,14 @@ inalan.Controller.prototype.render = function () {
     this.startStop.y = this.y;
     this.startStop.render();
     this.step.ctx = this.ctx;
-    this.step.x = this.x + +this.reset.width + 20 + this.startStop.width + this.step.width / 2;
+    this.step.x = this.x + this.reset.width + 20 + this.startStop.width + this.step.width / 2;
     this.step.y = this.y;
     this.step.render();
+    // draw the scrollbar
+    this.speed.ctx = this.ctx;
+    this.speed.x = this.x + this.reset.width + 20 + this.startStop.width + this.step.width + 30 + this.speed.width / 2;
+    this.speed.y = this.y;
+    this.speed.render();
 }
 
 // set up reset function

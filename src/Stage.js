@@ -97,6 +97,50 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                         }
                     }
                 }
+                // *** Scrollbar ***
+                if (obj instanceof inalan.Scrollbar) {
+                    if (obj.dragging) {
+                        // change the value of the object...
+                        var pos = obj.min + (mouseX - (obj.x - obj.width / 2 + 10)) * (obj.max - obj.min + 1) / (obj.width - 20);
+                        if (pos < obj.min) {
+                            pos = obj.min;
+                        }
+                        if (pos > obj.max) {
+                            pos = obj.max;
+                        }
+                        if (obj.position != pos) {
+                            obj.position = pos;
+                            obj.onChange(pos);
+                        }                        
+                        dragging = true;
+                    }
+                }
+                // *** Controller ***
+                if (obj instanceof inalan.Controller) {
+                    for (var i in obj) {
+                        if (obj.hasOwnProperty(i)) {
+                            var obj2 = obj[i];
+                            // scrollbar within the controller
+                            if (obj2 instanceof inalan.Scrollbar) {
+                                if (obj2.dragging) {
+                                    // change the value of the object...
+                                    var pos = obj2.min + (mouseX - (obj2.x - obj2.width / 2 + 10)) * (obj2.max - obj2.min + 1) / (obj2.width - 20);
+                                    if (pos < obj2.min) {
+                                        pos = obj2.min;
+                                    }
+                                    if (pos > obj2.max) {
+                                        pos = obj2.max;
+                                    }
+                                    if (obj2.position != pos) {
+                                        obj2.position = pos;
+                                        obj2.onChange(pos);
+                                    }
+                                    dragging = true;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -199,6 +243,38 @@ inalan.Stage.prototype.stageMouseDownEvent = function (evt) {
                         }
                     }
                 }
+                // *** Button ***
+                if (obj instanceof inalan.Button && obj.enabled) {
+                    if (obj.isOver(mouseX, mouseY)) {
+                        obj.pressed = true;                    
+                    }
+                }
+                // *** Scrollbar ***
+                if (obj instanceof inalan.Scrollbar) {
+                    if (obj.isOver(mouseX, mouseY)) {
+                        obj.dragging = true;
+                    }
+                }
+                // *** Controller ***
+                if (obj instanceof inalan.Controller) {
+                    for (var i in obj) {
+                        if (obj.hasOwnProperty(i)) {
+                            var obj2 = obj[i];
+                            // button within the controller
+                            if (obj2 instanceof inalan.Button) {
+                                if (obj2.isOver(mouseX, mouseY) && obj2.enabled) {
+                                    obj2.pressed = true;                                
+                                }
+                            }
+                            // scrollbar within the controller
+                            if (obj2 instanceof inalan.Scrollbar) {
+                                if (obj2.isOver(mouseX, mouseY)) {
+                                    obj2.dragging = true;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -228,10 +304,15 @@ inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
                     }
                 }
                 // *** Button ***
-                if (obj instanceof inalan.Button && obj.enabled) {
-                    if (obj.isOver(mouseX, mouseY)) {
+                if (obj instanceof inalan.Button) {
+                    if (obj.isOver(mouseX, mouseY) && obj.enabled && obj.pressed) {
                         obj.onClickFnc();
                     }
+                    obj.pressed = false;
+                }
+                // *** Scrollbar ***
+                if (obj instanceof inalan.Scrollbar) {
+                    obj.dragging = false;
                 }
                 // *** Controller ***
                 if (obj instanceof inalan.Controller) {
@@ -240,9 +321,14 @@ inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
                             var obj2 = obj[i];
                             // button within the controller
                             if (obj2 instanceof inalan.Button) {
-                                if (obj2.isOver(mouseX, mouseY) && obj2.enabled) {
-                                        obj2.onClickFnc();
+                                if (obj2.isOver(mouseX, mouseY) && obj2.enabled && obj2.pressed) {
+                                    obj2.onClickFnc();
                                 }
+                                obj2.pressed = false;
+                            }
+                            // scrollbar within the controller
+                            if (obj2 instanceof inalan.Scrollbar) {
+                                obj2.dragging = false;
                             }
                         }
                     }                    
