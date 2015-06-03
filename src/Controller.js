@@ -37,6 +37,7 @@ inalan.Controller = function () {
         if (!stage.animating && !self.waitingAnimation && self.resetFnc != null) {
             resetAnimationWhenPossible = false;
             self.playingAnimation = false;
+            self.nextStepAuto = false;
             self.startStop.label = self.startLabel;
             self.fncIndex = 0;
             self.fncRepeatIndex = 0;

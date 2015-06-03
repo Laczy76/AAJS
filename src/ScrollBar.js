@@ -57,7 +57,7 @@ inalan.Scrollbar.prototype.render = function () {
     this.ctx.beginPath();
     var circleX = (this.x-this.width/2+10) + (this.position-this.min)*(this.width-20)/(this.max-this.min+1);
     var circleY = this.y;
-    this.ctx.arc(circleX , circleY, 10, 0, 2 * Math.PI, false);
+    this.ctx.arc(circleX , circleY, 10, 0, 2 * Math.PI);
     this.ctx.fill();
     this.ctx.stroke();
     this.ctx.fillStyle = "#000";
