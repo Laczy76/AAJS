@@ -356,8 +356,8 @@ inalan.Stage.prototype.get = function (name) {
 // animation of comparing two visuVariables (firstObject and secondObject)
 inalan.Stage.prototype.compare = function (firstObject, secondObject) {
     this.animating = true;
-    firstObject.setCompareColor();
-    secondObject.setCompareColor();
+    firstObject.setLightYellowColor();
+    secondObject.setLightYellowColor();
     this.animating = false;
 }
 
@@ -378,7 +378,7 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject) {
     var dy = (secondObject.y - firstObject.y) / frames;
     var x = firstObject.x;
     var y = firstObject.y;
-    firstObject.setCompareColor();    
+    firstObject.setLightYellowColor();    
     firstObject.startCopying();
     var copyFnc = function () {
         frames--;
@@ -388,7 +388,7 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject) {
         } else if (frames <= 0) {
             firstObject.stopCopying();
             secondObject.value = firstObject.value;
-            secondObject.setCopyColor();     
+            secondObject.setYellowColor();     
             clearInterval(intervalId);
             firstObject.changable = ch1;
             secondObject.changable = ch2;
@@ -424,7 +424,7 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
         } else if (frames <= 0) {
             firstObject.stopCopying();
             secondObject.value = firstObject.value;
-            secondObject.setCopyColor();
+            secondObject.setYellowColor();
             clearInterval(intervalId);
             firstObject.changable = ch1;
             secondObject.changable = ch2;
@@ -469,8 +469,8 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
             var x = secondObject.value
             secondObject.value = firstObject.value;
             firstObject.value = x;
-            firstObject.setCopyColor();
-            secondObject.setCopyColor();
+            firstObject.setYellowColor();
+            secondObject.setYellowColor();
             clearInterval(intervalId);
             firstObject.changable = ch1;
             secondObject.changable = ch2;

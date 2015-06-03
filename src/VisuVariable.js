@@ -49,6 +49,17 @@ inalan.VisuVariable = function (name, value, changable) {
 inalan.VisuVariable.prototype = Object.create(inalan.VisuData.prototype);
 inalan.VisuVariable.prototype.constructor = inalan.VisuVariable;
 
+// set random value to VisuVariable
+inalan.VisuVariable.prototype.randomize = function (min, max) {
+    if (typeof (min) == 'undefined' || min < this.minValue) {
+        min = this.minValue;
+    }
+    if (typeof (max) == 'undefined' || max > this.maxValue) {
+        max = this.maxValue;
+    }
+    this.value = Math.floor((Math.random() * (max - min + 1)) + min);
+}
+
 // render the visuvariable (draw the column)
 inalan.VisuVariable.prototype.render = function () {
     // check if value is between minValue and maxValue
@@ -161,12 +172,12 @@ inalan.VisuVariable.prototype.setDefaultColor = function () {
     this.strokeColor = '#000';
 }
 // set color when comparing
-inalan.VisuVariable.prototype.setCompareColor = function () {
+inalan.VisuVariable.prototype.setLightYellowColor = function () {
     this.fillColor = this.compareColor;
     this.strokeColor = '#000';
 }
 // set color when copying
-inalan.VisuVariable.prototype.setCopyColor = function () {
+inalan.VisuVariable.prototype.setYellowColor = function () {
     this.fillColor = this.copyColor;
     this.strokeColor = '#000';
 }

@@ -39,6 +39,13 @@ inalan.VisuArray = function (name, values, changable) {
 inalan.VisuArray.prototype = Object.create(inalan.VisuData.prototype);
 inalan.VisuArray.prototype.constructor = inalan.VisuArray;
 
+// randomize the array
+inalan.VisuArray.prototype.randomize = function (min,max) {
+    for (var i = 0; i < this.items.length; i++) {
+        this.items[i].randomize(min,max);
+    }
+}
+
 // add/set index to the VisuArray
 inalan.VisuArray.prototype.setIndex = function(name,value) {
     this.indexes[name] = value;
