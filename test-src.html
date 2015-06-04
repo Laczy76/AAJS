@@ -16,6 +16,7 @@
         var init = function () {
 
             var stage = new inalan.Stage("myCanvas");
+            // stage.controller.showAllButtons();
 
             var m = new inalan.VisuVariable("max", 0, false);
             m.x = 50;
@@ -85,7 +86,7 @@
             var findMaxFinalStep = function () {
                 stage.get("a").deleteIndex("i");
             }
-            
+                        
             stage.controller.setReset(findMaxReset);
             stage.controller.setSteps([
                 findMaxFirstStep,

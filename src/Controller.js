@@ -127,35 +127,53 @@ inalan.Controller = function () {
     }
     // buttons...
     this.reset = new inalan.Button("reset", this.resetLabel, 70, resetAnimation);
-    this.startStop = new inalan.Button("startStop", this.startLabel, 70, startStopAnimation);
+    this.startStop = new inalan.Button("startStop", this.startLabel, 0, startStopAnimation);
     this.step = new inalan.Button("step", this.stepLabel, 100, stepAnimation);
     // scrollbar...
-    this.speed = new inalan.Scrollbar("speed", this.speedLabel, 150, 0, 2000, 1000, changeSpeedOfAnimation);
+    this.speed = new inalan.Scrollbar("speed", this.speedLabel, 150, 200, 1800, 1000, changeSpeedOfAnimation);
 }
 
 // create subclass VisuButton from VisuData - set methods
 inalan.Controller.prototype = Object.create(inalan.VisuData.prototype);
 inalan.Controller.prototype.constructor = inalan.Controller;
 
+// show all buttons (reset, startStop, step, speed),
+// in default mode the startStop button is hidden
+inalan.Controller.prototype.showAllButtons = function () {
+    this.reset.width = 70;
+    this.startStop.width = 70;
+    this.step.width = 100;
+    this.speed.width = 150;
+}
+
+// render the controller
 inalan.Controller.prototype.render = function () {    
     // draw the buttons
-    this.reset.ctx = this.ctx;
-    this.reset.x = this.x + this.reset.width / 2;
-    this.reset.y = this.y;
-    this.reset.render();
-    this.startStop.ctx = this.ctx;
-    this.startStop.x = this.x + this.reset.width + 20 + this.startStop.width / 2;
-    this.startStop.y = this.y;
-    this.startStop.render();
-    this.step.ctx = this.ctx;
-    this.step.x = this.x + this.reset.width + 20 + this.startStop.width + this.step.width / 2;
-    this.step.y = this.y;
-    this.step.render();
+    if (this.reset.width > 0) {
+        this.reset.ctx = this.ctx;
+        this.reset.x = this.x + this.reset.width / 2;
+        this.reset.y = this.y;
+        this.reset.render();
+    }
+    if (this.startStop.width > 0) {
+        this.startStop.ctx = this.ctx;
+        this.startStop.x = this.x + this.reset.width + 20 + this.startStop.width / 2;
+        this.startStop.y = this.y;
+        this.startStop.render();
+    }
+    if (this.step.width > 0) {
+        this.step.ctx = this.ctx;
+        this.step.x = this.x + this.reset.width + 20 + this.startStop.width + this.step.width / 2;
+        this.step.y = this.y;
+        this.step.render();
+    }
     // draw the scrollbar
-    this.speed.ctx = this.ctx;
-    this.speed.x = this.x + this.reset.width + 20 + this.startStop.width + this.step.width + 30 + this.speed.width / 2;
-    this.speed.y = this.y;
-    this.speed.render();
+    if (this.speed.width > 0) {
+        this.speed.ctx = this.ctx;
+        this.speed.x = this.x + this.reset.width + 20 + this.startStop.width + this.step.width + 30 + this.speed.width / 2;
+        this.speed.y = this.y;
+        this.speed.render();
+    }
 }
 
 // set up reset function

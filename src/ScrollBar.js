@@ -16,9 +16,6 @@ inalan.Scrollbar = function (name, label, width, min, max, position, onChange) {
     inalan.VisuData.call(this, name);
     // set new properties
     this.label = label;
-    if (width < 30) {
-        width = 30;
-    }
     this.width = width;
     this.enabled = true;
     this.dragging = false;

@@ -50,7 +50,7 @@ inalan.Stage = function (canvasId) {
             }
         }
     }
-    setInterval(this.render, 1000 / this.fps);
+    setInterval(self.render, 1000 / self.fps);
     // time for animations (copy/move/exchange/..) *****
     this.animating = false; // does any object animating?
     this.time = 1000; // speed of animation
@@ -344,8 +344,7 @@ inalan.Stage.prototype.add = function (visuData) {
         throw "- Can not add '" + visuData.name + "' to the stage, object with this name already exists on the stage.";
     }
     visuData.ctx = this.ctx;
-    this.visuItems[visuData.name] = visuData;
-    this.visuItems[visuData.name].render();
+    this.visuItems[visuData.name] = visuData;    
 }
 
 // get VisuVariable or VisuArray by name
