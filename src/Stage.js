@@ -50,7 +50,7 @@ inalan.Stage = function (canvasId) {
             }
         }
     }
-    setInterval(self.render, 1000 / self.fps);
+    setInterval(this.render, 1000 / this.fps);
     // time for animations (copy/move/exchange/..) *****
     this.animating = false; // does any object animating?
     this.time = 1000; // speed of animation
