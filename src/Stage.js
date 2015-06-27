@@ -20,7 +20,7 @@ inalan.Stage = function (canvasId) {
     this.visuItems = {};
     // add controller to stage... ***********************
     this.controller = new inalan.Controller();
-    this.controller.x = 20;
+    this.controller.x = 30;
     this.controller.y = this.ctx.canvas.height - 35;
     this.add(this.controller);
     // event listeners **********************************

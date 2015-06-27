@@ -85,7 +85,7 @@ inalan.VisuArray.prototype.render = function () {
                 this.ctx.fillStyle = "#000";
                 this.ctx.font = "bold 12px Arial";
                 this.ctx.textAlign = "center";
-                this.ctx.fillText(name, this.items[i].x, this.items[i].y + 45 + indexesPos);
+                this.ctx.fillText(name, this.items[i].x - 0.5, this.items[i].y + 45 + indexesPos);
                 indexesPos = indexesPos + 23;
             }
         }

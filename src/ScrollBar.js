@@ -63,7 +63,7 @@ inalan.Scrollbar.prototype.render = function () {
     this.ctx.fillStyle = "#000";
     this.ctx.font = "13px Arial";
     this.ctx.textAlign = "center";
-    this.ctx.fillText(this.label, this.x, this.y - 20);
+    this.ctx.fillText(this.label, this.x, this.y - 17);
 }
 
 inalan.Scrollbar.prototype.isOver = function (x, y) {

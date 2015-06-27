@@ -19,14 +19,14 @@
             // stage.controller.showAllButtons();
 
             var m = new inalan.VisuVariable("max", 0, false);
-            m.x = 50;
-            m.y = 200;
+            m.x = 45;
+            m.y = 220;
             stage.add(m);
 
-            var a = new inalan.VisuArray("a", [80, 90, 30, 70, 40, 100, 110], true);
-            a.randomize(30,100);
+            var a = new inalan.VisuArray("a", [0, 0, 0, 0, 0, 0, 0], true);
+            a.randomize(30,150);
             a.x = 100;
-            a.y = 200;
+            a.y = 220;
             stage.add(a);
 
             // **********************************************
@@ -109,7 +109,7 @@
 </head>
 <body onload="init();">
 
-    <canvas id="myCanvas" width="800" height="500" style="border:1px solid black"></canvas>
+    <canvas id="myCanvas" width="750" height="430" style="border:1px solid black"></canvas>
     
 </body>
 </html>

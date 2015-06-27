@@ -26,10 +26,10 @@ inalan.VisuVariable = function (name, value, changable) {
     // properties for visualization
     this.value = value; // value (red column)
     this.minValue = 0; // minimum value when dragging with the mouse and trying to change it's value
-    this.maxValue = value > 150 ? value : 150; // maximum value when dragging with the mouse and trying to change it's value
+    this.maxValue = value > 180 ? value : 180; // maximum value when dragging with the mouse and trying to change it's value
     this.fillColor = "#C00"; // default color (red)
     this.strokeColor = "#000";
-    this.width = 20; // width of the column
+    this.width = 24; // width of the column
     this.height = this.maxValue; // height of the column (gray)
     this.textRotation = 0;
     this.changable = changable; // can be changed by mouse dragging
