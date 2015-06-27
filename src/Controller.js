@@ -147,7 +147,13 @@ inalan.Controller.prototype.showAllButtons = function () {
 }
 
 // render the controller
-inalan.Controller.prototype.render = function () {    
+inalan.Controller.prototype.render = function () {
+    // draw a line above the buttons
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = "#000";
+    this.ctx.moveTo(0, this.y - 40 + 0.5);
+    this.ctx.lineTo(this.ctx.canvas.clientWidth, this.y - 40 + 0.5);
+    this.ctx.stroke();
     // draw the buttons
     if (this.reset.width > 0) {
         this.reset.ctx = this.ctx;
