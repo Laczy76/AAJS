@@ -8,9 +8,13 @@ id = $(shell date +%Y%m%d)
 
 # Create the list of modules
 modules = ${srcdir}Stage.js\
+		  ${srcdir}Controller.js\
 		  ${srcdir}VisuData.js\
 		  ${srcdir}VisuVariable.js\
-		  ${srcdir}VisuArray.js
+		  ${srcdir}VisuArray.js\
+		  ${srcdir}VisuButton.js\		  
+		  ${srcdir}VisuScrollbar.js\
+		  ${srcdir}VisuLabel.js		  
 
 # Combined file (temporary file)
 combined1 = ${builddir}_combined1.js

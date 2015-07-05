@@ -2,14 +2,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Test page</title>
-    
+        
     <script src="src/Stage.js"></script>
+    <script src="src/Controller.js"></script>
     <script src="src/VisuData.js"></script>        
     <script src="src/VisuVariable.js"></script>
     <script src="src/VisuArray.js"></script>
-    <script src="src/Button.js"></script>
-    <script src="src/Scrollbar.js"></script>
-    <script src="src/Controller.js"></script>
+    <script src="src/VisuButton.js"></script>    
+    <script src="src/VisuScrollbar.js"></script>    
+    <script src="src/VisuLabel.js"></script>
     
     <script>        
 
@@ -29,12 +30,19 @@
             a.y = 220;
             stage.add(a);
 
+            var i = new inalan.VisuLabel("info", "This animation shows how to find the maximum value in an array.");
+            i.x = 30;
+            i.y = 310;
+            stage.add(i)            
+
             // **********************************************
 
-            var index = 0;
+            // variables (for undo function need to be stored in stage.var object) ...
+            stage.var.index = 0;
 
+            // functions (steps of the animation) ...
             var findMaxReset = function () {
-                index = 0;
+                stage.var.index = 0;
                 stage.get("max").value = 0;
                 stage.get("max").setDefaultColor();
                 for (var i = 0; i < stage.get("a").items.length; i++) {
@@ -46,47 +54,44 @@
 
             var findMaxFirstStep = function () {
                 // copy first element to max
-                console.log("first step");
                 stage.get("a").items[0].changable = false;
                 stage.copy(stage.get("a").items[0], stage.get("max"));
             }
 
-            var findMaxCompare = function () {
+            var findMaxCompare = function () {                
                 // compare max with the next element
-                console.log("compare");
-                stage.compare(stage.get("max"), stage.get("a").items[index]);
-                stage.get("a").setIndex("i", index);
+                stage.compare(stage.get("max"), stage.get("a").items[stage.var.index]);
+                stage.get("a").setIndex("i", stage.var.index);
             }
 
             var findMaxCopy = function () {
                 // copy the element to max if it is bigger
-                console.log("copy");
-                stage.get("a").items[index].changable = false;
-                if (stage.get("max").value < stage.get("a").items[index].value) {                    
-                    stage.copy(stage.get("a").items[index], stage.get("max"));
+                stage.get("a").items[stage.var.index].changable = false;
+                if (stage.get("max").value < stage.get("a").items[stage.var.index].value) {
+                    stage.copy(stage.get("a").items[stage.var.index], stage.get("max"));
                 } else {
-                    return true;
+                    return true; // automatically run the next step
                 }
             }
 
             var findMaxIncrease = function () {
-                // increase the index (go to next element)
-                console.log("increase");
+                // increase the stage.var.index (go to next element)
                 stage.get("max").setDefaultColor();
-                stage.get("a").items[index].setDefaultColor();
-                index++;
+                stage.get("a").items[stage.var.index].setDefaultColor();
+                stage.var.index++;
                 return true;
             }
 
             var findMaxCheck = function () {
                 // check if there are more elements in array
-                return index < stage.get("a").items.length;
+                return stage.var.index < stage.get("a").items.length;
             }
 
             var findMaxFinalStep = function () {
                 stage.get("a").deleteIndex("i");
             }
-                        
+                   
+            // defining reset function and steps in animation...
             stage.controller.setReset(findMaxReset);
             stage.controller.setSteps([
                 findMaxFirstStep,
@@ -96,7 +101,7 @@
             ]);
 
             // stage.get("max").setDefaultColor();
-            // stage.get("a").setLabel("i", 1);
+            // stage.get("a").setIndex("i", 1);
             // stage.compare(stage.get("a").items[0], stage.get("a").items[3]);
             // stage.copy(stage.get("a").items[2], stage.get("max"));
             // stage.move(stage.get("a").items[2], stage.get("max"));
@@ -109,7 +114,7 @@
 </head>
 <body onload="init();">
 
-    <canvas id="myCanvas" width="750" height="430" style="border:1px solid black"></canvas>
+    <canvas id="myCanvas" width="800" height="420" style="border:1px solid black"></canvas>
     
 </body>
 </html>

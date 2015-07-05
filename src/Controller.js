@@ -11,16 +11,16 @@
 
 var inalan = inalan || {};
 
-inalan.Controller = function () {
-    // create subclass Controller from VisuData - set properties
-    inalan.VisuData.call(this, name);
-    // set new properties        
+inalan.Controller = function () {    
+    // set properties        
+    this.x = 0;
+    this.y = 0;
     this.fncIndex = 0; // index in stepFncsArray
     this.fncRepeatIndex = 0; // index in array inside stepFncsArray (for repeating some steps)
     this.resetFnc = null; // function for reseting variables (reset button)   
     this.stepFncsArray = null; // array of functions for every step
     this.playingAnimation = false; // playing animation (Start/Stop button)
-    this.waitingAnimation = false; // animation is waiting (delay between steps when automatically playing)
+    this.waitingAnimation = false; // animation is waiting (animation is waiting im delay between steps when automatically playing)
     this.nextStepAuto = false; // automatically play the next step
     var self = this;
     // variables for button labels
@@ -90,11 +90,27 @@ inalan.Controller = function () {
             }
         }
     }
-    var stepAnimation = function () { // steps animation        
-        var stage = self.ctx.canvas.parent;
+    var stepAnimation = function () { // steps animation               
+        var stage = self.ctx.canvas.parent;        
         if (!stage.animating && !self.waitingAnimation && self.stepFncsArray != null) {
+            // saving objects on stage to undo array (stage.visuItems, stage.var)
+            if (!self.nextStepAuto) {
+
+                // TODO !!!!!!!!!!!!!!!!!!
+
+                console.log(JSON.stringify(stage.var));
+                console.log(JSON.stringify(stage.visuItems));
+                console.log(self.fncIndex);
+                console.log(self.fncRepeatIndex);
+
+                
+            }
+            // step animation...
             if (self.stepFncsArray[self.fncIndex] instanceof Array) { // repeating some steps
                 self.nextStepAuto = self.stepFncsArray[self.fncIndex][self.fncRepeatIndex]();
+                if (typeof(self.nextStepAuto) == 'undefined') {
+                    self.nextStepAuto = false;
+                }
                 self.fncRepeatIndex++;
                 if (self.fncRepeatIndex >= self.stepFncsArray[self.fncIndex].length) {
                     self.fncRepeatIndex = 0;
@@ -110,6 +126,9 @@ inalan.Controller = function () {
                 }
             } else { // steps without repetations
                 self.nextStepAuto = self.stepFncsArray[self.fncIndex]();
+                if (typeof(self.nextStepAuto) == 'undefined') {
+                    self.nextStepAuto = false;
+                }
                 self.fncIndex++;
                 if (self.fncIndex >= self.stepFncsArray.length) {
                     self.nextStepAuto = false;
@@ -126,16 +145,12 @@ inalan.Controller = function () {
         stage.time = 2000 - position;
     }
     // buttons...
-    this.reset = new inalan.Button("reset", this.resetLabel, 70, resetAnimation);
-    this.startStop = new inalan.Button("startStop", this.startLabel, 0, startStopAnimation);
-    this.step = new inalan.Button("step", this.stepLabel, 100, stepAnimation);
+    this.reset = new inalan.VisuButton("reset", this.resetLabel, 70, resetAnimation);
+    this.startStop = new inalan.VisuButton("startStop", this.startLabel, 0, startStopAnimation);
+    this.step = new inalan.VisuButton("step", this.stepLabel, 100, stepAnimation);
     // scrollbar...
-    this.speed = new inalan.Scrollbar("speed", this.speedLabel, 150, 200, 1800, 1000, changeSpeedOfAnimation);
+    this.speed = new inalan.VisuScrollbar("speed", this.speedLabel, 150, 200, 1800, 1000, changeSpeedOfAnimation);
 }
-
-// create subclass VisuButton from VisuData - set methods
-inalan.Controller.prototype = Object.create(inalan.VisuData.prototype);
-inalan.Controller.prototype.constructor = inalan.Controller;
 
 // show all buttons (reset, startStop, step, speed),
 // in default mode the startStop button is hidden

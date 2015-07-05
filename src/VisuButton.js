@@ -11,29 +11,30 @@
 
 var inalan = inalan || {};
 
-inalan.Button = function (name, label, width, onClickFnc) {
-    // create subclass Button from VisuData - set properties
+inalan.VisuButton = function (name, text, width, onClickFnc) {
+    // create subclass VisuButton from VisuData - set properties
     inalan.VisuData.call(this, name);
     // set new properties
-    this.label = label;
+    this.text = text;
     this.width = width;
     this.height = 26;
     this.enabled = true;
     this.pressed = false;
     this.onClickFnc = onClickFnc;
     this.color = "#FE6";
+    this.font = "bold 14px Arial"
     // color constants
     this.defaultColor = "#FE6";
     this.overColor = "#FB3";
     this.disabledColor = "#EEE";
 }
 
-// create subclass Button from VisuData - set methods
-inalan.Button.prototype = Object.create(inalan.VisuData.prototype);
-inalan.Button.prototype.constructor = inalan.Button;
+// create subclass VisuButton from VisuData - set methods
+inalan.VisuButton.prototype = Object.create(inalan.VisuData.prototype);
+inalan.VisuButton.prototype.constructor = inalan.VisuButton;
 
-inalan.Button.prototype.render = function () {
-    // draw the button
+inalan.VisuButton.prototype.render = function () {
+    // draw the VisuButton
     if (this.enabled) {
         this.ctx.fillStyle = this.color;
     } else {
@@ -47,12 +48,12 @@ inalan.Button.prototype.render = function () {
     } else {
         this.ctx.fillStyle = "#666";
     }    
-    this.ctx.font = "bold 14px Arial";
+    this.ctx.font = this.font;
     this.ctx.textAlign = "center";
-    this.ctx.fillText(this.label, this.x, this.y + 4.5);
+    this.ctx.fillText(this.text, this.x, this.y + 4.5);
 }
 
-inalan.Button.prototype.isOver = function (x,y) {
+inalan.VisuButton.prototype.isOver = function (x, y) {
     if (Math.abs(x - this.x) <= this.width / 2 && Math.abs(y - this.y) <= this.height / 2) {
         return true;
     }

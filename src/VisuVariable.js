@@ -29,8 +29,7 @@ inalan.VisuVariable = function (name, value, changable) {
     this.maxValue = value > 180 ? value : 180; // maximum value when dragging with the mouse and trying to change it's value
     this.fillColor = "#C00"; // default color (red)
     this.strokeColor = "#000";
-    this.width = 24; // width of the column
-    this.height = this.maxValue; // height of the column (gray)
+    this.width = 24; // width of the column    
     this.textRotation = 0;
     this.changable = changable; // can be changed by mouse dragging
     this.dragging = false; // dragging (changing the value) with mouse
@@ -70,7 +69,7 @@ inalan.VisuVariable.prototype.render = function () {
     }
     // draw VisuVariable
     this.ctx.fillStyle = this.hiddenColor; // backround
-    this.ctx.fillRect(this.x - this.width / 2 - 1, this.y - this.height - 1, this.width + 1, this.height);
+    this.ctx.fillRect(this.x - this.width / 2 - 1, this.y - this.maxValue - 1, this.width + 1, this.maxValue);
     this.ctx.fillStyle = this.fillColor; // column
     this.ctx.fillRect(this.x - this.width / 2 - 0.5, this.y - this.value - 0.5, this.width, this.value);
     this.ctx.strokeStyle = this.strokeColor;
@@ -138,21 +137,6 @@ inalan.VisuVariable.prototype.isOver = function (x, y) {
         return true;
     }
     return false;
-}
-
-// set minimum value when dragging
-inalan.VisuVariable.prototype.setMinValue = function (minValue) {
-    this.minValue = minValue;
-    if (this.value < this.minValue) {
-        this.value = this.minValue;
-    }
-}
-// set maximum value when dragging
-inalan.VisuVariable.prototype.setMaxValue = function (maxValue) {
-    this.maxValue = maxValue;
-    if (this.value > this.maxValue) {
-        this.value = this.maxValue;
-    }
 }
 
 // set up copyx, copyy when starts copying the variable

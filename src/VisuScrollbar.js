@@ -11,8 +11,8 @@
 
 var inalan = inalan || {};
 
-inalan.Scrollbar = function (name, label, width, min, max, position, onChange) {
-    // create subclass Scrollbar from VisuData - set properties
+inalan.VisuScrollbar = function (name, label, width, min, max, position, onChange) {
+    // create subclass VisuScrollbar from VisuData - set properties
     inalan.VisuData.call(this, name);
     // set new properties
     this.label = label;
@@ -36,12 +36,12 @@ inalan.Scrollbar = function (name, label, width, min, max, position, onChange) {
     this.onChange = onChange;
 }
 
-// create subclass Scrollbar from VisuData - set methods
-inalan.Scrollbar.prototype = Object.create(inalan.VisuData.prototype);
-inalan.Scrollbar.prototype.constructor = inalan.Scrollbar;
+// create subclass VisuScrollbar from VisuData - set methods
+inalan.VisuScrollbar.prototype = Object.create(inalan.VisuData.prototype);
+inalan.VisuScrollbar.prototype.constructor = inalan.VisuScrollbar;
 
-inalan.Scrollbar.prototype.render = function () {
-    // draw the Scrollbar
+inalan.VisuScrollbar.prototype.render = function () {
+    // draw the VisuScrollbar
     this.ctx.strokeStyle = "#000";
     this.ctx.beginPath();
     this.ctx.moveTo(this.x - this.width / 2 - 0.5, this.y + 0.5);
@@ -66,7 +66,7 @@ inalan.Scrollbar.prototype.render = function () {
     this.ctx.fillText(this.label, this.x, this.y - 17);
 }
 
-inalan.Scrollbar.prototype.isOver = function (x, y) {
+inalan.VisuScrollbar.prototype.isOver = function (x, y) {
     var circleX = (this.x-this.width/2+10) + (this.position-this.min)*(this.width-20)/(this.max-this.min+1);
     var circleY = this.y;
     if (Math.sqrt(Math.pow(circleX-x,2)+Math.pow(circleY-y,2))<=10) {
