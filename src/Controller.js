@@ -101,9 +101,7 @@ inalan.Controller = function () {
         var stage = self.ctx.canvas.parent;
         if (!stage.animating && !self.waitingAnimation) {
             var i = self.undo.length - 1;
-            stage.var = JSON.parse(self.undo[i][1]);
-            var visuItems = JSON.parse(self.undo[i][2]);
-            // copy attributes from visuItems to stage.visuItems
+            // copy attributes from var/visuItems to stage.var/stage.visuItems
             var copyAttributes = function (obj1, obj2) {
                 for (var i in obj1) {
                     if (typeof (obj1[i]) === 'object') {
@@ -116,7 +114,7 @@ inalan.Controller = function () {
                     }
                 }
             }
-            // delete unnecessary atributes (added in next step)
+            // delete unnecessary atributes (added in next step) from stage.var/stage.visuItems
             var deleteAttributes = function (obj1, obj2) {
                 for (var i in obj2) {
                     if (typeof (obj2[i]) === 'object' && obj1.hasOwnProperty(i)) {
@@ -128,10 +126,16 @@ inalan.Controller = function () {
                     }
                 }
             }
+            var variables = JSON.parse(self.undo[i][1]);
+            copyAttributes(variables, stage.var);
+            deleteAttributes(variables, stage.var);
+            var visuItems = JSON.parse(self.undo[i][2]);
             copyAttributes(visuItems, stage.visuItems);
             deleteAttributes(visuItems, stage.visuItems);
+            // restore fncIndex and fncRepeatIndex
             self.fncIndex = self.undo[i][3];
             self.fncRepeatIndex = self.undo[i][4];
+            // remove the last element from undo array
             self.undo = self.undo.slice(0,i);
             if (self.undo.length == 0) {
                 self.prevStep.enabled = false;

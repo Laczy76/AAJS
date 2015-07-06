@@ -37,7 +37,7 @@
 
             // **********************************************
 
-            // variables (for undo function need to be stored in stage.var object) ...
+            // global variables used in functions (for undo function need to be stored in stage.var object) ...
             stage.var.index = 0;
 
             // functions (steps of the animation) ...
@@ -70,7 +70,8 @@
                 if (stage.get("max").value < stage.get("a").items[stage.var.index].value) {
                     stage.copy(stage.get("a").items[stage.var.index], stage.get("max"));
                 } else {
-                    return true; // automatically run the next step
+                    // automatically jump to the next step after this step...
+                    return true; 
                 }
             }
 
@@ -79,15 +80,17 @@
                 stage.get("max").setDefaultColor();
                 stage.get("a").items[stage.var.index].setDefaultColor();
                 stage.var.index++;
+                // automatically jump to the next step after this step...
                 return true;
             }
 
             var findMaxCheck = function () {
-                // check if there are more elements in array
+                // check if there are more elements in array (array is indexed from 0)
                 return stage.var.index < stage.get("a").items.length;
             }
 
             var findMaxFinalStep = function () {
+                // remove index "i" from stage
                 stage.get("a").deleteIndex("i");
             }
                    
