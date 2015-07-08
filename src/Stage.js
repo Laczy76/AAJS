@@ -53,7 +53,7 @@ inalan.Stage = function (canvasId) {
                 }                
             }
         }
-        // show arrow after copying 
+        // show arrow(s) after copying 
         if (self.showArrow.length > 0) {
             self.ctx.fillStyle = "#055";
             self.ctx.globalAlpha = 0.1;
