@@ -50,6 +50,7 @@ inalan.VisuButton.prototype.render = function () {
     }    
     this.ctx.font = this.font;
     this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "alphabetic";
     this.ctx.fillText(this.text, this.x, this.y + 4.5);
 }
 

@@ -11,11 +11,11 @@
 
 var inalan = inalan || {};
 
-inalan.VisuLabel = function (name, text) {
+inalan.VisuLabel = function (name, lines) {
     // create subclass VisuLabel from VisuData - set properties
     inalan.VisuData.call(this, name);
     // set new properties
-    this.text = text;    
+    this.lines = lines;    
 }
 
 // create subclass VisuLabel from VisuData - set methods
@@ -24,7 +24,11 @@ inalan.VisuLabel.prototype.constructor = inalan.VisuLabel;
 
 inalan.VisuLabel.prototype.render = function () {
     // draw the Visulabel    
-    this.ctx.font = "bold 14px Arial"
+    this.ctx.fillStyle = "#000";
+    this.ctx.font = "14px Arial"
     this.ctx.textAlign = "left";
-    this.ctx.fillText(this.text, this.x, this.y + 7);
+    this.ctx.textBaseline = "top";
+    for (var i = 0; i < this.lines.length; i++) {
+        this.ctx.fillText(this.lines[i], this.x, this.y + i * 18);
+    }
 }

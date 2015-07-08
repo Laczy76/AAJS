@@ -11,13 +11,14 @@
     <script src="src/VisuButton.js"></script>    
     <script src="src/VisuScrollbar.js"></script>    
     <script src="src/VisuLabel.js"></script>
+    <script src="src/VisuCode.js"></script>
     
     <script>        
 
         var init = function () {
 
             var stage = new inalan.Stage("myCanvas");
-            stage.controller.showAllButtons();
+            stage.showAllButtons();
 
             var m = new inalan.VisuVariable("max", 0, false);
             m.x = 45;
@@ -30,10 +31,22 @@
             a.y = 220;
             stage.add(a);
 
-            var i = new inalan.VisuLabel("info", "This animation shows how to find the maximum value in an array.");
+            var i = new inalan.VisuLabel("info", ["This animation shows how to find the maximum in an array. In the beginning, we copy the first element",
+                                                  "of the array to the maximum. Next, we compare the maximum with every other element in the array.",
+                                                  "If any of the compared element in the array is bigger than the maximum, we copy it to the maximum."]);
             i.x = 30;
-            i.y = 310;
-            stage.add(i)            
+            i.y = 330;
+            stage.add(i)
+
+            var c = new inalan.VisuCode("code", ["max = a[0]",
+                                                 "FOR i = 1 to 6",
+                                                 "   IF a[i] > max THEN",
+                                                 "      max = a[i]",
+                                                 "   END IF",
+                                                 "END FOR"]);
+            c.x = 360;
+            c.y = 70;
+            stage.add(c);
 
             // **********************************************
 
@@ -41,47 +54,49 @@
             stage.var.index = 0;
 
             // functions (steps of the animation) ...
-            var findMaxReset = function () {
-                stage.var.index = 0;
-                stage.get("max").value = 0;
-                stage.get("max").setDefaultColor();
-                for (var i = 0; i < stage.get("a").items.length; i++) {
-                    stage.get("a").items[i].setDefaultColor();
-                    stage.get("a").items[i].changable = true;
-                }
-                stage.get("a").deleteIndex("i");
-            }
-
             var findMaxFirstStep = function () {
+                // select the first line in the code
+                stage.get("code").selected = [0];
                 // copy first element to max
-                stage.get("a").items[0].changable = false;
                 stage.copy(stage.get("a").items[0], stage.get("max"));
             }
 
-            var findMaxCompare = function () {                
+            var findMaxCompare = function () {
+                // select a line in the code
+                stage.get("code").selected = [2];
                 // compare max with the next element
-                stage.compare(stage.get("max"), stage.get("a").items[stage.var.index]);
-                stage.get("a").setIndex("i", stage.var.index);
+                stage.compare(stage.get("max"), stage.get("a").items[stage.var.index]);                
             }
 
             var findMaxCopy = function () {
-                // copy the element to max if it is bigger
-                stage.get("a").items[stage.var.index].changable = false;
+                // set default colours (after comparing)
+                stage.get("max").setDefaultColor();
+                stage.get("a").items[stage.var.index].setDefaultColor();
+                // copy the element to max if it is bigger     
                 if (stage.get("max").value < stage.get("a").items[stage.var.index].value) {
+                    stage.get("code").selected = [3];
                     stage.copy(stage.get("a").items[stage.var.index], stage.get("max"));
                 } else {
-                    // automatically jump to the next step after this step...
-                    return true; 
+                    stage.get("a").items[stage.var.index].changable = false;                    
+                    return 0; // automatically jump to the next step after 0ms...
                 }
             }
 
             var findMaxIncrease = function () {
-                // increase the stage.var.index (go to next element)
+                // set default colours (after copying)
                 stage.get("max").setDefaultColor();
                 stage.get("a").items[stage.var.index].setDefaultColor();
+                // increase the stage.var.index (go to next element)
                 stage.var.index++;
-                // automatically jump to the next step after this step...
-                return true;
+                // set index "i" in array
+                stage.get("a").setIndex("i", stage.var.index);
+                // select a line in the code
+                if (findMaxCheck()) {
+                    stage.get("code").selected = [1];                    
+                    return 200; // automatically jump to the next step after 200ms (if normal speed is selected)...
+                } else {                    
+                    return 0; // automatically jump to the next step after 0ms...
+                }                                               
             }
 
             var findMaxCheck = function () {
@@ -90,13 +105,14 @@
             }
 
             var findMaxFinalStep = function () {
+                // deselect all lines in the code
+                stage.get("code").selected = [];
                 // remove index "i" from stage
                 stage.get("a").deleteIndex("i");
             }
-                   
-            // defining reset function and steps in animation...
-            stage.controller.setReset(findMaxReset);
-            stage.controller.setSteps([
+             
+            // defining steps in animation...
+            stage.setSteps([
                 findMaxFirstStep,
                 findMaxIncrease,
                 [findMaxCompare, findMaxCopy, findMaxIncrease], findMaxCheck,
@@ -117,7 +133,7 @@
 </head>
 <body onload="init();">
 
-    <canvas id="myCanvas" width="800" height="420" style="border:1px solid black"></canvas>
+    <canvas id="myCanvas" width="700" height="480" style="border:1px solid black"></canvas>
     
 </body>
 </html>

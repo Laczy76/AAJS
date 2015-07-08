@@ -25,9 +25,11 @@ inalan.VisuArray = function (name, values, changable) {
         length: values.length
     };
     // set indexes
+    this.showIndexes = true; // show index numbers under the array
     this.indexes = {};
     this.indexesPos = 0;
-    this.indexesColor = "#AFA";
+    this.indexStrokeColor = "#BCC";
+    this.indexFillColor = "#DEE";
     // create VisuVariables
     for (var i=0; i<values.length; i++) {
         this.items[i] = new inalan.VisuVariable(name + "[" + i + "]", values[i], changable);
@@ -65,7 +67,19 @@ inalan.VisuArray.prototype.render = function () {
         }
     }
     var xpos = this.x;
+    // write the numbers under indexes
+    if (this.showIndexes || Object.keys(this.indexes).length>0) {
+        this.ctx.fillStyle = "#BBB";
+        this.ctx.font = "bold 12px Courier New";
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "alphabetic";
+        for (var k = 0; k < this.items.length; k++) {
+            this.ctx.fillText(k, this.items[k].x - 0.5, this.items[k].y + 50 + this.indexesPos);
+        }
+    }
+    // go through all items in array
     for (var i = 0; i < this.items.length; i++) {
+        // draw the item
         this.items[i].ctx = this.ctx;
         this.items[i].x = xpos;
         if (i<this.items.length-1) {
@@ -73,20 +87,25 @@ inalan.VisuArray.prototype.render = function () {
         }
         this.items[i].y = this.y;
         this.items[i].height = maxHeight;
-        this.items[i].render();
+        this.items[i].render();        
         // render indexes
         var indexesPos = this.indexesPos;
         for (var name in this.indexes) {
-            if (this.indexes[name] == i) {
-                this.ctx.fillStyle = this.indexesColor;
+            if (this.indexes[name] == i) {                
+                // draw the index circle
+                this.ctx.strokeStyle = this.indexStrokeColor;
+                this.ctx.fillStyle = this.indexFillColor;
                 this.ctx.beginPath();
-                this.ctx.arc(this.items[i].x, this.items[i].y + 45 + indexesPos - 4, 10, 0, 2 * Math.PI);
+                this.ctx.arc(this.items[i].x, this.items[i].y + 71 + indexesPos - 4, 10, 0, 2 * Math.PI);
                 this.ctx.fill();
+                this.ctx.stroke();
+                // write index name into circle
                 this.ctx.fillStyle = "#000";
-                this.ctx.font = "bold 12px Arial";
+                this.ctx.font = "bold 14px Courier New";
                 this.ctx.textAlign = "center";
-                this.ctx.fillText(name, this.items[i].x - 0.5, this.items[i].y + 45 + indexesPos);
-                indexesPos = indexesPos + 23;
+                this.ctx.textBaseline = "alphabetic";
+                this.ctx.fillText(name, this.items[i].x - 0.5, this.items[i].y + 71 + indexesPos);
+                indexesPos = indexesPos + 25;
             }
         }
     }

@@ -40,6 +40,7 @@ inalan.VisuVariable = function (name, value, changable) {
     this.defaultColor = "#C00";
     this.compareColor = "#FFD";
     this.copyColor = "#FF0";
+    this.greenColor = "#090";
     this.grayColor = "#CCC";
     this.hiddenColor = "#EEE";
 }
@@ -107,6 +108,7 @@ inalan.VisuVariable.prototype.render = function () {
     }
     this.ctx.fillStyle = "#000"; // text under the column
     this.ctx.font = "12px Arial";
+    this.ctx.textBaseline = "alphabetic";
     if (this.textRotation == 0) {
         this.ctx.textAlign = "center";
         this.ctx.fillText(this.name, this.x - 0.5, this.y + 13.5);
@@ -163,6 +165,11 @@ inalan.VisuVariable.prototype.setLightYellowColor = function () {
 // set color when copying
 inalan.VisuVariable.prototype.setYellowColor = function () {
     this.fillColor = this.copyColor;
+    this.strokeColor = '#000';
+}
+// set color to green, when the item is sorted
+inalan.VisuVariable.prototype.setGreenColor = function () {
+    this.fillColor = this.greenColor;
     this.strokeColor = '#000';
 }
 // set gray color

@@ -14,7 +14,8 @@ modules = ${srcdir}Stage.js\
 		  ${srcdir}VisuArray.js\
 		  ${srcdir}VisuButton.js\		  
 		  ${srcdir}VisuScrollbar.js\
-		  ${srcdir}VisuLabel.js		  
+		  ${srcdir}VisuLabel.js\	  
+		  ${srcdir}VisuCode.js
 
 # Combined file (temporary file)
 combined1 = ${builddir}_combined1.js

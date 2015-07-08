@@ -343,6 +343,14 @@ inalan.Stage.prototype.add = function (visuData) {
     this.visuItems[visuData.name] = visuData;    
 }
 
+inalan.Stage.prototype.setSteps = function (stepFunctions) {
+    this.controller.setSteps(stepFunctions);
+}
+
+inalan.Stage.prototype.showAllButtons = function () {
+    this.controller.showAllButtons();
+}
+
 // get VisuVariable or VisuArray by name
 inalan.Stage.prototype.get = function (name) {
     return this.visuItems[name];
@@ -359,8 +367,6 @@ inalan.Stage.prototype.compare = function (firstObject, secondObject) {
 // animation of copying a visuVariable (firstObject to secondObject)
 inalan.Stage.prototype.copy = function (firstObject, secondObject) {
     this.animating = true;
-    var ch1 = firstObject.changable;
-    var ch2 = secondObject.changable;
     firstObject.changable = false;
     secondObject.changable = false;
     var stage = this;
@@ -385,8 +391,6 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject) {
             secondObject.value = firstObject.value;
             secondObject.setYellowColor();     
             clearInterval(intervalId);
-            firstObject.changable = ch1;
-            secondObject.changable = ch2;
             stage.animating = false;
         }
     }
@@ -395,8 +399,6 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject) {
 // animation of moving a visuVariable (firstObject to secondObject)
 inalan.Stage.prototype.move = function (firstObject, secondObject) {
     this.animating = true;
-    var ch1 = firstObject.changable;
-    var ch2 = secondObject.changable;
     firstObject.changable = false;
     secondObject.changable = false;
     var stage = this;
@@ -421,8 +423,6 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
             secondObject.value = firstObject.value;
             secondObject.setYellowColor();
             clearInterval(intervalId);
-            firstObject.changable = ch1;
-            secondObject.changable = ch2;
             stage.animating = false;         
         }
     }
@@ -431,8 +431,6 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
 // animation of exchanging two visuVariables (firstObject and secondObject)
 inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
     this.animating = true;
-    var ch1 = firstObject.changable;
-    var ch2 = secondObject.changable;
     firstObject.changable = false;
     secondObject.changable = false;
     var stage = this;
@@ -467,8 +465,6 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
             firstObject.setYellowColor();
             secondObject.setYellowColor();
             clearInterval(intervalId);
-            firstObject.changable = ch1;
-            secondObject.changable = ch2;
             stage.animating = false;
         }
     }

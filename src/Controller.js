@@ -16,12 +16,11 @@ inalan.Controller = function () {
     this.x = 0;
     this.y = 0;
     this.fncIndex = 0; // index in stepFncsArray
-    this.fncRepeatIndex = 0; // index in array inside stepFncsArray (for repeating some steps)
-    this.resetFnc = null; // function for reseting variables (reset button)   
+    this.fncRepeatIndex = 0; // index in array inside stepFncsArray (for repeating some steps)   
     this.stepFncsArray = null; // array of functions for every step
     this.playingAnimation = false; // playing animation (Start/Stop button)
     this.waitingAnimation = false; // animation is waiting (animation is waiting im delay between steps when automatically playing)
-    this.nextStepAuto = false; // automatically play the next step
+    this.nextStepAuto = -1; // automatically play the next step
     this.undo = []; // undo array to save steps (object properties and variables)
     var self = this;
     // variables for button labels
@@ -31,26 +30,81 @@ inalan.Controller = function () {
     this.prevLabel = "Previous step";
     this.nextLabel = "Next step";
     this.speedLabel = "Speed of animation:";    
-    // functions to control the animation... 
+    // restore a step from undo array
+    var restoreStepFromUndo = function (stepNumber) {
+        var stage = self.ctx.canvas.parent;
+        // copy attributes from var/visuItems to stage.var/stage.visuItems
+        var copyAttributes = function (obj1, obj2) {
+            for (var i in obj1) {
+                if (typeof (obj1[i]) === 'object') {
+                    if (!obj2.hasOwnProperty(i)) {
+                        obj2[i] = {};
+                    }
+                    copyAttributes(obj1[i], obj2[i]);
+                } else {
+                    obj2[i] = obj1[i];
+                }
+            }
+        }
+        // delete unnecessary atributes (added in next step) from stage.var/stage.visuItems
+        var deleteAttributes = function (obj1, obj2) {
+            for (var i in obj2) {
+                if (typeof (obj2[i]) === 'object' && obj1.hasOwnProperty(i)) {
+                    deleteAttributes(obj1[i], obj2[i]);
+                } else {
+                    if (!obj1.hasOwnProperty(i)) {
+                        delete obj2[i];
+                    }
+                }
+            }
+        }
+        var variables = JSON.parse(self.undo[stepNumber][1]);
+        copyAttributes(variables, stage.var);
+        deleteAttributes(variables, stage.var);
+        var visuItems = JSON.parse(self.undo[stepNumber][2]);
+        copyAttributes(visuItems, stage.visuItems);
+        deleteAttributes(visuItems, stage.visuItems);
+        // restore fncIndex and fncRepeatIndex
+        self.fncIndex = self.undo[stepNumber][3];
+        self.fncRepeatIndex = self.undo[stepNumber][4];
+    }
+    // reset animation (restore the first step from undo array)
     var resetAnimationWhenPossible = false;
     var resetAnimation = function () { // reset animation
         var stage = self.ctx.canvas.parent;
-        if (!stage.animating && !self.waitingAnimation && self.resetFnc != null) {
+        if (!stage.animating && !self.waitingAnimation) {
             resetAnimationWhenPossible = false;
             self.playingAnimation = false;
-            self.nextStepAuto = false;
+            self.nextStepAuto = -1;
             self.startStop.text = self.startLabel;
-            self.fncIndex = 0;
-            self.fncRepeatIndex = 0;
+            restoreStepFromUndo(0);
             self.undo = [];
-            self.resetFnc();
+            self.reset.enabled = false;
             self.startStop.enabled = true;
-            self.prevStep.enabled = false;
+            self.prevStep.enabled = false;            
             self.nextStep.enabled = true;            
         } else if (stage.animating || self.waitingAnimation) {
             resetAnimationWhenPossible = true;
         }
     }
+    // step the animation backward one step
+    var prevStepAnimation = function () { 
+        var stage = self.ctx.canvas.parent;
+        if (!stage.animating && !self.waitingAnimation) {
+            var i = self.undo.length - 1;
+            // restore step from undo array
+            restoreStepFromUndo(i);
+            // remove the last element from undo array
+            self.undo = self.undo.slice(0,i);
+            if (self.undo.length == 0) {
+                self.reset.enabled = false;
+                self.prevStep.enabled = false;
+            }
+            self.startStop.enabled = true;
+            self.nextStep.enabled = true;
+        }
+    }
+    // functions to control the animation...     
     var startStopAnimation = function () { // starts/stops animation
         var stage = self.ctx.canvas.parent;
         if (!self.playingAnimation) {
@@ -69,19 +123,17 @@ inalan.Controller = function () {
             if (self.undo.length > 0) {
                 self.prevStep.enabled = true;
             }
-            self.nextStep.enabled = true;            
+            self.nextStep.enabled = true;
         }
     }
-    // variables for waiting between steps
     var waitAnimationDone = function () { // this function runs when the waiting is done
         self.waitingAnimation = false;
         if (resetAnimationWhenPossible) {
             resetAnimation();
-        } else if (self.playingAnimation) {
+        } else if (self.playingAnimation || self.nextStepAuto>=0) {
             nextStepAnimation();
         }
     }
-    // variables for animation steps
     var nextStepAnimationDoneID; // the ID from setInterval for nextStepAnimationDone fuction
     var nextStepAnimationDone = function () { // this function checks every 0.1 sec if the animation is done
         var stage = self.ctx.canvas.parent;
@@ -89,67 +141,22 @@ inalan.Controller = function () {
             clearInterval(nextStepAnimationDoneID);
             if (resetAnimationWhenPossible) {
                 resetAnimation();
-            } else if (self.nextStepAuto) {
-                nextStepAnimation();
+            } else if (self.nextStepAuto>=0) {
+                self.waitingAnimation = true;
+                setTimeout(waitAnimationDone, stage.time/1000*self.nextStepAuto);
             } else if (self.playingAnimation) {
                 self.waitingAnimation = true;
-                setTimeout(waitAnimationDone,stage.time);
+                setTimeout(waitAnimationDone, stage.time);
             }
-        }
-    }
-    var prevStepAnimation = function () { // step the animation backward
-        var stage = self.ctx.canvas.parent;
-        if (!stage.animating && !self.waitingAnimation) {
-            var i = self.undo.length - 1;
-            // copy attributes from var/visuItems to stage.var/stage.visuItems
-            var copyAttributes = function (obj1, obj2) {
-                for (var i in obj1) {
-                    if (typeof (obj1[i]) === 'object') {
-                        if (!obj2.hasOwnProperty(i)) {
-                            obj2[i] = {};
-                        }
-                        copyAttributes(obj1[i], obj2[i]);
-                    } else {
-                        obj2[i] = obj1[i];
-                    }
-                }
-            }
-            // delete unnecessary atributes (added in next step) from stage.var/stage.visuItems
-            var deleteAttributes = function (obj1, obj2) {
-                for (var i in obj2) {
-                    if (typeof (obj2[i]) === 'object' && obj1.hasOwnProperty(i)) {
-                        deleteAttributes(obj1[i], obj2[i]);
-                    } else {
-                        if (!obj1.hasOwnProperty(i)) {
-                            delete obj2[i];
-                        }
-                    }
-                }
-            }
-            var variables = JSON.parse(self.undo[i][1]);
-            copyAttributes(variables, stage.var);
-            deleteAttributes(variables, stage.var);
-            var visuItems = JSON.parse(self.undo[i][2]);
-            copyAttributes(visuItems, stage.visuItems);
-            deleteAttributes(visuItems, stage.visuItems);
-            // restore fncIndex and fncRepeatIndex
-            self.fncIndex = self.undo[i][3];
-            self.fncRepeatIndex = self.undo[i][4];
-            // remove the last element from undo array
-            self.undo = self.undo.slice(0,i);
-            if (self.undo.length == 0) {
-                self.prevStep.enabled = false;
-            }
-            self.startStop.enabled = true;
-            self.nextStep.enabled = true;
         }
     }
     var nextStepAnimation = function () { // step the animation forward
         var stage = self.ctx.canvas.parent;        
         if (!stage.animating && !self.waitingAnimation && self.stepFncsArray != null) {
             // saving objects on stage to undo array (stage.visuItems, stage.var, self.fncIndex, self.fncRepeatIndex)
-            if (!self.nextStepAuto) {
-                // enable prevStep button if not autoplaying the animation
+            if (self.nextStepAuto<0) {
+                // enable reset, and enable prevStep button if not autoplaying the animation
+                self.reset.enabled = true;
                 if (!self.playingAnimation) {
                     self.prevStep.enabled = true;
                 }
@@ -165,7 +172,7 @@ inalan.Controller = function () {
             if (self.stepFncsArray[self.fncIndex] instanceof Array) { // repeating some steps
                 self.nextStepAuto = self.stepFncsArray[self.fncIndex][self.fncRepeatIndex]();
                 if (typeof(self.nextStepAuto) == 'undefined') {
-                    self.nextStepAuto = false;
+                    self.nextStepAuto = -1;
                 }
                 self.fncRepeatIndex++;
                 if (self.fncRepeatIndex >= self.stepFncsArray[self.fncIndex].length) {
@@ -173,7 +180,7 @@ inalan.Controller = function () {
                     if (!self.stepFncsArray[self.fncIndex + 1]()) {
                         self.fncIndex = self.fncIndex + 2;
                         if (self.fncIndex >= self.stepFncsArray.length) {
-                            self.nextStepAuto = false;
+                            self.nextStepAuto = -1;
                             self.playingAnimation = false;
                             self.nextStep.enabled = false;
                             self.startStop.enabled = false;
@@ -183,11 +190,11 @@ inalan.Controller = function () {
             } else { // steps without repetations
                 self.nextStepAuto = self.stepFncsArray[self.fncIndex]();
                 if (typeof(self.nextStepAuto) == 'undefined') {
-                    self.nextStepAuto = false;
+                    self.nextStepAuto = -1;
                 }
                 self.fncIndex++;
                 if (self.fncIndex >= self.stepFncsArray.length) {
-                    self.nextStepAuto = false;
+                    self.nextStepAuto = -1;
                     self.playingAnimation = false;
                     if (self.undo.length > 0) {
                         self.prevStep.enabled = true;
@@ -209,6 +216,7 @@ inalan.Controller = function () {
     this.prevStep = new inalan.VisuButton("prevStep", this.prevLabel, 120, prevStepAnimation);
     this.startStop = new inalan.VisuButton("startStop", this.startLabel, 0, startStopAnimation);
     this.nextStep = new inalan.VisuButton("nextStep", this.nextLabel, 100, nextStepAnimation);
+    this.reset.enabled = false;
     this.prevStep.enabled = false;
     // scrollbar...
     this.speed = new inalan.VisuScrollbar("speed", this.speedLabel, 150, 200, 1800, 1000, changeSpeedOfAnimation);
@@ -264,11 +272,6 @@ inalan.Controller.prototype.render = function () {
         this.speed.y = this.y;
         this.speed.render();
     }
-}
-
-// set up reset function
-inalan.Controller.prototype.setReset = function (resetFnc) {
-    this.resetFnc = resetFnc;
 }
 
 // set up functions for steps, for checking (if true, repeat the steps), and for the last step

@@ -63,6 +63,7 @@ inalan.VisuScrollbar.prototype.render = function () {
     this.ctx.fillStyle = "#000";
     this.ctx.font = "13px Arial";
     this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "alphabetic";
     this.ctx.fillText(this.label, this.x, this.y - 17);
 }
 
