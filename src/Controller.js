@@ -67,6 +67,8 @@ inalan.Controller = function () {
         // restore fncIndex and fncRepeatIndex
         self.fncIndex = self.undo[stepNumber][3];
         self.fncRepeatIndex = self.undo[stepNumber][4];
+        // restore arrow
+        stage.showArrow = JSON.parse(self.undo[stepNumber][5]);
     }
     // reset animation (restore the first step from undo array)
     var resetAnimationWhenPossible = false;
@@ -137,7 +139,7 @@ inalan.Controller = function () {
     var nextStepAnimationDoneID; // the ID from setInterval for nextStepAnimationDone fuction
     var nextStepAnimationDone = function () { // this function checks every 0.1 sec if the animation is done
         var stage = self.ctx.canvas.parent;
-        if (!stage.animating) {
+        if (!stage.animating && !self.waitingAnimation) {
             clearInterval(nextStepAnimationDoneID);
             if (resetAnimationWhenPossible) {
                 resetAnimation();
@@ -151,8 +153,8 @@ inalan.Controller = function () {
         }
     }
     var nextStepAnimation = function () { // step the animation forward
-        var stage = self.ctx.canvas.parent;        
-        if (!stage.animating && !self.waitingAnimation && self.stepFncsArray != null) {
+        var stage = self.ctx.canvas.parent;
+        if (!stage.animating && !self.waitingAnimation && self.stepFncsArray != null) {            
             // saving objects on stage to undo array (stage.visuItems, stage.var, self.fncIndex, self.fncRepeatIndex)
             if (self.nextStepAuto<0) {
                 // enable reset, and enable prevStep button if not autoplaying the animation
@@ -166,9 +168,11 @@ inalan.Controller = function () {
                 self.undo[i][1] = JSON.stringify(stage.var);
                 self.undo[i][2] = JSON.stringify(stage.visuItems);
                 self.undo[i][3] = self.fncIndex;
-                self.undo[i][4] = self.fncRepeatIndex;                
+                self.undo[i][4] = self.fncRepeatIndex;
+                self.undo[i][5] = JSON.stringify(stage.showArrow);
             }
             // step animation...
+            stage.showArrow = [];
             if (self.stepFncsArray[self.fncIndex] instanceof Array) { // repeating some steps
                 self.nextStepAuto = self.stepFncsArray[self.fncIndex][self.fncRepeatIndex]();
                 if (typeof(self.nextStepAuto) == 'undefined') {

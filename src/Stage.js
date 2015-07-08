@@ -43,7 +43,7 @@ inalan.Stage = function (canvasId) {
             if (self.visuItems.hasOwnProperty(index)) {
                 self.visuItems[index].render();
             }
-        }
+        }       
         // render object when copying
         for (var index in self.visuItems) {
             if (self.visuItems.hasOwnProperty(index)) {
@@ -53,9 +53,26 @@ inalan.Stage = function (canvasId) {
                 }                
             }
         }
+        // show arrow after copying 
+        if (self.showArrow.length > 0) {
+            self.ctx.fillStyle = "#055";
+            self.ctx.globalAlpha = 0.1;
+            self.ctx.beginPath();
+            self.ctx.moveTo(self.showArrow[0], self.showArrow[1] - 10);
+            self.ctx.lineTo(self.showArrow[0], self.showArrow[1] + 10);
+            self.ctx.lineTo(self.showArrow[2] + 20, self.showArrow[3] + 10);
+            self.ctx.lineTo(self.showArrow[2] + 20, self.showArrow[3] + 20);
+            self.ctx.lineTo(self.showArrow[2], self.showArrow[3]);
+            self.ctx.lineTo(self.showArrow[2] + 20, self.showArrow[3] - 20);
+            self.ctx.lineTo(self.showArrow[2] + 20, self.showArrow[3] - 10);
+            self.ctx.lineTo(self.showArrow[0], self.showArrow[1] - 10);
+            self.ctx.fill();
+            self.ctx.globalAlpha = 1;
+        }
     }
     setInterval(this.render, 1000 / this.fps);
     // time for animations (copy/move/exchange/..) *****
+    this.showArrow = []; // copied or moved objects' coordinates (x1, y1, x2, y2 - an arrow will be shown);
     this.animating = false; // does any object animating?
     this.time = 1000; // speed of animation
 }
@@ -359,13 +376,13 @@ inalan.Stage.prototype.get = function (name) {
 // animation of comparing two visuVariables (firstObject and secondObject)
 inalan.Stage.prototype.compare = function (firstObject, secondObject) {
     this.animating = true;
-    firstObject.setLightYellowColor();
-    secondObject.setLightYellowColor();
+    firstObject.setYellowColor2();
+    secondObject.setYellowColor2();
     this.animating = false;
 }
 
 // animation of copying a visuVariable (firstObject to secondObject)
-inalan.Stage.prototype.copy = function (firstObject, secondObject) {
+inalan.Stage.prototype.copy = function (firstObject, secondObject, showArrow) {
     this.animating = true;
     firstObject.changable = false;
     secondObject.changable = false;
@@ -379,7 +396,7 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject) {
     var dy = (secondObject.y - firstObject.y) / frames;
     var x = firstObject.x;
     var y = firstObject.y;
-    firstObject.setLightYellowColor();    
+    firstObject.setYellowColor3();
     firstObject.startCopying();
     var copyFnc = function () {
         frames--;
@@ -389,15 +406,18 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject) {
         } else if (frames <= 0) {
             firstObject.stopCopying();
             secondObject.value = firstObject.value;
-            secondObject.setYellowColor();     
-            clearInterval(intervalId);
+            secondObject.setYellowColor1();
+            clearInterval(intervalId);            
             stage.animating = false;
+            if (showArrow != false) {
+                stage.showArrow = [firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2];
+            }
         }
     }
 }
 
 // animation of moving a visuVariable (firstObject to secondObject)
-inalan.Stage.prototype.move = function (firstObject, secondObject) {
+inalan.Stage.prototype.move = function (firstObject, secondObject, showArrow) {
     this.animating = true;
     firstObject.changable = false;
     secondObject.changable = false;
@@ -421,9 +441,12 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
         } else if (frames <= 0) {
             firstObject.stopCopying();
             secondObject.value = firstObject.value;
-            secondObject.setYellowColor();
+            secondObject.setYellowColor1();
             clearInterval(intervalId);
-            stage.animating = false;         
+            stage.animating = false;
+            if (showArrow != false) {
+                stage.showArrow = [firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2];
+            }
         }
     }
 }
@@ -462,8 +485,8 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
             var x = secondObject.value
             secondObject.value = firstObject.value;
             firstObject.value = x;
-            firstObject.setYellowColor();
-            secondObject.setYellowColor();
+            firstObject.setYellowColor1();
+            secondObject.setYellowColor1();
             clearInterval(intervalId);
             stage.animating = false;
         }
