@@ -58,16 +58,22 @@ inalan.Stage = function (canvasId) {
             self.ctx.fillStyle = "#055";
             self.ctx.globalAlpha = 0.1;
             for (var i = 0; i < self.showArrow.length / 4; i++) {                
-                self.ctx.beginPath();                
-                self.ctx.moveTo(self.showArrow[i*4+0], self.showArrow[i*4+1] - 10);
-                self.ctx.lineTo(self.showArrow[i*4+0], self.showArrow[i*4+1] + 10);
-                self.ctx.lineTo(self.showArrow[i*4+2] + 20, self.showArrow[i*4+3] + 10);
-                self.ctx.lineTo(self.showArrow[i*4+2] + 20, self.showArrow[i*4+3] + 20);
-                self.ctx.lineTo(self.showArrow[i*4+2], self.showArrow[i*4+3]);
-                self.ctx.lineTo(self.showArrow[i*4+2] + 20, self.showArrow[i*4+3] - 20);
-                self.ctx.lineTo(self.showArrow[i*4+2] + 20, self.showArrow[i*4+3] - 10);
-                self.ctx.lineTo(self.showArrow[i*4+0], self.showArrow[i*4+1] - 10);
-                self.ctx.fill();                
+                var angle = Math.atan2(self.showArrow[i * 4 + 3] - self.showArrow[i * 4 + 1], self.showArrow[i * 4 + 2] - self.showArrow[i * 4]);
+                var length = Math.sqrt(Math.pow(self.showArrow[i * 4] - self.showArrow[i * 4 + 2], 2) + Math.pow(self.showArrow[i * 4 + 1] - self.showArrow[i * 4 + 3], 2)) + 1;
+                self.ctx.save();
+                self.ctx.translate(self.showArrow[i * 4 + 0], self.showArrow[i * 4 + 1]);
+                self.ctx.rotate(Math.PI + angle);
+                self.ctx.beginPath();
+                self.ctx.moveTo(0, -10);
+                self.ctx.lineTo(0, +10);
+                self.ctx.lineTo(-length+20, +10);
+                self.ctx.lineTo(-length+20, +20);
+                self.ctx.lineTo(-length, 0);
+                self.ctx.lineTo(-length+20, -20);
+                self.ctx.lineTo(-length+20, -10);
+                self.ctx.lineTo(0, -10);
+                self.ctx.fill();
+                self.ctx.restore()
             }
             self.ctx.globalAlpha = 1;
         }

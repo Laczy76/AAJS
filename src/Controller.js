@@ -249,34 +249,37 @@ inalan.Controller.prototype.render = function () {
     this.ctx.lineTo(this.ctx.canvas.clientWidth, this.y - 40 + 0.5);
     this.ctx.stroke();
     // draw the buttons
+    var spaceWidth = 0;
     if (this.reset.width > 0) {
         this.reset.ctx = this.ctx;
         this.reset.x = this.x + this.reset.width / 2;
         this.reset.y = this.y;
         this.reset.render();
-    }
-    if (this.prevStep.width > 0) {
-        this.prevStep.ctx = this.ctx;
-        this.prevStep.x = this.x + this.reset.width + 20 + this.prevStep.width / 2;
-        this.prevStep.y = this.y;
-        this.prevStep.render();
+        spaceWidth += 20;
     }
     if (this.startStop.width > 0) {
         this.startStop.ctx = this.ctx;
-        this.startStop.x = this.x + this.reset.width + 20 + this.prevStep.width + this.startStop.width / 2;
+        this.startStop.x = this.x + this.reset.width + this.startStop.width / 2 + spaceWidth;
         this.startStop.y = this.y;
         this.startStop.render();
-    }    
+        spaceWidth += 20;
+    }
+    if (this.prevStep.width > 0) {
+        this.prevStep.ctx = this.ctx;
+        this.prevStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width / 2 + spaceWidth;
+        this.prevStep.y = this.y;
+        this.prevStep.render();
+    } 
     if (this.nextStep.width > 0) {
         this.nextStep.ctx = this.ctx;
-        this.nextStep.x = this.x + this.reset.width + 20 + this.startStop.width + this.prevStep.width + this.nextStep.width / 2;
+        this.nextStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.nextStep.width / 2 + spaceWidth;
         this.nextStep.y = this.y;
         this.nextStep.render();
     }
     // draw the scrollbar
     if (this.speed.width > 0) {
         this.speed.ctx = this.ctx;
-        this.speed.x = this.x + this.reset.width + 20 + this.startStop.width + this.prevStep.width + this.nextStep.width + 30 + this.speed.width / 2;
+        this.speed.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.nextStep.width + 30 + this.speed.width / 2 + spaceWidth;
         this.speed.y = this.y;
         this.speed.render();
     }
