@@ -359,8 +359,8 @@ inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
     }
 }
 
-// adding VisuVariable or VisuArray to stage
-inalan.Stage.prototype.add = function (visuData) {
+// adding VisuVariable, VisuArray, VisuLabel, VisuCode, etc. to stage
+inalan.Stage.prototype.addVisu = function (visuData) {
     if (typeof (this.visuItems[visuData.name]) != 'undefined') {
         throw "- Can not add '" + visuData.name + "' to the stage, object with this name already exists on the stage.";
     }
@@ -384,8 +384,8 @@ inalan.Stage.prototype.get = function (name) {
 // animation of comparing two visuVariables (firstObject and secondObject)
 inalan.Stage.prototype.compare = function (firstObject, secondObject) {
     this.animating++;
-    firstObject.setYellowColor2();
-    secondObject.setYellowColor2();
+    firstObject.setYellowColor();
+    secondObject.setYellowColor();
     this.animating--;
 }
 
@@ -404,7 +404,7 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject, showArrow) {
     var dy = (secondObject.y - firstObject.y) / frames;
     var x = firstObject.x;
     var y = firstObject.y;
-    firstObject.setYellowColor3();
+    firstObject.setLightYellowColor();
     firstObject.startCopying();
     var copyFnc = function () {
         frames--;
@@ -414,7 +414,7 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject, showArrow) {
         } else if (frames <= 0) {
             firstObject.stopCopying();
             secondObject.value = firstObject.value;
-            secondObject.setYellowColor1();
+            secondObject.setYellowColor();
             clearInterval(intervalId);            
             stage.animating--;
             if (showArrow != false) {
@@ -449,7 +449,7 @@ inalan.Stage.prototype.move = function (firstObject, secondObject, showArrow) {
         } else if (frames <= 0) {
             firstObject.stopCopying();
             secondObject.value = firstObject.value;
-            secondObject.setYellowColor1();
+            secondObject.setYellowColor();
             clearInterval(intervalId);
             stage.animating--;
             if (showArrow != false) {
@@ -493,8 +493,8 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
             var x = secondObject.value
             secondObject.value = firstObject.value;
             firstObject.value = x;
-            firstObject.setYellowColor1();
-            secondObject.setYellowColor1();
+            firstObject.setYellowColor();
+            secondObject.setYellowColor();
             clearInterval(intervalId);
             stage.animating--;
         }

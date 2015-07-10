@@ -38,9 +38,8 @@ inalan.VisuVariable = function (name, value, changable) {
     this.copyy = 0;
     // color constants
     this.defaultColor = "#C00";
-    this.yellowColor3 = "#FFD"; // copy-from color
-    this.yellowColor2 = "#FF2"; // compare color
-    this.yellowColor1 = "#FF2"; // copy-to color, exchange color, move color
+    this.yellowColor = "#FF2";
+    this.lightYellowColor = "#FFD";
     this.greenColor = "#090";
     this.grayColor = "#CCC";
     this.hiddenColor = "#EEE";
@@ -127,7 +126,7 @@ inalan.VisuVariable.prototype.render = function () {
 inalan.VisuVariable.prototype.renderCopy = function () {
     // draw second rectangle when copying/moving the variable
     if (this.copy) {        
-        this.ctx.fillStyle = this.yellowColor1; // column
+        this.ctx.fillStyle = this.yellowColor; // column
         this.ctx.fillRect(this.copyx - this.width / 2 - 0.5, this.copyy - this.value - 0.5, this.width, this.value);
         this.ctx.strokeStyle = "#000";
         this.ctx.strokeRect(this.copyx - this.width / 2 - 0.5, this.copyy - 0.5 - this.value, this.width, this.value);
@@ -158,19 +157,14 @@ inalan.VisuVariable.prototype.setDefaultColor = function () {
     this.fillColor = this.defaultColor;
     this.strokeColor = '#000';
 }
-// set color when comparing
-inalan.VisuVariable.prototype.setYellowColor2 = function () {
-    this.fillColor = this.yellowColor2;
+// set color when comparing, copiing (color of the new item)
+inalan.VisuVariable.prototype.setYellowColor = function () {
+    this.fillColor = this.yellowColor;
     this.strokeColor = '#000';
 }
-// set color when copying
-inalan.VisuVariable.prototype.setYellowColor1 = function () {
-    this.fillColor = this.yellowColor1;
-    this.strokeColor = '#000';
-}
-// set color when copying
-inalan.VisuVariable.prototype.setYellowColor3 = function () {
-    this.fillColor = this.yellowColor3;
+// set color when copying (color of the original item)
+inalan.VisuVariable.prototype.setLightYellowColor = function () {
+    this.fillColor = this.lightYellowColor;
     this.strokeColor = '#000';
 }
 // set color to green, when the item is sorted

@@ -23,20 +23,20 @@
             var m = new inalan.VisuVariable("max", 0, false);
             m.x = 45;
             m.y = 220;
-            stage.add(m);
+            stage.addVisu(m);
 
             var a = new inalan.VisuArray("a", [0, 0, 0, 0, 0, 0, 0], true);
             a.randomize(30,150);
             a.x = 100;
             a.y = 220;
-            stage.add(a);
+            stage.addVisu(a);
 
             var i = new inalan.VisuLabel("info", ["This animation shows how to find the maximum in an array. In the beginning, we copy the first element",
                                                   "of the array to the maximum. Next, we compare the maximum with every other element in the array.",
                                                   "If any of the compared element in the array is bigger than the maximum, we copy it to the maximum."]);
             i.x = 30;
             i.y = 330;
-            stage.add(i)
+            stage.addVisu(i)
 
             var c = new inalan.VisuCode("code", ["max = a[0]",
                                                  "FOR i = 1 to 6",
@@ -46,7 +46,7 @@
                                                  "END FOR"]);
             c.x = 360;
             c.y = 70;
-            stage.add(c);
+            stage.addVisu(c);
 
             // **********************************************
 
