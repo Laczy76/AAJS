@@ -69,9 +69,6 @@
             }
 
             var findMaxCopy = function () {
-                // set default colours (after comparing)
-                stage.get("max").setDefaultColor();
-                stage.get("a").items[stage.var.index].setDefaultColor();
                 // copy the element to max if it is bigger     
                 if (stage.get("max").value < stage.get("a").items[stage.var.index].value) {
                     stage.get("code").selected = [3];
@@ -83,9 +80,6 @@
             }
 
             var findMaxIncrease = function () {
-                // set default colours (after copying)
-                stage.get("max").setDefaultColor();
-                stage.get("a").items[stage.var.index].setDefaultColor();
                 // increase the stage.var.index (go to next element)
                 stage.var.index++;
                 // set index "i" in array
@@ -110,9 +104,14 @@
                 // remove index "i" from stage
                 stage.get("a").deleteIndex("i");
             }
+
+            var test = function () {
+                stage.exchange(stage.get("a").items[2], stage.get("a").items[3]);
+            }
              
             // defining steps in animation...
             stage.setSteps([
+                test,
                 findMaxFirstStep,
                 findMaxIncrease,
                 [findMaxCompare, findMaxCopy, findMaxIncrease], findMaxCheck,

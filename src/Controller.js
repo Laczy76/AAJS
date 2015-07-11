@@ -177,6 +177,7 @@ inalan.Controller = function () {
             }
             // step animation...
             stage.showArrow = [];
+            stage.stopCopyingAndComparing();
             if (self.stepFncsArray[self.fncIndex] instanceof Array) { // repeating some steps
                 self.nextStepAuto = self.stepFncsArray[self.fncIndex][self.fncRepeatIndex]();
                 if (typeof(self.nextStepAuto) == 'undefined') {

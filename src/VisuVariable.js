@@ -36,6 +36,7 @@ inalan.VisuVariable = function (name, value, changable) {
     this.copy = false; // copiing or moving the variable (if true, it draws a rectangle to copyx, copyy coordinates)
     this.copyx = 0;
     this.copyy = 0;
+    this.compare = false; // comparing the variable (yellow color is set)
     // color constants
     this.defaultColor = "#C00";
     this.yellowColor = "#FF2";
@@ -43,6 +44,9 @@ inalan.VisuVariable = function (name, value, changable) {
     this.greenColor = "#090";
     this.grayColor = "#CCC";
     this.hiddenColor = "#EEE";
+    // remember the original color of the VisuVariable before start copying
+    this.originalFillColor = "#C00";
+    this.originalStrokeColor = "#000";
 }
 
 // create subclass VisuVariable from VisuData - set methods
@@ -145,11 +149,27 @@ inalan.VisuVariable.prototype.isOver = function (x, y) {
 inalan.VisuVariable.prototype.startCopying = function () {
     this.copyx = this.x;
     this.copyy = this.y;
+    this.originalFillColor = this.fillColor;
+    this.originalStrokeColor = this.strokeColor;
     this.copy = true;
 }
 // stops copying the variable
 inalan.VisuVariable.prototype.stopCopying = function () {
+    this.fillColor = this.originalFillColor;
+    this.strokeColor = this.originalStrokeColor;
     this.copy = false;
+}
+
+// start comparing the variable (set yellow color)
+inalan.VisuVariable.prototype.startComparing = function () {
+    this.originalFillColor = this.fillColor;
+    this.fillColor = this.yellowColor;
+    this.compare = true;
+}
+// stop comparing the variable (set back the original color)
+inalan.VisuVariable.prototype.stopComparing = function () {
+    this.fillColor = this.originalFillColor;
+    this.compare = false;
 }
 
 // set default color

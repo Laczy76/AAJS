@@ -43,21 +43,21 @@ inalan.Stage = function (canvasId) {
             if (self.visuItems.hasOwnProperty(index)) {
                 self.visuItems[index].render();
             }
-        }       
+        }
         // render object when copying
         for (var index in self.visuItems) {
             if (self.visuItems.hasOwnProperty(index)) {
                 if (self.visuItems[index] instanceof inalan.VisuVariable
                  || self.visuItems[index] instanceof inalan.VisuArray) {
                     self.visuItems[index].renderCopy();
-                }                
+                }
             }
         }
         // show arrow(s) after copying 
         if (self.showArrow.length > 0) {
             self.ctx.fillStyle = "#055";
             self.ctx.globalAlpha = 0.1;
-            for (var i = 0; i < self.showArrow.length / 4; i++) {                
+            for (var i = 0; i < self.showArrow.length / 4; i++) {
                 var angle = Math.atan2(self.showArrow[i * 4 + 3] - self.showArrow[i * 4 + 1], self.showArrow[i * 4 + 2] - self.showArrow[i * 4]);
                 var length = Math.sqrt(Math.pow(self.showArrow[i * 4] - self.showArrow[i * 4 + 2], 2) + Math.pow(self.showArrow[i * 4 + 1] - self.showArrow[i * 4 + 3], 2)) + 1;
                 self.ctx.save();
@@ -66,11 +66,11 @@ inalan.Stage = function (canvasId) {
                 self.ctx.beginPath();
                 self.ctx.moveTo(0, -10);
                 self.ctx.lineTo(0, +10);
-                self.ctx.lineTo(-length+20, +10);
-                self.ctx.lineTo(-length+20, +20);
+                self.ctx.lineTo(-length + 20, +10);
+                self.ctx.lineTo(-length + 20, +20);
                 self.ctx.lineTo(-length, 0);
-                self.ctx.lineTo(-length+20, -20);
-                self.ctx.lineTo(-length+20, -10);
+                self.ctx.lineTo(-length + 20, -20);
+                self.ctx.lineTo(-length + 20, -10);
                 self.ctx.lineTo(0, -10);
                 self.ctx.fill();
                 self.ctx.restore()
@@ -119,7 +119,7 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                     }
                 }
             }
-        }      
+        }
         // check all objects in visuItems
         for (var index in stage.visuItems) {
             if (stage.visuItems.hasOwnProperty(index)) {
@@ -164,10 +164,10 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                         if (obj.position != pos) {
                             obj.position = pos;
                             obj.onChange(pos);
-                        }                        
+                        }
                         dragging = true;
                     }
-                }                
+                }
             }
         }
     }
@@ -234,7 +234,7 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                     } else {
                         obj.color = obj.defaultColor;
                     }
-                }                
+                }
             }
         }
         evt.target.style.cursor = mouseCursor;
@@ -289,7 +289,7 @@ inalan.Stage.prototype.stageMouseDownEvent = function (evt) {
                 // *** VisuButton ***
                 if (obj instanceof inalan.VisuButton && obj.enabled) {
                     if (obj.isOver(mouseX, mouseY)) {
-                        obj.pressed = true;                    
+                        obj.pressed = true;
                     }
                 }
                 // *** VisuScrollbar ***
@@ -297,7 +297,7 @@ inalan.Stage.prototype.stageMouseDownEvent = function (evt) {
                     if (obj.isOver(mouseX, mouseY)) {
                         obj.dragging = true;
                     }
-                }                
+                }
             }
         }
     }
@@ -328,7 +328,7 @@ inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
                     obj2.dragging = false;
                 }
             }
-        }      
+        }
         // check all objects in visuItems
         for (var index in stage.visuItems) {
             if (stage.visuItems.hasOwnProperty(index)) {
@@ -353,7 +353,7 @@ inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
                 // *** VisuScrollbar ***
                 if (obj instanceof inalan.VisuScrollbar) {
                     obj.dragging = false;
-                }                
+                }
             }
         }
     }
@@ -365,7 +365,7 @@ inalan.Stage.prototype.addVisu = function (visuData) {
         throw "- Can not add '" + visuData.name + "' to the stage, object with this name already exists on the stage.";
     }
     visuData.ctx = this.ctx;
-    this.visuItems[visuData.name] = visuData;    
+    this.visuItems[visuData.name] = visuData;
 }
 
 inalan.Stage.prototype.setSteps = function (stepFunctions) {
@@ -383,10 +383,8 @@ inalan.Stage.prototype.get = function (name) {
 
 // animation of comparing two visuVariables (firstObject and secondObject)
 inalan.Stage.prototype.compare = function (firstObject, secondObject) {
-    this.animating++;
-    firstObject.setYellowColor();
-    secondObject.setYellowColor();
-    this.animating--;
+    firstObject.startComparing();
+    secondObject.startComparing();
 }
 
 // animation of copying a visuVariable (firstObject to secondObject)
@@ -404,18 +402,18 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject, showArrow) {
     var dy = (secondObject.y - firstObject.y) / frames;
     var x = firstObject.x;
     var y = firstObject.y;
-    firstObject.setLightYellowColor();
     firstObject.startCopying();
+    firstObject.setLightYellowColor();
     var copyFnc = function () {
         frames--;
         if (frames > 0) {
             firstObject.copyx += dx;
             firstObject.copyy += dy;
         } else if (frames <= 0) {
-            firstObject.stopCopying();
+            firstObject.copyx = secondObject.x;
+            firstObject.copyy = secondObject.y;
             secondObject.value = firstObject.value;
-            secondObject.setYellowColor();
-            clearInterval(intervalId);            
+            clearInterval(intervalId);
             stage.animating--;
             if (showArrow != false) {
                 stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
@@ -447,9 +445,9 @@ inalan.Stage.prototype.move = function (firstObject, secondObject, showArrow) {
             firstObject.copyx += dx;
             firstObject.copyy += dy;
         } else if (frames <= 0) {
-            firstObject.stopCopying();
+            firstObject.copyx = secondObject.x;
+            firstObject.copyy = secondObject.y;
             secondObject.value = firstObject.value;
-            secondObject.setYellowColor();
             clearInterval(intervalId);
             stage.animating--;
             if (showArrow != false) {
@@ -476,10 +474,10 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
     var y1 = firstObject.y;
     var x2 = secondObject.x;
     var y2 = secondObject.y;
-    firstObject.setHiddenColor();
-    secondObject.setHiddenColor();
     firstObject.startCopying();
     secondObject.startCopying();
+    firstObject.setHiddenColor();
+    secondObject.setHiddenColor();
     var copyFnc = function () {
         frames--;
         if (frames > 0) {
@@ -487,16 +485,81 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
             firstObject.copyy += dy;
             secondObject.copyx -= dx;
             secondObject.copyy -= dy;
-        } else if (frames <= 0) {
-            firstObject.stopCopying();
-            secondObject.stopCopying();
-            var x = secondObject.value
+        } else if (frames <= 0) {            
+            var x = secondObject.value;            
             secondObject.value = firstObject.value;
             firstObject.value = x;
-            firstObject.setYellowColor();
-            secondObject.setYellowColor();
+            firstObject.copyx = firstObject.x;
+            firstObject.copyy = firstObject.y;
+            secondObject.copyx = secondObject.x;
+            secondObject.copyy = secondObject.y;
             clearInterval(intervalId);
             stage.animating--;
+        }
+    }
+}
+
+// animation of adding a visuVariable (firstObject to secondObject)
+inalan.Stage.prototype.add = function (firstObject, secondObject, showArrow) {
+    this.animating++;
+    firstObject.changable = false;
+    secondObject.changable = false;
+    var stage = this;
+    var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - (secondObject.y - secondObject.value), 2)); // distance between points
+    var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
+    var fps = this.fps; // FPS
+    var frames = Math.floor(time * fps / 1000); // how many frames
+    var intervalId = setInterval(function () { addFnc(); }, 1000 / fps);
+    var dx = (secondObject.x - firstObject.x) / frames;
+    var dy = (secondObject.y - firstObject.y - secondObject.value) / frames;
+    var x = firstObject.x;
+    var y = firstObject.y;
+    firstObject.startCopying();
+    firstObject.setLightYellowColor();    
+    var addFnc = function () {
+        frames--;
+        if (frames > 0) {
+            firstObject.copyx += dx;
+            firstObject.copyy += dy;
+        } else if (frames <= 0) {
+            firstObject.copyx = secondObject.x;
+            firstObject.copyy = secondObject.y - secondObject.value;
+            secondObject.value = secondObject.value + firstObject.value;
+            clearInterval(intervalId);
+            stage.animating--;
+            if (showArrow != false) {
+                stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, (secondObject.y - secondObject.value) + firstObject.value / 2]);
+            }
+        }
+    }
+}
+
+// stop copying animations (hide all ellow marked objects which are on stage after copy/move/add/exchange) 
+inalan.Stage.prototype.stopCopyingAndComparing = function () {    
+    // call stopCopying() for every VisuVariable and VisuArray on the stage;
+    for (var index in this.visuItems) {
+        if (this.visuItems.hasOwnProperty(index)) {
+            var obj = this.visuItems[index];
+            // *** VisuVariable ***
+            if (obj instanceof inalan.VisuVariable) {
+                if (obj.copy) {
+                    obj.stopCopying();
+                }
+                if (obj.compare) {
+                    obj.stopComparing();
+                }
+            }
+            // *** VisuArray ***
+            if (obj instanceof inalan.VisuArray) {
+                for (var i = 0; i < obj.items.length; i++) {
+                    if (obj.items[i].copy) {
+                        obj.items[i].stopCopying();
+                    }
+                    if (obj.items[i].compare) {
+                        obj.items[i].stopComparing();
+                    }
+                }
+            }
         }
     }
 }
