@@ -18,7 +18,8 @@ inalan.VisuVariable = function (name, value, changable) {
         changable = false;
     }
     // create subclass VisuVariable from VisuData - set properties
-    inalan.VisuData.call(this, name);
+    inalan.VisuData.call(this);
+    this.name = name;
     // set new properties
     if (value < 0) {
         throw "- the value of '" + name + "' must be >= 0";

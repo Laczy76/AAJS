@@ -11,9 +11,9 @@
 
 var inalan = inalan || {};
 
-inalan.VisuScrollbar = function (name, label, width, min, max, position, onChange) {
+inalan.VisuScrollbar = function (label, width, min, max, position, onChange) {
     // create subclass VisuScrollbar from VisuData - set properties
-    inalan.VisuData.call(this, name);
+    inalan.VisuData.call(this);
     // set new properties
     this.label = label;
     if (width < 30) {

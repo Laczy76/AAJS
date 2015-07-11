@@ -221,14 +221,14 @@ inalan.Controller = function () {
         stage.time = 2000 - position;
     }
     // buttons...
-    this.reset = new inalan.VisuButton("reset", this.resetLabel, 70, resetAnimation);    
-    this.prevStep = new inalan.VisuButton("prevStep", this.prevLabel, 120, prevStepAnimation);
-    this.startStop = new inalan.VisuButton("startStop", this.startLabel, 0, startStopAnimation);
-    this.nextStep = new inalan.VisuButton("nextStep", this.nextLabel, 100, nextStepAnimation);
+    this.reset = new inalan.VisuButton(this.resetLabel, 70, resetAnimation);    
+    this.prevStep = new inalan.VisuButton(this.prevLabel, 120, prevStepAnimation);
+    this.startStop = new inalan.VisuButton(this.startLabel, 0, startStopAnimation);
+    this.nextStep = new inalan.VisuButton(this.nextLabel, 100, nextStepAnimation);
     this.reset.enabled = false;
     this.prevStep.enabled = false;
     // scrollbar...
-    this.speed = new inalan.VisuScrollbar("speed", this.speedLabel, 150, 200, 1800, 1000, changeSpeedOfAnimation);
+    this.speed = new inalan.VisuScrollbar(this.speedLabel, 150, 200, 1800, 1000, changeSpeedOfAnimation);
 }
 
 // show all buttons (reset, startStop, step, speed),

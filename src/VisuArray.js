@@ -19,7 +19,8 @@ inalan.VisuArray = function (name, values, changable) {
         changable = false;
     }
     // create subclass VisuArray from VisuData - set properties
-    inalan.VisuData.call(this, name);
+    inalan.VisuData.call(this);
+    this.name = name;
     // set new properties
     this.items = {
         length: values.length

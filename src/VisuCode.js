@@ -11,9 +11,9 @@
 
 var inalan = inalan || {};
 
-inalan.VisuCode = function (name, lines) {
+inalan.VisuCode = function (lines) {
     // create subclass VisuCode from VisuData - set properties
-    inalan.VisuData.call(this, name);
+    inalan.VisuData.call(this);
     // set new properties
     this.lines = lines;
     this.selected = [];

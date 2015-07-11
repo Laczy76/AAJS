@@ -360,12 +360,15 @@ inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
 }
 
 // adding VisuVariable, VisuArray, VisuLabel, VisuCode, etc. to stage
-inalan.Stage.prototype.addVisu = function (visuData) {
-    if (typeof (this.visuItems[visuData.name]) != 'undefined') {
-        throw "- Can not add '" + visuData.name + "' to the stage, object with this name already exists on the stage.";
+inalan.Stage.prototype.addVisu = function (visuData, id) {
+    if (typeof (this.visuItems[id]) != 'undefined') {
+        throw "- Can not add '" + id + "' to the stage, object with this ID already exists on the stage.";
+    } else if (typeof (visuData.id) != 'undefined') {
+        throw "- This object was probably already added to the stage with ID: " + visuData.id + ".";
     }
     visuData.ctx = this.ctx;
-    this.visuItems[visuData.name] = visuData;
+    visuData.id = id;
+    this.visuItems[id] = visuData;
 }
 
 inalan.Stage.prototype.setSteps = function (stepFunctions) {
@@ -377,8 +380,8 @@ inalan.Stage.prototype.showAllButtons = function () {
 }
 
 // get VisuVariable or VisuArray by name
-inalan.Stage.prototype.get = function (name) {
-    return this.visuItems[name];
+inalan.Stage.prototype.get = function (id) {
+    return this.visuItems[id];
 }
 
 // animation of comparing two visuVariables (firstObject and secondObject)

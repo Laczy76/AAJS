@@ -11,10 +11,8 @@
 
 var inalan = inalan || {};
 
-inalan.VisuData = function (name) {
+inalan.VisuData = function () {
     // position
     this.x = 0;
     this.y = 0;
-    // name
-    this.name = name;
 }

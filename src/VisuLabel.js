@@ -11,9 +11,9 @@
 
 var inalan = inalan || {};
 
-inalan.VisuLabel = function (name, lines) {
+inalan.VisuLabel = function (lines) {
     // create subclass VisuLabel from VisuData - set properties
-    inalan.VisuData.call(this, name);
+    inalan.VisuData.call(this);
     // set new properties
     this.lines = lines;    
 }

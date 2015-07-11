@@ -11,9 +11,9 @@
 
 var inalan = inalan || {};
 
-inalan.VisuButton = function (name, text, width, onClickFnc) {
+inalan.VisuButton = function (text, width, onClickFnc) {
     // create subclass VisuButton from VisuData - set properties
-    inalan.VisuData.call(this, name);
+    inalan.VisuData.call(this);
     // set new properties
     this.text = text;
     this.width = width;

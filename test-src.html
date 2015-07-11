@@ -20,33 +20,33 @@
             var stage = new inalan.Stage("myCanvas");
             stage.showAllButtons();
 
-            var m = new inalan.VisuVariable("max", 0, false);
+            var m = new inalan.VisuVariable("max", 0, false); // visible name on canvas = "max"
             m.x = 45;
             m.y = 220;
-            stage.addVisu(m);
+            stage.addVisu(m,"max"); // in code we can refer to is with id = "max"
 
-            var a = new inalan.VisuArray("a", [0, 0, 0, 0, 0, 0, 0], true);
+            var a = new inalan.VisuArray("a", [0, 0, 0, 0, 0, 0, 0], true); // visible name on canvas = "a"
             a.randomize(30,150);
             a.x = 100;
             a.y = 220;
-            stage.addVisu(a);
+            stage.addVisu(a, "a"); // in code we can refer to is with id = "a"            
 
-            var i = new inalan.VisuLabel("info", ["This animation shows how to find the maximum in an array. In the beginning, we copy the first element",
-                                                  "of the array to the maximum. Next, we compare the maximum with every other element in the array.",
-                                                  "If any of the compared element in the array is bigger than the maximum, we copy it to the maximum."]);
-            i.x = 30;
-            i.y = 330;
-            stage.addVisu(i)
+            var label = new inalan.VisuLabel(["This animation shows how to find the maximum in an array. In the beginning, we copy the first element",
+                                          "of the array to the maximum. Next, we compare the maximum with every other element in the array.",
+                                          "If any of the compared element in the array is bigger than the maximum, we copy it to the maximum."]);
+            label.x = 30;
+            label.y = 330;
+            stage.addVisu(label, "label") // in code we can refer to is with id = "label"
 
-            var c = new inalan.VisuCode("code", ["max = a[0]",
-                                                 "FOR i = 1 to 6",
-                                                 "   IF a[i] > max THEN",
-                                                 "      max = a[i]",
-                                                 "   END IF",
-                                                 "END FOR"]);
+            var c = new inalan.VisuCode(["max = a[0]",
+                                         "FOR i = 1 to 6",
+                                         "   IF a[i] > max THEN",
+                                         "      max = a[i]",
+                                         "   END IF",
+                                         "END FOR"]);
             c.x = 360;
             c.y = 70;
-            stage.addVisu(c);
+            stage.addVisu(c, "code"); // in code we can refer to is with id = "code"
 
             // **********************************************
 
