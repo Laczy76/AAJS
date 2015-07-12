@@ -216,12 +216,3 @@ inalan.VisuVariable.prototype.setHiddenColor = function () {
     this.fillColor = this.hiddenColor;
     this.strokeColor = this.hiddenColor;
 }
-
-// set minimum value for the variable
-inalan.VisuVariable.prototype.setMinValue = function (value) {
-    this.minValue = value;
-}
-// set maximum value for the variable
-inalan.VisuVariable.prototype.setMaxValue = function (value) {
-    this.maxValue = value;
-}

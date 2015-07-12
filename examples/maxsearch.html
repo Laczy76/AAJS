@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Test page</title>
+    <title>Maxsearch</title>
 
-    <script src="build/inalan20150712.js"></script>
+    <script src="../build/inalan20150712.js"></script>
 
     <script>
 
@@ -12,24 +12,24 @@
             var stage = new inalan.Stage("myCanvas");
             stage.showAllButtons();
 
-            var max = new inalan.VisuVariable("max", 0, false); // visible name on canvas = "max"
+            var max = new inalan.VisuVariable("max", 0, false);
             max.x = 45;
             max.y = 220;
-            stage.addVisu(max, "max"); // in code we can refer to is with id = "max"
+            stage.addVisu(max, "max");
 
-            var a = new inalan.VisuArray("a", [0, 0, 0, 0, 0, 0, 0], true); // visible name on canvas = "a"
+            var a = new inalan.VisuArray("a", [0, 0, 0, 0, 0, 0, 0], true);
             a.setMinValue(5);
             a.randomize(30, 150);
             a.x = 100;
             a.y = 220;
-            stage.addVisu(a, "a"); // in code we can refer to is with id = "a"
+            stage.addVisu(a, "a");
 
             var label = new inalan.VisuLabel(["This animation shows how to find the maximum in an array. In the beginning, we copy the first element",
                                           "of the array to the maximum. Next, we compare the maximum with every other element in the array.",
                                           "If any of the compared element in the array is bigger than the maximum, we copy it to the maximum."]);
             label.x = 30;
             label.y = 330;
-            stage.addVisu(label, "label") // in code we can refer to is with id = "label"
+            stage.addVisu(label, "label");
 
             var c = new inalan.VisuCode(["max = a[0]",
                                          "FOR i = 1 to 6",
@@ -39,7 +39,7 @@
                                          "END FOR"]);
             c.x = 360;
             c.y = 70;
-            stage.addVisu(c, "code"); // in code we can refer to is with id = "code"
+            stage.addVisu(c, "code");
 
             // **********************************************
 
@@ -48,53 +48,42 @@
 
             // functions (steps of the animation) ...
             var findMaxFirstStep = function () {
-                // select the first line in the code
                 stage.get("code").selected = [0];
-                // copy first element to max
                 stage.copy(stage.get("a").items[0], stage.get("max"));
             }
 
             var findMaxCompare = function () {
-                // select a line in the code
                 stage.get("code").selected = [2];
-                // compare max with the next element
                 stage.compare(stage.get("max"), stage.get("a").items[stage.variables.index]);
             }
 
             var findMaxCopy = function () {
-                // copy the element to max if it is bigger
                 if (stage.get("max").value < stage.get("a").items[stage.variables.index].value) {
                     stage.get("code").selected = [3];
                     stage.copy(stage.get("a").items[stage.variables.index], stage.get("max"));
                 } else {
                     stage.get("a").items[stage.variables.index].changable = false;
-                    return 0; // automatically jump to the next step after 0ms...
+                    return 0;
                 }
             }
 
             var findMaxIncrease = function () {
-                // increase the stage.variables.index (go to next element)
                 stage.variables.index++;
-                // set index "i" in array
                 stage.get("a").setIndex("i", stage.variables.index);
-                // select a line in the code
                 if (findMaxCheck()) {
                     stage.get("code").selected = [1];
-                    return 200; // automatically jump to the next step after 200ms (if normal speed is selected)...
+                    return 200;
                 } else {
-                    return 0; // automatically jump to the next step after 0ms...
+                    return 0;
                 }
             }
 
             var findMaxCheck = function () {
-                // check if there are more elements in array (array is indexed from 0)
                 return stage.variables.index < stage.get("a").items.length;
             }
 
             var findMaxFinalStep = function () {
-                // deselect all lines in the code
                 stage.get("code").selected = [];
-                // remove index "i" from stage
                 stage.get("a").deleteIndex("i");
             }
 
@@ -105,13 +94,6 @@
                 [findMaxCompare, findMaxCopy, findMaxIncrease], findMaxCheck,
                 findMaxFinalStep
             ]);
-
-            // stage.get("max").setDefaultColor();
-            // stage.get("a").setIndex("i", 1);
-            // stage.compare(stage.get("a").items[0], stage.get("a").items[3]);
-            // stage.copy(stage.get("a").items[2], stage.get("max"));
-            // stage.move(stage.get("a").items[2], stage.get("max"));
-            // stage.exchange(stage.get("a").items[0], stage.get("a").items[6]);
 
         }
 
