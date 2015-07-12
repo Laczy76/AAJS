@@ -136,18 +136,20 @@ inalan.Controller = function () {
         self.waitingAnimation = false;
         if (resetAnimationWhenPossible) {
             resetAnimation();
-        } else if (self.playingAnimation || self.nextStepAuto>=0) {
+        } else if (self.playingAnimation || self.nextStepAuto>0) {
             nextStepAnimation();
         }
     }
     var nextStepAnimationDoneID; // the ID from setInterval for nextStepAnimationDone fuction
-    var nextStepAnimationDone = function () { // this function checks every 0.1 sec if the animation is done
+    var nextStepAnimationDone = function () { // this function checks every 1 ms if the animation is done
         var stage = self.ctx.canvas.parent;
         if (stage.animating==0 && !self.waitingAnimation) {
             clearInterval(nextStepAnimationDoneID);
             if (resetAnimationWhenPossible) {
                 resetAnimation();
-            } else if (self.nextStepAuto>=0) {
+            } else if (self.nextStepAuto==0) {
+                nextStepAnimation();
+            } else if (self.nextStepAuto>0) {
                 self.waitingAnimation = true;
                 setTimeout(waitAnimationDone, stage.time/1000*self.nextStepAuto);
             } else if (self.playingAnimation) {
@@ -213,7 +215,7 @@ inalan.Controller = function () {
                     self.startStop.text = self.startLabel;
                 }
             }
-            nextStepAnimationDoneID = setInterval(nextStepAnimationDone, 100); // checks every 100ms if the animation is done
+            nextStepAnimationDoneID = setInterval(nextStepAnimationDone, 1); // checks every 1ms if the animation is done
         }
     }
     var changeSpeedOfAnimation = function (position) { // when the speed of animation is changed (using the scrollbar)

@@ -79,8 +79,7 @@
                     }
                     stage.exchange(stage.get("a").items[stage.variables.i], stage.get("a").items[stage.variables.j]);                    
                 } else {
-                    stage.get("a").items[stage.variables.j].minValue = stage.get("a").items[stage.variables.i].value;
-                    stage.get("a").items[stage.variables.i].changable = false;
+                    stage.get("a").items[stage.variables.j].minValue = stage.get("a").items[stage.variables.i].value;                    
                     return 0;
                 }
             }
