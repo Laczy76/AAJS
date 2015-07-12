@@ -94,7 +94,7 @@ inalan.VisuVariable.prototype.render = function () {
         this.ctx.moveTo(this.x, this.y - 0.5 - this.value - 6);
         this.ctx.lineTo(this.x, this.y - 0.5 - this.value - 2);
         this.ctx.stroke();
-        if (this.value > 5) {
+        if (this.value > 6) {
             var r = parseInt(this.fillColor.substring(1,2), 16) - 3;
             var g = parseInt(this.fillColor.substring(2,3), 16) - 3;
             var b = parseInt(this.fillColor.substring(3,4), 16) - 3;
@@ -110,6 +110,19 @@ inalan.VisuVariable.prototype.render = function () {
             this.ctx.lineTo(this.x, this.y - 0.5 - this.value + 2);
             this.ctx.stroke();
         }
+    }
+    if (this.compare) { // if comparing, draw the question mark
+        this.ctx.fillStyle = "#055";
+        this.ctx.globalAlpha = 0.1;
+        if (this.value > 30) {
+            this.ctx.font = "bold 26px Comic Sans MS";
+        } else {
+            this.ctx.font = "bold " + (this.value-4) + "px Comic Sans MS";
+        }
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        this.ctx.fillText("?", this.x, this.y - this.value / 2);
+        this.ctx.globalAlpha = 1;
     }
     this.ctx.fillStyle = "#000"; // text under the column
     this.ctx.font = "12px Arial";
@@ -202,4 +215,13 @@ inalan.VisuVariable.prototype.setGrayColor = function () {
 inalan.VisuVariable.prototype.setHiddenColor = function () {
     this.fillColor = this.hiddenColor;
     this.strokeColor = this.hiddenColor;
+}
+
+// set minimum value for the variable
+inalan.VisuVariable.prototype.setMinValue = function (value) {
+    this.minValue = value;
+}
+// set maximum value for the variable
+inalan.VisuVariable.prototype.setMaxValue = function (value) {
+    this.maxValue = value;
 }

@@ -33,7 +33,7 @@ inalan.Controller = function () {
     // restore a step from undo array
     var restoreStepFromUndo = function (stepNumber) {
         var stage = self.ctx.canvas.parent;
-        // copy attributes from var/visuItems to stage.var/stage.visuItems
+        // copy attributes from var/visuItems to stage.variables/stage.visuItems
         var copyAttributes = function (obj1, obj2) {
             for (var i in obj1) {
                 if (typeof (obj1[i]) === 'object') {
@@ -50,7 +50,7 @@ inalan.Controller = function () {
                 }
             }
         }
-        // delete unnecessary atributes (added in next step) from stage.var/stage.visuItems
+        // delete unnecessary atributes (added in next step) from stage.variables/stage.visuItems
         var deleteAttributes = function (obj1, obj2) {
             for (var i in obj2) {
                 if (typeof (obj2[i]) === 'object' && obj1.hasOwnProperty(i)) {
@@ -63,8 +63,8 @@ inalan.Controller = function () {
             }
         }
         var variables = JSON.parse(self.undo[stepNumber][1]);
-        copyAttributes(variables, stage.var);
-        deleteAttributes(variables, stage.var);
+        copyAttributes(variables, stage.variables);
+        deleteAttributes(variables, stage.variables);
         var visuItems = JSON.parse(self.undo[stepNumber][2]);
         copyAttributes(visuItems, stage.visuItems);
         deleteAttributes(visuItems, stage.visuItems);
@@ -159,7 +159,7 @@ inalan.Controller = function () {
     var nextStepAnimation = function () { // step the animation forward
         var stage = self.ctx.canvas.parent;
         if (stage.animating==0 && !self.waitingAnimation && self.stepFncsArray != null) {            
-            // saving objects on stage to undo array (stage.visuItems, stage.var, self.fncIndex, self.fncRepeatIndex)
+            // saving objects on stage to undo array (stage.visuItems, stage.variables, self.fncIndex, self.fncRepeatIndex)
             if (self.nextStepAuto<0) {
                 // enable reset, and enable prevStep button if not autoplaying the animation
                 self.reset.enabled = true;
@@ -169,7 +169,7 @@ inalan.Controller = function () {
                 // save object properties and variables into undo array
                 var i = self.undo.length;
                 self.undo[i] = new Array();
-                self.undo[i][1] = JSON.stringify(stage.var);
+                self.undo[i][1] = JSON.stringify(stage.variables);
                 self.undo[i][2] = JSON.stringify(stage.visuItems);
                 self.undo[i][3] = self.fncIndex;
                 self.undo[i][4] = self.fncRepeatIndex;

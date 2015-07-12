@@ -19,7 +19,7 @@ inalan.Stage = function (canvasId) {
     // elements on stage... *****************************
     this.visuItems = {};
     // user variables stored on stage... ****************
-    this.var = {};
+    this.variables = {};
     // add controller to stage... ***********************
     this.controller = new inalan.Controller();
     this.controller.x = 30;
@@ -388,10 +388,11 @@ inalan.Stage.prototype.get = function (id) {
 inalan.Stage.prototype.compare = function (firstObject, secondObject) {
     firstObject.startComparing();
     secondObject.startComparing();
+    var stage = this;
 }
 
 // animation of copying a visuVariable (firstObject to secondObject)
-inalan.Stage.prototype.copy = function (firstObject, secondObject, showArrow) {
+inalan.Stage.prototype.copy = function (firstObject, secondObject) {
     this.animating++;
     firstObject.changable = false;
     secondObject.changable = false;
@@ -418,15 +419,13 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject, showArrow) {
             secondObject.value = firstObject.value;
             clearInterval(intervalId);
             stage.animating--;
-            if (showArrow != false) {
-                stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
-            }
+            stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
         }
     }
 }
 
 // animation of moving a visuVariable (firstObject to secondObject)
-inalan.Stage.prototype.move = function (firstObject, secondObject, showArrow) {
+inalan.Stage.prototype.move = function (firstObject, secondObject) {
     this.animating++;
     firstObject.changable = false;
     secondObject.changable = false;
@@ -453,9 +452,7 @@ inalan.Stage.prototype.move = function (firstObject, secondObject, showArrow) {
             secondObject.value = firstObject.value;
             clearInterval(intervalId);
             stage.animating--;
-            if (showArrow != false) {
-                stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
-            }
+            stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
         }
     }
 }
@@ -488,8 +485,8 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
             firstObject.copyy += dy;
             secondObject.copyx -= dx;
             secondObject.copyy -= dy;
-        } else if (frames <= 0) {            
-            var x = secondObject.value;            
+        } else if (frames <= 0) {
+            var x = secondObject.value;
             secondObject.value = firstObject.value;
             firstObject.value = x;
             firstObject.copyx = firstObject.x;
@@ -498,12 +495,21 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
             secondObject.copyy = secondObject.y;
             clearInterval(intervalId);
             stage.animating--;
+            if (secondObject.value > firstObject.value) {
+                var middle = secondObject.value / 2;
+                stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - middle - 16, secondObject.x, secondObject.y - middle - 16]);
+                stage.showArrow = stage.showArrow.concat([secondObject.x, secondObject.y - middle + 16, firstObject.x, firstObject.y - middle + 16]);
+            } else {
+                var middle = firstObject.value / 2;
+                stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - middle + 16, secondObject.x, secondObject.y - middle + 16]);
+                stage.showArrow = stage.showArrow.concat([secondObject.x, secondObject.y - middle - 16, firstObject.x, firstObject.y - middle - 16]);
+            }
         }
     }
 }
 
 // animation of adding a visuVariable (firstObject to secondObject)
-inalan.Stage.prototype.add = function (firstObject, secondObject, showArrow) {
+inalan.Stage.prototype.add = function (firstObject, secondObject) {
     this.animating++;
     firstObject.changable = false;
     secondObject.changable = false;
@@ -518,7 +524,7 @@ inalan.Stage.prototype.add = function (firstObject, secondObject, showArrow) {
     var x = firstObject.x;
     var y = firstObject.y;
     firstObject.startCopying();
-    firstObject.setLightYellowColor();    
+    firstObject.setLightYellowColor();
     var addFnc = function () {
         frames--;
         if (frames > 0) {
@@ -530,15 +536,13 @@ inalan.Stage.prototype.add = function (firstObject, secondObject, showArrow) {
             secondObject.value = secondObject.value + firstObject.value;
             clearInterval(intervalId);
             stage.animating--;
-            if (showArrow != false) {
-                stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, (secondObject.y - secondObject.value) + firstObject.value / 2]);
-            }
+            stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, (secondObject.y - secondObject.value) + firstObject.value / 2]);
         }
     }
 }
 
 // stop copying animations (hide all ellow marked objects which are on stage after copy/move/add/exchange) 
-inalan.Stage.prototype.stopCopyingAndComparing = function () {    
+inalan.Stage.prototype.stopCopyingAndComparing = function () {
     // call stopCopying() for every VisuVariable and VisuArray on the stage;
     for (var index in this.visuItems) {
         if (this.visuItems.hasOwnProperty(index)) {

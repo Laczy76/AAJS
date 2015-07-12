@@ -118,3 +118,16 @@ inalan.VisuArray.prototype.renderCopy = function () {
         this.items[i].renderCopy();
     }
 }
+
+// set minimum value for all items in array
+inalan.VisuArray.prototype.setMinValue = function (value) {
+    for (var i = 0; i < this.items.length; i++) {
+        this.items[i].minValue = value;
+    }
+}
+// set maximum value for all items in array
+inalan.VisuArray.prototype.setMaxValue = function (value) {
+    for (var i = 0; i < this.items.length; i++) {
+        this.items[i].maxValue = value;
+    }
+}

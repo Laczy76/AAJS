@@ -20,13 +20,14 @@
             var stage = new inalan.Stage("myCanvas");
             stage.showAllButtons();
 
-            var m = new inalan.VisuVariable("max", 0, false); // visible name on canvas = "max"
-            m.x = 45;
-            m.y = 220;
-            stage.addVisu(m,"max"); // in code we can refer to is with id = "max"
+            var max = new inalan.VisuVariable("max", 0, false); // visible name on canvas = "max"
+            max.x = 45;
+            max.y = 220;
+            stage.addVisu(max,"max"); // in code we can refer to is with id = "max"
 
             var a = new inalan.VisuArray("a", [0, 0, 0, 0, 0, 0, 0], true); // visible name on canvas = "a"
-            a.randomize(30,150);
+            a.setMinValue(5);
+            a.randomize(30, 150);            
             a.x = 100;
             a.y = 220;
             stage.addVisu(a, "a"); // in code we can refer to is with id = "a"            
@@ -51,7 +52,7 @@
             // **********************************************
 
             // global variables used in functions (for undo function need to be stored in stage.var object) ...
-            stage.var.index = 0;
+            stage.variables.index = 0;
 
             // functions (steps of the animation) ...
             var findMaxFirstStep = function () {
@@ -65,25 +66,25 @@
                 // select a line in the code
                 stage.get("code").selected = [2];
                 // compare max with the next element
-                stage.compare(stage.get("max"), stage.get("a").items[stage.var.index]);                
+                stage.compare(stage.get("max"), stage.get("a").items[stage.variables.index]);                
             }
 
             var findMaxCopy = function () {
                 // copy the element to max if it is bigger     
-                if (stage.get("max").value < stage.get("a").items[stage.var.index].value) {
+                if (stage.get("max").value < stage.get("a").items[stage.variables.index].value) {
                     stage.get("code").selected = [3];
-                    stage.copy(stage.get("a").items[stage.var.index], stage.get("max"));
+                    stage.copy(stage.get("a").items[stage.variables.index], stage.get("max"));
                 } else {
-                    stage.get("a").items[stage.var.index].changable = false;                    
+                    stage.get("a").items[stage.variables.index].changable = false;
                     return 0; // automatically jump to the next step after 0ms...
                 }
             }
 
             var findMaxIncrease = function () {
-                // increase the stage.var.index (go to next element)
-                stage.var.index++;
+                // increase the stage.variables.index (go to next element)
+                stage.variables.index++;
                 // set index "i" in array
-                stage.get("a").setIndex("i", stage.var.index);
+                stage.get("a").setIndex("i", stage.variables.index);
                 // select a line in the code
                 if (findMaxCheck()) {
                     stage.get("code").selected = [1];                    
@@ -95,7 +96,7 @@
 
             var findMaxCheck = function () {
                 // check if there are more elements in array (array is indexed from 0)
-                return stage.var.index < stage.get("a").items.length;
+                return stage.variables.index < stage.get("a").items.length;
             }
 
             var findMaxFinalStep = function () {
@@ -104,14 +105,9 @@
                 // remove index "i" from stage
                 stage.get("a").deleteIndex("i");
             }
-
-            var test = function () {
-                stage.exchange(stage.get("a").items[2], stage.get("a").items[3]);
-            }
-             
+            
             // defining steps in animation...
             stage.setSteps([
-                test,
                 findMaxFirstStep,
                 findMaxIncrease,
                 [findMaxCompare, findMaxCopy, findMaxIncrease], findMaxCheck,

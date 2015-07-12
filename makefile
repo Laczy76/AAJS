@@ -12,9 +12,9 @@ modules = ${srcdir}Stage.js\
 		  ${srcdir}VisuData.js\
 		  ${srcdir}VisuVariable.js\
 		  ${srcdir}VisuArray.js\
-		  ${srcdir}VisuButton.js\		  
+		  ${srcdir}VisuButton.js\
 		  ${srcdir}VisuScrollbar.js\
-		  ${srcdir}VisuLabel.js\	  
+		  ${srcdir}VisuLabel.js\
 		  ${srcdir}VisuCode.js
 
 # Combined file (temporary file)
@@ -32,7 +32,7 @@ combine:
 			
 # Compress all of the modules into inalan.js
 compress:
-	java -jar yuicompressor-2.4.7.jar ${combined1} -o ${combined2}
+	java -jar yuicompressor-2.4.8.jar ${combined1} -o ${combined2}
 
 # Add copyright notice	
 copyright:
