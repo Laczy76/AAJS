@@ -96,7 +96,7 @@ inalan.Controller = function () {
     // step the animation backward one step
     var prevStepAnimation = function () { 
         var stage = self.ctx.canvas.parent;
-        if (stage.animating==0 && !self.waitingAnimation) {
+        if (stage.animating == 0 && !self.waitingAnimation) {
             var i = self.undo.length - 1;
             // restore step from undo array
             restoreStepFromUndo(i);

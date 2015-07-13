@@ -317,11 +317,11 @@ inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
             if (stage.controller.hasOwnProperty(i)) {
                 var obj2 = stage.controller[i];
                 // VisuButton within the controller
-                if (obj2 instanceof inalan.VisuButton) {
+                if (obj2 instanceof inalan.VisuButton) {                    
                     if (obj2.isOver(mouseX, mouseY) && obj2.enabled && obj2.pressed) {
                         obj2.onClickFnc();
                     }
-                    obj2.pressed = false;
+                    obj2.pressed = false;                   
                 }
                 // VisuScrollbar within the controller
                 if (obj2 instanceof inalan.VisuScrollbar) {
@@ -345,10 +345,10 @@ inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
                 }
                 // *** VisuButton ***
                 if (obj instanceof inalan.VisuButton) {
-                    if (obj.isOver(mouseX, mouseY) && obj.enabled && obj.pressed) {
+                    if (obj.isOver(mouseX, mouseY) && obj.enabled && obj.pressed) {                        
                         obj.onClickFnc();
                     }
-                    obj.pressed = false;
+                    obj.pressed = false;                    
                 }
                 // *** VisuScrollbar ***
                 if (obj instanceof inalan.VisuScrollbar) {
