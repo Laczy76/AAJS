@@ -3,7 +3,7 @@
 <head>
     <title>Maxsearch</title>
 
-    <script src="../build/inalan20150712.js"></script>
+    <script src="../build/inalan20150716.js"></script>
 
     <script>
 
@@ -43,8 +43,8 @@
 
             // **********************************************
 
-            // global variables used in functions (for undo function need to be stored in stage.var object) ...
-            stage.variables.index = 0;
+            // global vars used in functions (for undo function need to be stored in stage.var object) ...
+            stage.vars.index = 0;
 
             // functions (steps of the animation) ...
             var findMaxFirstStep = function () {
@@ -54,21 +54,21 @@
 
             var findMaxCompare = function () {
                 stage.get("code").selected = [2];
-                stage.compare(stage.get("max"), stage.get("a").items[stage.variables.index]);
+                stage.compare(stage.get("max"), stage.get("a").items[stage.vars.index]);
             }
 
             var findMaxCopy = function () {
-                if (stage.get("max").value < stage.get("a").items[stage.variables.index].value) {
+                if (stage.get("max").value < stage.get("a").items[stage.vars.index].value) {
                     stage.get("code").selected = [3];
-                    stage.copy(stage.get("a").items[stage.variables.index], stage.get("max"));
+                    stage.copy(stage.get("a").items[stage.vars.index], stage.get("max"));
                 } else {
                     return 0;
                 }
             }
 
             var findMaxIncrease = function () {
-                stage.variables.index++;
-                stage.get("a").setIndex("i", stage.variables.index);
+                stage.vars.index++;
+                stage.get("a").setIndex("i", stage.vars.index);
                 if (findMaxCheck()) {
                     stage.get("code").selected = [1];
                     return 200;
@@ -78,7 +78,7 @@
             }
 
             var findMaxCheck = function () {
-                return stage.variables.index < stage.get("a").items.length;
+                return stage.vars.index < stage.get("a").items.length;
             }
 
             var findMaxFinalStep = function () {

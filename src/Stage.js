@@ -18,8 +18,8 @@ inalan.Stage = function (canvasId) {
     this.ctx = this.canvas.getContext("2d");
     // elements on stage... *****************************
     this.visuItems = {};
-    // user variables stored on stage... ****************
-    this.variables = {};
+    // user vars stored on stage... ****************
+    this.vars = {};
     // add controller to stage... ***********************
     this.controller = new inalan.Controller();
     this.controller.x = 30;
@@ -171,7 +171,7 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
             }
         }
     }
-    // if not dragging any variable (not changing the value of any variable), 
+    // if not dragging any VisuVariable (not changing the value of any VisuVariable), 
     // then change the mouse cursor to default or resize...
     if (!dragging) {
         var mouseCursor = "default";

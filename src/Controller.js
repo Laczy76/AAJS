@@ -62,9 +62,9 @@ inalan.Controller = function () {
                 }
             }
         }
-        var variables = JSON.parse(self.undo[stepNumber][1]);
-        copyAttributes(variables, stage.variables);
-        deleteAttributes(variables, stage.variables);
+        var vars = JSON.parse(self.undo[stepNumber][1]);
+        copyAttributes(vars, stage.vars);
+        deleteAttributes(vars, stage.vars);
         var visuItems = JSON.parse(self.undo[stepNumber][2]);
         copyAttributes(visuItems, stage.visuItems);
         deleteAttributes(visuItems, stage.visuItems);
@@ -161,17 +161,17 @@ inalan.Controller = function () {
     var nextStepAnimation = function () { // step the animation forward
         var stage = self.ctx.canvas.parent;
         if (stage.animating==0 && !self.waitingAnimation && self.stepFncsArray != null) {            
-            // saving objects on stage to undo array (stage.visuItems, stage.variables, self.fncIndex, self.fncRepeatIndex)
+            // saving objects on stage to undo array (stage.visuItems, stage.vars, self.fncIndex, self.fncRepeatIndex)
             if (self.nextStepAuto<0) {
                 // enable reset, and enable prevStep button if not autoplaying the animation
                 self.reset.enabled = true;
                 if (!self.playingAnimation) {
                     self.prevStep.enabled = true;
                 }
-                // save object properties and variables into undo array
+                // save object properties and vars into undo array
                 var i = self.undo.length;
                 self.undo[i] = new Array();
-                self.undo[i][1] = JSON.stringify(stage.variables);
+                self.undo[i][1] = JSON.stringify(stage.vars);
                 self.undo[i][2] = JSON.stringify(stage.visuItems);
                 self.undo[i][3] = self.fncIndex;
                 self.undo[i][4] = self.fncRepeatIndex;
