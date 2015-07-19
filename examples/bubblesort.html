@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Simplesort</title>
+    <title>Bubblesort</title>
 
     <script src="../build/inalan20150719.js"></script>
 
@@ -19,20 +19,20 @@
         a.y = 220;
         stage.addVisu(a, "a");
 
-        var label = new inalan.VisuLabel(["This animation shows the simplesort sorting algorithm. We compare every element with every other",
-                                          "element located behind it. If the compared elements are not in ascending order, we exchange them."]);
+        var label = new inalan.VisuLabel(["This animation shows the bubblesort algorithm. We compare every element with its right neightbour.",
+                                          "If the compared elements are not in ascending order, we exchange them."]);
         label.x = 30;
-        label.y = 330;
+        label.y = 350;
         stage.addVisu(label, "label")
 
-        var c = new inalan.VisuCode(["FOR i = 0 to 5",
-                                     "   FOR j = i+1 to 6",
-                                     "      IF a[i] > a[j] THEN",
-                                     "         exchange a[i] a[j]",
+        var c = new inalan.VisuCode(["FOR i = 6 downto 1",
+                                     "   FOR j = 0 to i-1",
+                                     "      IF a[j] > a[j+1] THEN",
+                                     "         exchange a[j] a[j+1]",
                                      "      END IF",
                                      "   END FOR",
                                      "END FOR"]);
-        c.x = 320;
+        c.x = 310;
         c.y = 60;
         stage.addVisu(c, "code"); // in code we can refer to this with id = "code"
 
@@ -42,48 +42,50 @@
         // global vars need to be stored in stage.vars object...
 
         var setI = function () {
-            stage.vars.i = 0;
+            stage.vars.i = 6;
             stage.get("code").selected = [0];
-            stage.get("a").setIndex("i", stage.vars.i);
+            stage.get("a").setIndex("i", stage.vars.i, 1);
             return 200;
         }
 
         var setJ = function () {
-            stage.vars.j = stage.vars.i + 1;
+            stage.vars.j = 0;
             stage.get("code").selected = [1];
-            stage.get("a").setIndex("j", stage.vars.j);
+            stage.get("a").setIndex("j", stage.vars.j, 0);
+            stage.get("a").setIndex("j+1", stage.vars.j+1, 0);
             return 200;
         }
 
         var compare = function () {
             stage.get("code").selected = [2];
-            stage.compare(stage.get("a").items[stage.vars.i], stage.get("a").items[stage.vars.j]);
+            stage.compare(stage.get("a").items[stage.vars.j], stage.get("a").items[stage.vars.j+1]);
         }
 
         var exchange = function () {
-            if (stage.get("a").items[stage.vars.i].value > stage.get("a").items[stage.vars.j].value) {
+            if (stage.get("a").items[stage.vars.j].value > stage.get("a").items[stage.vars.j+1].value) {
                 stage.get("code").selected = [3];
-                for (var k = stage.vars.i; k <= stage.vars.j; k++) {
-                    stage.get("a").items[k].minValue = stage.get("a").items[stage.vars.j].value;
+                for (var k = 0; k <= stage.vars.j + 1; k++) {
+                    stage.get("a").items[k].maxValue = stage.get("a").items[stage.vars.j].value;
                 }
-                stage.exchange(stage.get("a").items[stage.vars.i], stage.get("a").items[stage.vars.j]);
+                stage.exchange(stage.get("a").items[stage.vars.j], stage.get("a").items[stage.vars.j+1]);
             } else {
-                stage.get("a").items[stage.vars.j].minValue = stage.get("a").items[stage.vars.i].value;
+                for (var k = 0; k <= stage.vars.j + 1; k++) {
+                    stage.get("a").items[k].maxValue = stage.get("a").items[stage.vars.j + 1].value;                    
+                }                
                 return 0;
             }
         }
 
-        var incI = function () {
+        var decI = function () {
             stage.get("a").items[stage.vars.i].setGreenColor();
-            stage.vars.i++;
+            stage.get("a").items[stage.vars.i].changable = false;
+            stage.vars.i--;
             if (checkI()) {
                 stage.get("code").selected = [0];
-                stage.get("a").setIndex("i", stage.vars.i);
+                stage.get("a").setIndex("i", stage.vars.i, 1);
                 return 200;
             } else {
-                stage.get("a").items[stage.vars.i].setGreenColor();
-                stage.get("a").items[stage.vars.i].changable = false;
-                stage.get("a").deleteIndex("i");
+                stage.get("a").deleteIndex("i");                
                 return 0;
             }
         }
@@ -92,28 +94,32 @@
             stage.vars.j++;
             if (checkJ()) {
                 stage.get("code").selected = [1];
-                stage.get("a").setIndex("j", stage.vars.j);
+                stage.get("a").setIndex("j", stage.vars.j, 0);
+                stage.get("a").setIndex("j+1", stage.vars.j + 1, 0);
                 return 200;
             } else {
                 stage.get("a").deleteIndex("j");
+                stage.get("a").deleteIndex("j+1");
                 return 0;
             }
         }
 
-        var makeJChangable = function () {
+        var makeChangable = function () {
             stage.get("a").items[stage.vars.j].changable = true;
             return 0;
         }
 
         var checkI = function () {
-            return stage.vars.i < stage.get("a").items.length - 1;
+            return stage.vars.i > 0;
         }
 
         var checkJ = function () {
-            return stage.vars.j < stage.get("a").items.length;
+            return stage.vars.j < stage.vars.i;
         }
 
         var finalStep = function () {
+            stage.get("a").items[0].setGreenColor();
+            stage.get("a").items[0].changable = false;
             stage.get("code").selected = [];
         }
 
@@ -125,10 +131,10 @@
                 [
                     compare,
                     exchange,
-                    makeJChangable,
+                    makeChangable,
                     incJ
                 ], checkJ,
-                incI
+                decI
             ], checkI,
             finalStep
         ]);

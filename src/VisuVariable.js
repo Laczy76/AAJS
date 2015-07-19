@@ -28,6 +28,8 @@ inalan.VisuVariable = function (name, value, changable) {
     this.value = value; // value (red column)
     this.minValue = 0; // minimum value when dragging with the mouse and trying to change it's value
     this.maxValue = value > 180 ? value : 180; // maximum value when dragging with the mouse and trying to change it's value
+    // properties of the column
+    this.height = this.maxValue;
     this.fillColor = "#C00"; // default color (red)
     this.strokeColor = "#000";
     this.width = 24; // width of the column    
@@ -73,9 +75,12 @@ inalan.VisuVariable.prototype.render = function () {
     } else if (this.value < this.minValue) {
         this.value = this.minValue;
     }
+    if (this.maxValue > this.height) {
+        this.height = this.maxValue;
+    }
     // draw VisuVariable
     this.ctx.fillStyle = this.hiddenColor; // backround
-    this.ctx.fillRect(this.x - this.width / 2 - 1, this.y - this.maxValue - 1, this.width + 1, this.maxValue);
+    this.ctx.fillRect(this.x - this.width / 2 - 1, this.y - this.height - 1, this.width + 1, this.height);
     this.ctx.fillStyle = this.fillColor; // column
     this.ctx.fillRect(this.x - this.width / 2 - 0.5, this.y - this.value - 0.5, this.width, this.value);
     this.ctx.strokeStyle = this.strokeColor;

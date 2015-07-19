@@ -417,6 +417,8 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject) {
             firstObject.copyx = secondObject.x;
             firstObject.copyy = secondObject.y;
             secondObject.value = firstObject.value;
+            secondObject.minValue = firstObject.minValue;
+            secondObject.maxValue = firstObject.maxValue;
             clearInterval(intervalId);
             stage.animating--;
             stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
@@ -450,6 +452,8 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
             firstObject.copyx = secondObject.x;
             firstObject.copyy = secondObject.y;
             secondObject.value = firstObject.value;
+            secondObject.minValue = firstObject.minValue;
+            secondObject.maxValue = firstObject.maxValue;
             clearInterval(intervalId);
             stage.animating--;
             stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
@@ -489,6 +493,12 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
             var x = secondObject.value;
             secondObject.value = firstObject.value;
             firstObject.value = x;
+            x = secondObject.minValue;
+            secondObject.minValue = firstObject.minValue;
+            firstObject.minValue = x;
+            x = secondObject.maxValue;
+            secondObject.maxValue = firstObject.maxValue;
+            firstObject.maxValue = x;
             firstObject.copyx = firstObject.x;
             firstObject.copyy = firstObject.y;
             secondObject.copyx = secondObject.x;
@@ -541,7 +551,7 @@ inalan.Stage.prototype.add = function (firstObject, secondObject) {
     }
 }
 
-// stop copying animations (hide all ellow marked objects which are on stage after copy/move/add/exchange) 
+// stop copying animations (hide all yellow marked objects which are on stage after copy/move/add/exchange) 
 inalan.Stage.prototype.stopCopyingAndComparing = function () {
     // call stopCopying() for every VisuVariable and VisuArray on the stage;
     for (var index in this.visuItems) {

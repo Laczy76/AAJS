@@ -16,7 +16,6 @@ inalan.Controller = function () {
     this.x = 0;
     this.y = 0;
     this.fncIndex = [0]; // indexes in stepFncsArray, first item in main steps, second item in repeat steps, third in repet within repeat, etc.
-    // this.fncRepeatIndex = 0; // index in array inside stepFncsArray (for repeating some steps)   
     this.stepFncsArray = null; // array of functions for every step
     this.playingAnimation = false; // playing animation (Start/Stop button)
     this.waitingAnimation = false; // animation is waiting (animation is waiting im delay between steps when automatically playing)

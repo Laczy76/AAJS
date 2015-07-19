@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Insertsort</title>
+
+    <script src="../build/inalan20150719.js"></script>
+
+    <script>
+
+    var init = function () {
+
+        var stage = new inalan.Stage("myCanvas");
+        stage.showAllButtons();
+
+        var a = new inalan.VisuArray("a", [0, 0, 0, 0, 0, 0, 0], true);
+        a.setMinValue(5);
+        a.randomize(30, 150);
+        a.x = 65;
+        a.y = 220;
+        stage.addVisu(a, "a");
+
+        var label = new inalan.VisuLabel(["This animation shows the insertsort algorithm. We move every element to its place on the left."]);
+        label.x = 30;
+        label.y = 350;
+        stage.addVisu(label, "label")
+
+        var c = new inalan.VisuCode(["FOR i = 1 to 6",
+                                     "   j = i-1",
+                                     "   WHILE (j >= 0) and (a[j] > a[j+1])",
+                                     "      exchange a[j] a[j+1]",
+                                     "      j = j-1",
+                                     "   END WHILE",
+                                     "END FOR"]);
+        c.x = 270;
+        c.y = 60;
+        stage.addVisu(c, "code"); // in code we can refer to this with id = "code"
+
+        // **********************************************
+
+        // functions (steps of the animation) ...
+        // global vars need to be stored in stage.vars object...
+
+        var setI = function () {
+            stage.vars.i = 1;
+            stage.get("code").selected = [0];
+            stage.get("a").setIndex("i", stage.vars.i,1);
+            stage.get("a").items[0].setGreenColor();
+            stage.get("a").items[0].changable = false;
+            return 200;
+        }
+
+        var setJ = function () {
+            stage.vars.j = stage.vars.i - 1;
+            stage.get("code").selected = [1];
+            stage.get("a").setIndex("j", stage.vars.j);
+            stage.get("a").setIndex("j+1", stage.vars.j+1);
+            return 200;
+        }
+
+        var compare = function () {
+            stage.get("code").selected = [2];
+            stage.get("a").items[stage.vars.j + 1].changable = true;
+            stage.compare(stage.get("a").items[stage.vars.j], stage.get("a").items[stage.vars.j+1]);
+        }
+
+        var exchange = function () {
+            stage.get("a").items[stage.vars.j + 1].setGreenColor();
+            if (stage.get("a").items[stage.vars.j].value > stage.get("a").items[stage.vars.j+1].value) {
+                stage.get("code").selected = [3];
+                stage.get("a").items[stage.vars.j+1].maxValue = stage.get("a").items[stage.vars.j].value;
+                stage.vars.exchange = true;
+                stage.get("a").items[stage.vars.j].setDefaultColor();
+                stage.exchange(stage.get("a").items[stage.vars.j], stage.get("a").items[stage.vars.j+1]);
+            } else {
+                stage.vars.exchange = false;
+                return 0;
+            }
+        }
+
+        var incI = function () {            
+            stage.vars.i++;
+            stage.get("a").deleteIndex("j");
+            stage.get("a").deleteIndex("j+1");
+            if (checkI()) {
+                stage.get("code").selected = [0];
+                stage.get("a").setIndex("i", stage.vars.i,1);
+                return 200;
+            } else {
+                stage.get("a").deleteIndex("i");                
+                return 0;
+            }
+        }
+
+        var decJ = function () {
+            if (stage.vars.exchange) {
+                stage.vars.j--;
+                if (stage.vars.j<0) {
+                    stage.get("a").items[0].setGreenColor();
+                }
+                stage.get("code").selected = [4];
+                stage.get("a").setIndex("j", stage.vars.j);
+                stage.get("a").setIndex("j+1", stage.vars.j+1);
+                return 200;
+            } else {
+                return 0;
+            }
+        }
+
+        var checkI = function () {
+            return stage.vars.i <= 6;
+        }
+
+        var checkJ = function () {
+            return stage.vars.j>=0 && stage.vars.exchange;
+        }
+
+        var finalStep = function () {            
+            stage.get("code").selected = [];
+        }
+
+        // defining steps in animation...
+        stage.setSteps([
+            setI,
+            [
+                setJ,
+                [
+                    compare,
+                    exchange,
+                    decJ
+                ], checkJ,
+                incI
+            ], checkI,
+            finalStep
+        ]);
+
+    }
+
+    </script>
+
+
+</head>
+<body onload="init();">
+
+    <canvas id="myCanvas" width="700" height="480" style="border:1px solid black"></canvas>
+
+</body>
+</html>
