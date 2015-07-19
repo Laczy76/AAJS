@@ -15,8 +15,8 @@ inalan.Controller = function () {
     // set properties        
     this.x = 0;
     this.y = 0;
-    this.fncIndex = 0; // index in stepFncsArray
-    this.fncRepeatIndex = 0; // index in array inside stepFncsArray (for repeating some steps)   
+    this.fncIndex = [0]; // indexes in stepFncsArray, first item in main steps, second item in repeat steps, third in repet within repeat, etc.
+    // this.fncRepeatIndex = 0; // index in array inside stepFncsArray (for repeating some steps)   
     this.stepFncsArray = null; // array of functions for every step
     this.playingAnimation = false; // playing animation (Start/Stop button)
     this.waitingAnimation = false; // animation is waiting (animation is waiting im delay between steps when automatically playing)
@@ -68,11 +68,10 @@ inalan.Controller = function () {
         var visuItems = JSON.parse(self.undo[stepNumber][2]);
         copyAttributes(visuItems, stage.visuItems);
         deleteAttributes(visuItems, stage.visuItems);
-        // restore fncIndex and fncRepeatIndex
-        self.fncIndex = self.undo[stepNumber][3];
-        self.fncRepeatIndex = self.undo[stepNumber][4];
+        // restore fncIndex
+        self.fncIndex = JSON.parse(self.undo[stepNumber][3]);
         // restore arrow
-        stage.showArrow = JSON.parse(self.undo[stepNumber][5]);
+        stage.showArrow = JSON.parse(self.undo[stepNumber][4]);
     }
     // reset animation (restore the first step from undo array)
     var resetAnimationWhenPossible = false;
@@ -161,7 +160,7 @@ inalan.Controller = function () {
     var nextStepAnimation = function () { // step the animation forward
         var stage = self.ctx.canvas.parent;
         if (stage.animating==0 && !self.waitingAnimation && self.stepFncsArray != null) {            
-            // saving objects on stage to undo array (stage.visuItems, stage.vars, self.fncIndex, self.fncRepeatIndex)
+            // saving objects on stage to undo array (stage.visuItems, stage.vars, self.fncIndex)
             if (self.nextStepAuto<0) {
                 // enable reset, and enable prevStep button if not autoplaying the animation
                 self.reset.enabled = true;
@@ -173,48 +172,59 @@ inalan.Controller = function () {
                 self.undo[i] = new Array();
                 self.undo[i][1] = JSON.stringify(stage.vars);
                 self.undo[i][2] = JSON.stringify(stage.visuItems);
-                self.undo[i][3] = self.fncIndex;
-                self.undo[i][4] = self.fncRepeatIndex;
-                self.undo[i][5] = JSON.stringify(stage.showArrow);
+                self.undo[i][3] = JSON.stringify(self.fncIndex);
+                self.undo[i][4] = JSON.stringify(stage.showArrow);
             }
             // step animation...
             stage.showArrow = [];
             stage.stopCopyingAndComparing();
-            if (self.stepFncsArray[self.fncIndex] instanceof Array) { // repeating some steps
-                self.nextStepAuto = self.stepFncsArray[self.fncIndex][self.fncRepeatIndex]();
-                if (typeof(self.nextStepAuto) == 'undefined') {
-                    self.nextStepAuto = -1;
-                }
-                self.fncRepeatIndex++;
-                if (self.fncRepeatIndex >= self.stepFncsArray[self.fncIndex].length) {
-                    self.fncRepeatIndex = 0;
-                    if (!self.stepFncsArray[self.fncIndex + 1]()) {
-                        self.fncIndex = self.fncIndex + 2;
-                        if (self.fncIndex >= self.stepFncsArray.length) {
-                            self.nextStepAuto = -1;
-                            self.playingAnimation = false;
-                            self.nextStep.enabled = false;
-                            self.startStop.enabled = false;
-                        }
-                    }
-                }
-            } else { // steps without repetations
-                self.nextStepAuto = self.stepFncsArray[self.fncIndex]();
-                if (typeof(self.nextStepAuto) == 'undefined') {
-                    self.nextStepAuto = -1;
-                }
-                self.fncIndex++;
-                if (self.fncIndex >= self.stepFncsArray.length) {
-                    self.nextStepAuto = -1;
-                    self.playingAnimation = false;
-                    if (self.undo.length > 0) {
-                        self.prevStep.enabled = true;
-                    }
-                    self.nextStep.enabled = false;
-                    self.startStop.enabled = false;
-                    self.startStop.text = self.startLabel;
+            // determine stepsArray and stepsCheck (every element in these arrays are new repeats inside the previous repeats)
+            var i = 0;
+            var stepsArray = [self.stepFncsArray];
+            var stepsCheck = [null];
+            while (stepsArray[i][self.fncIndex[i]] instanceof Array) {
+                stepsCheck[i+1] = stepsArray[i][self.fncIndex[i] + 1];
+                stepsArray[i+1] = stepsArray[i][self.fncIndex[i]];                
+                i++;
+                if (i >= self.fncIndex.length) {
+                    self.fncIndex[i] = 0;
                 }
             }
+            // run current step
+            self.nextStepAuto = stepsArray[i][self.fncIndex[i]]();
+            if (typeof (self.nextStepAuto) == 'undefined') {
+                self.nextStepAuto = -1;
+            }
+            // increase fncIndex to next possible step
+            var ok;
+            do {
+                ok = true;
+                self.fncIndex[i]++;
+                if (self.fncIndex[i] >= stepsArray[i].length) {
+                    if (stepsCheck[i] != null) {
+                        if (stepsCheck[i]()) {
+                            // repeat some steps
+                            self.fncIndex[i] = 0;
+                        } else {
+                            // no more repeat, step back to previous repeat
+                            i--;
+                            self.fncIndex[i]++; // to skip the check function
+                            self.fncIndex = self.fncIndex.slice(0, i+1); // remove last item from array
+                            ok = false;
+                        }
+                    } else {
+                        // the whole animation ended, no more steps
+                        self.nextStepAuto = -1;
+                        self.playingAnimation = false;
+                        if (self.undo.length > 0) {
+                            self.prevStep.enabled = true;
+                        }
+                        self.nextStep.enabled = false;
+                        self.startStop.enabled = false;
+                        self.startStop.text = self.startLabel;
+                    }
+                }
+            } while (!ok);
             nextStepAnimationDoneID = setInterval(nextStepAnimationDone, 1); // checks every 1ms if the animation is done
         }
     }

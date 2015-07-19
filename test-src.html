@@ -23,7 +23,9 @@
             // **********************************************
 
             // global variables used in functions (for undo function need to be stored in stage.var object) ...
-            stage.vars.index = 0;
+            stage.vars.index1 = 0;
+            stage.vars.index2 = 0;
+            stage.vars.index3 = 0;
 
             var step1 = function () {
                 console.log("step1");
@@ -38,23 +40,69 @@
             }
 
             var r1step2 = function () {
-                console.log("r1step2");
+                console.log("r1step2");                
+            }
+
+            var r2step1 = function () {
+                console.log("r2step1");
+            }
+
+            var r2step2 = function () {
+                console.log("r2step2");
+            }
+
+            var r2step3 = function () {
+                console.log("r2step3");                
+            }
+
+            var r2check = function () {
+                stage.vars.index2++;
+                if (stage.vars.index2 < 2) {
+                    return true;
+                }
+                stage.vars.index2 = 0;
+                return false;
+            }
+
+            var r3step1 = function () {
+                console.log("r3step1");
+            }
+
+            var r3check = function () {
+                stage.vars.index3++;
+                if (stage.vars.index3 < 5) {
+                    return true;
+                }
+                stage.vars.index3 = 0;
+                return false;
             }
 
             var r1step3 = function () {
-                console.log("r1step3");
-                stage.vars.index++;
+                console.log("r1step3");                
             }
 
             var r1check = function () {
-                return stage.vars.index < 3;
+                stage.vars.index1++;
+                return stage.vars.index1 < 3;
+            }
+
+            var final = function () {
+                console.log("final");
             }
 
             // defining steps in animation...
             stage.setSteps([
                 step1,
                 step2,
-                [r1step1, r1step2, r1step3], r1check,
+                [ r1step1,
+                    [r2step1, r2step2, r2step3], r2check,
+                  r1step2,
+                    [r2step1, r2step2, r2step3,
+                        [r3step1], r3check
+                    ], r2check,
+                  r1step3
+                ], r1check,
+                final
             ]);
 
             // stage.get("max").setDefaultColor();
