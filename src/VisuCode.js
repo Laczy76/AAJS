@@ -17,8 +17,8 @@ inalan.VisuCode = function (lines) {
     // set new properties
     this.lines = lines;
     this.selected = [];
-    // background color of selected lines
-    this.selectionColor = "#DEE";
+    // background color of selected line
+    this.selectionColor = "#DEE";    
 }
 
 // create subclass VisuCode from VisuData - set methods
