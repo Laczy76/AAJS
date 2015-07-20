@@ -1,5 +1,5 @@
 <h3>Interactive Algorithm Animations (inalan) javascript library</h3>
-What is this library for? Read the wiki: https://github.com/veghl/inalan/wiki. :)
+What is this library for? If you don't know, read the wiki: https://github.com/veghl/inalan/wiki. :)
 <hr>
 <p>
 GitHub for Windows:<br/>
