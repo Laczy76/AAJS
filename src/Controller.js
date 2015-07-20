@@ -18,8 +18,8 @@ inalan.Controller = function () {
     this.fncIndex = [0]; // indexes in stepFncsArray, first item in main steps, second item in repeat steps, third in repet within repeat, etc.
     this.stepFncsArray = null; // array of functions for every step
     this.playingAnimation = false; // playing animation (Start/Stop button)
-    this.waitingAnimation = false; // animation is waiting (animation is waiting im delay between steps when automatically playing)
-    this.nextStepAuto = -1; // automatically play the next step
+    this.waitingAnimation = false; // animation is waiting (animation is waiting im delay between steps when automatically playing)   
+    this.nextStepAuto = -1; // automatically play the next step    
     this.undo = []; // undo array to save steps (object properties and variables)
     var self = this;
     // variables for button labels
@@ -147,13 +147,13 @@ inalan.Controller = function () {
                 resetAnimation();
             } else if (self.nextStepAuto==0) {
                 nextStepAnimation();
-            } else if (self.nextStepAuto>0) {
+            } else if (self.nextStepAuto > 0) {
                 self.waitingAnimation = true;
                 setTimeout(waitAnimationDone, stage.time/1000*self.nextStepAuto);
             } else if (self.playingAnimation) {
                 self.waitingAnimation = true;
                 setTimeout(waitAnimationDone, stage.time);
-            }
+            }            
         }
     }
     var nextStepAnimation = function () { // step the animation forward
@@ -232,10 +232,10 @@ inalan.Controller = function () {
         stage.time = 2000 - position;
     }
     // buttons...
-    this.reset = new inalan.VisuButton(this.resetLabel, 70, resetAnimation);    
-    this.prevStep = new inalan.VisuButton(this.prevLabel, 120, prevStepAnimation);
+    this.reset = new inalan.VisuButton(this.resetLabel, 80, resetAnimation);    
     this.startStop = new inalan.VisuButton(this.startLabel, 0, startStopAnimation);
-    this.nextStep = new inalan.VisuButton(this.nextLabel, 100, nextStepAnimation);
+    this.prevStep = new inalan.VisuButton(this.prevLabel, 120, prevStepAnimation);    
+    this.nextStep = new inalan.VisuButton(this.nextLabel, 120, nextStepAnimation);
     this.reset.enabled = false;
     this.prevStep.enabled = false;
     // scrollbar...
@@ -245,11 +245,11 @@ inalan.Controller = function () {
 // show all buttons (reset, startStop, step, speed),
 // in default mode the startStop button is hidden
 inalan.Controller.prototype.showAllButtons = function () {
-    this.reset.width = 70;
-    this.startStop.width = 70;
+    this.reset.width = 80;
+    this.startStop.width = 80;
     this.prevStep.width = 120;
-    this.nextStep.width = 100;
-    this.speed.width = 150;
+    this.nextStep.width = 120;
+    this.speed.width = 150;    
 }
 
 // render the controller
@@ -290,8 +290,9 @@ inalan.Controller.prototype.render = function () {
     }
     // draw the scrollbar
     if (this.speed.width > 0) {
+        spaceWidth += 30;
         this.speed.ctx = this.ctx;
-        this.speed.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.nextStep.width + 30 + this.speed.width / 2 + spaceWidth;
+        this.speed.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.nextStep.width + this.speed.width / 2 + spaceWidth;
         this.speed.y = this.y;
         this.speed.render();
     }

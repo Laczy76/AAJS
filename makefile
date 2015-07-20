@@ -32,7 +32,7 @@ combine:
 			
 # Compress all of the modules into inalan.js
 compress:
-	java -jar yuicompressor-2.4.8.jar ${combined1} -o ${combined2}
+	java -jar yuicompressor-2.4.8.jar ${combined1} -o ${combined2} --nomunge
 
 # Add copyright notice	
 copyright:

@@ -406,6 +406,8 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject) {
     var dy = (secondObject.y - firstObject.y) / frames;
     var x = firstObject.x;
     var y = firstObject.y;
+    var c1 = firstObject.strokeColor;
+    var c2 = firstObject.fillColor;
     firstObject.startCopying();
     firstObject.setLightYellowColor();
     var copyFnc = function () {
@@ -419,6 +421,8 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject) {
             secondObject.value = firstObject.value;
             secondObject.minValue = firstObject.minValue;
             secondObject.maxValue = firstObject.maxValue;
+            secondObject.strokeColor = c1;
+            secondObject.fillColor = c2;
             clearInterval(intervalId);
             stage.animating--;
             stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
@@ -441,8 +445,10 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
     var dy = (secondObject.y - firstObject.y) / frames;
     var x = firstObject.x;
     var y = firstObject.y;
+    var c1 = firstObject.strokeColor;
+    var c2 = firstObject.fillColor;
     firstObject.setGrayColor();
-    firstObject.startCopying();
+    firstObject.startCopying();    
     var copyFnc = function () {
         frames--;
         if (frames > 0) {
@@ -454,6 +460,8 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
             secondObject.value = firstObject.value;
             secondObject.minValue = firstObject.minValue;
             secondObject.maxValue = firstObject.maxValue;
+            secondObject.strokeColor = c1;
+            secondObject.fillColor = c2;
             clearInterval(intervalId);
             stage.animating--;
             stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
