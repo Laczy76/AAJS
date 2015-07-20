@@ -1,4 +1,4 @@
-<h3>Interactive Algorithm Animationa (inalan) javascript library</h3>
+<h3>Interactive Algorithm Animations (inalan) javascript library</h3>
 <p>
 GitHub for Windows:<br/>
 https://windows.github.com/
