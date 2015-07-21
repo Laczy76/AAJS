@@ -519,14 +519,23 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
             secondObject.copyy = secondObject.y;
             clearInterval(intervalId);
             stage.animating--;
-            if (secondObject.value > firstObject.value) {
-                var middle = secondObject.value / 2;
-                stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - middle - 16, secondObject.x, secondObject.y - middle - 16]);
-                stage.showArrow = stage.showArrow.concat([secondObject.x, secondObject.y - middle + 16, firstObject.x, firstObject.y - middle + 16]);
+            if (firstObject != secondObject) {
+                if (secondObject.value > firstObject.value) {
+                    var middle = secondObject.value / 2;
+                    stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - middle - 16, secondObject.x, secondObject.y - middle - 16]);
+                    stage.showArrow = stage.showArrow.concat([secondObject.x, secondObject.y - middle + 16, firstObject.x, firstObject.y - middle + 16]);
+                } else {
+                    var middle = firstObject.value / 2;
+                    stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - middle + 16, secondObject.x, secondObject.y - middle + 16]);
+                    stage.showArrow = stage.showArrow.concat([secondObject.x, secondObject.y - middle - 16, firstObject.x, firstObject.y - middle - 16]);
+                }
             } else {
-                var middle = firstObject.value / 2;
-                stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - middle + 16, secondObject.x, secondObject.y - middle + 16]);
-                stage.showArrow = stage.showArrow.concat([secondObject.x, secondObject.y - middle - 16, firstObject.x, firstObject.y - middle - 16]);
+                // ************** TODO ****************** ha sajat magaval cserelunk ki egy elemet milyen nyilak legyenek rajta ?????????????????
+
+
+
+
+
             }
         }
     }
