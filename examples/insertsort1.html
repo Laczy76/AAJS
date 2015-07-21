@@ -3,7 +3,7 @@
 <head>
     <title>Insertsort</title>
 
-    <script src="../build/inalan20150719.js"></script>
+    <script src="../build/inalan20150721.js"></script>
 
     <script>
 
@@ -64,12 +64,10 @@
         }
 
         var exchange = function () {
-            stage.get("a").items[stage.vars.j + 1].setGreenColor();
             if (stage.get("a").items[stage.vars.j].value > stage.get("a").items[stage.vars.j+1].value) {
                 stage.get("code").selected = [3];
                 stage.get("a").items[stage.vars.j+1].maxValue = stage.get("a").items[stage.vars.j].value;
                 stage.vars.exchange = true;
-                stage.get("a").items[stage.vars.j].setDefaultColor();
                 stage.exchange(stage.get("a").items[stage.vars.j], stage.get("a").items[stage.vars.j+1]);
             } else {
                 stage.vars.exchange = false;
@@ -77,7 +75,8 @@
             }
         }
 
-        var incI = function () {            
+        var incI = function () {
+            stage.get("a").items[stage.vars.j + 1].setGreenColor();
             stage.vars.i++;
             stage.get("a").deleteIndex("j");
             stage.get("a").deleteIndex("j+1");

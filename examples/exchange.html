@@ -3,7 +3,7 @@
 <head>
     <title>Exchange</title>
 
-    <script src="../build/inalan20150719.js"></script>
+    <script src="../build/inalan20150721.js"></script>
 
     <script>
 
@@ -46,21 +46,20 @@
             // functions (steps of the animation) ...
             var step1 = function () {
                 stage.get("code").selected = [0];
-                stage.copy(stage.get("a"), stage.get("tmp"));
+                stage.move(stage.get("a"), stage.get("tmp"));
             }
 
             var step2 = function () {
                 stage.get("code").selected = [1];
-                stage.copy(stage.get("b"), stage.get("a"));
+                stage.move(stage.get("b"), stage.get("a"));
             }
 
             var step3 = function () {
                 stage.get("code").selected = [2];
-                stage.copy(stage.get("tmp"), stage.get("b"));
+                stage.move(stage.get("tmp"), stage.get("b"));
             }
 
-            var step4 = function () {
-                stage.get("tmp").value = 0;
+            var step4 = function () {                
                 stage.get("code").selected = [];
             }
 
