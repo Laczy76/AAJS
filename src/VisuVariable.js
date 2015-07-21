@@ -184,13 +184,16 @@ inalan.VisuVariable.prototype.stopCopying = function () {
 // start comparing the variable (set yellow color)
 inalan.VisuVariable.prototype.startComparing = function () {
     this.originalFillColor = this.fillColor;
+    this.originalStrokeColor = this.strokeColor;
     this.fillColor = this.yellowColor;
+    this.strokeColor = "#000";
     this.compare = true;
 }
 // stop comparing the variable (set back the original color)
 inalan.VisuVariable.prototype.stopComparing = function () {
     if (this.compare) {
         this.fillColor = this.originalFillColor;
+        this.strokeColor = this.originalStrokeColor;
         this.compare = false;
         this.changable = false;
     }

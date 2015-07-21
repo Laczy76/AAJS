@@ -486,6 +486,12 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
     var y1 = firstObject.y;
     var x2 = secondObject.x;
     var y2 = secondObject.y;
+    var c1 = firstObject.strokeColor;
+    var c2 = firstObject.fillColor;
+    firstObject.strokeColor = secondObject.strokeColor;
+    firstObject.fillColor = secondObject.fillColor;
+    secondObject.strokeColor = c1;
+    secondObject.fillColor = c2;
     firstObject.startCopying();
     secondObject.startCopying();
     firstObject.setHiddenColor();
