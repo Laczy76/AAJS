@@ -177,7 +177,7 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                 // *** VisuVariable ***
                 if (obj instanceof inalan.VisuVariable) {
                     if (obj.dragging) {
-                        if (obj.changable) {
+                        if (obj.changeable) {
                             // change the value of the object and render...
                             obj.value = obj.y - mouseY;
                             dragging = true;
@@ -188,14 +188,14 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                 }
                 // *** VisuArray ***
                 if (obj instanceof inalan.VisuArray) {
-                    for (var i = 0; i < obj.items.length; i++) {
-                        if (obj.items[i].dragging) {
-                            if (obj.items[i].changable) {
+                    for (var i = 0; i < obj.length; i++) {
+                        if (obj[i].dragging) {
+                            if (obj[i].changeable) {
                                 // change the value of the object and render...
-                                obj.items[i].value = obj.items[i].y - mouseY;
+                                obj[i].value = obj[i].y - mouseY;
                                 dragging = true;
                             } else {
-                                obj.items[i].dragging = false;
+                                obj[i].dragging = false;
                             }
                         }
                     }
@@ -255,14 +255,14 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                 var obj = stage.visuItems[index];
                 // *** VisuVariable ***
                 if (obj instanceof inalan.VisuVariable) {
-                    if (obj.changable && obj.isOver(mouseX, mouseY)) {
+                    if (obj.changeable && obj.isOver(mouseX, mouseY)) {
                         mouseCursor = "ns-resize";
                     }
                 }
                 // *** VisuArray ***
                 if (obj instanceof inalan.VisuArray) {
-                    for (var i = 0; i < obj.items.length; i++) {
-                        if (obj.items[i].changable && obj.items[i].isOver(mouseX, mouseY)) {
+                    for (var i = 0; i < obj.length; i++) {
+                        if (obj[i].changeable && obj[i].isOver(mouseX, mouseY)) {
                             mouseCursor = "ns-resize";
                         }
                     }
@@ -324,15 +324,15 @@ inalan.Stage.prototype.stageMouseDownEvent = function (evt) {
                 var obj = stage.visuItems[index];
                 // *** VisuVariable ***
                 if (obj instanceof inalan.VisuVariable) {
-                    if (obj.changable && obj.isOver(mouseX, mouseY)) {
+                    if (obj.changeable && obj.isOver(mouseX, mouseY)) {
                         obj.dragging = true;
                     }
                 }
                 // *** VisuArray ***
                 if (obj instanceof inalan.VisuArray) {
-                    for (var i = 0; i < obj.items.length; i++) {
-                        if (obj.items[i].changable && obj.items[i].isOver(mouseX, mouseY)) {
-                            obj.items[i].dragging = true;
+                    for (var i = 0; i < obj.length; i++) {
+                        if (obj[i].changeable && obj[i].isOver(mouseX, mouseY)) {
+                            obj[i].dragging = true;
                         }
                     }
                 }
@@ -389,8 +389,8 @@ inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
                 }
                 // *** VisuArray ***
                 if (obj instanceof inalan.VisuArray) {
-                    for (var i = 0; i < obj.items.length; i++) {
-                        obj.items[i].dragging = false;
+                    for (var i = 0; i < obj.length; i++) {
+                        obj[i].dragging = false;
                     }
                 }
                 // *** VisuButton ***
@@ -410,7 +410,7 @@ inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
 }
 
 // adding VisuVariable, VisuArray, VisuLabel, VisuCode, etc. to stage
-inalan.Stage.prototype.addVisu = function (visuData, id) {
+inalan.Stage.prototype.add = function (visuData, id) {
     if (typeof (this.visuItems[id]) != 'undefined') {
         throw "- Can not add '" + id + "' to the stage, object with this ID already exists on the stage.";
     } else if (typeof (visuData.id) != 'undefined') {
@@ -444,8 +444,8 @@ inalan.Stage.prototype.compare = function (firstObject, secondObject) {
 // animation of copying a visuVariable (firstObject to secondObject)
 inalan.Stage.prototype.copy = function (firstObject, secondObject) {
     this.animating++;
-    firstObject.changable = false;
-    secondObject.changable = false;
+    firstObject.changeable = false;
+    secondObject.changeable = false;
     var stage = this;
     var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - secondObject.y, 2)); // distance between points
     var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
@@ -487,8 +487,8 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject) {
 // animation of moving a visuVariable (firstObject to secondObject)
 inalan.Stage.prototype.move = function (firstObject, secondObject) {
     this.animating++;
-    firstObject.changable = false;
-    secondObject.changable = false;
+    firstObject.changeable = false;
+    secondObject.changeable = false;
     var stage = this;
     var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - secondObject.y, 2)); // distance between points
     var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
@@ -532,8 +532,8 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
 // animation of exchanging two visuVariables (firstObject and secondObject)
 inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
     this.animating++;
-    firstObject.changable = false;
-    secondObject.changable = false;
+    firstObject.changeable = false;
+    secondObject.changeable = false;
     var stage = this;
     var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - secondObject.y, 2)); // distance between points
     var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
@@ -597,10 +597,10 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
 }
 
 // animation of adding a visuVariable (firstObject to secondObject)
-inalan.Stage.prototype.add = function (firstObject, secondObject) {
+inalan.Stage.prototype.sum = function (firstObject, secondObject) {
     this.animating++;
-    firstObject.changable = false;
-    secondObject.changable = false;
+    firstObject.changeable = false;
+    secondObject.changeable = false;
     var stage = this;
     var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - (secondObject.y - secondObject.value), 2)); // distance between points
     var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
@@ -646,12 +646,12 @@ inalan.Stage.prototype.stopCopyingAndComparing = function () {
             }
             // *** VisuArray ***
             if (obj instanceof inalan.VisuArray) {
-                for (var i = 0; i < obj.items.length; i++) {
-                    if (obj.items[i].copy) {
-                        obj.items[i].stopCopying();
+                for (var i = 0; i < obj.length; i++) {
+                    if (obj[i].copy) {
+                        obj[i].stopCopying();
                     }
-                    if (obj.items[i].compare) {
-                        obj.items[i].stopComparing();
+                    if (obj[i].compare) {
+                        obj[i].stopComparing();
                     }
                 }
             }

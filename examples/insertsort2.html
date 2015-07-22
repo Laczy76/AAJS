@@ -3,7 +3,7 @@
 <head>
     <title>Insertsort</title>
 
-    <script src="../build/inalan20150721.js"></script>
+    <script src="../build/inalan20150722.js"></script>
 
     <script>
 
@@ -17,19 +17,19 @@
         a.randomize(30, 150);
         a.x = 50;
         a.y = 220;
-        stage.addVisu(a, "a");
+        stage.add(a, "a");
 
         var tmp = new inalan.VisuVariable("tmp", 0, false);
         tmp.x = 270;
         tmp.y = 220;
-        stage.addVisu(tmp, "tmp");
+        stage.add(tmp, "tmp");
 
         var label = new inalan.VisuLabel(["This animation shows an improved insertsort algorithm. First, we copy every element to a temporary",
                                           "(tmp) variable. Next, we move the sorted, green part of the array to the right until we find the place",
                                           "of the removed element. Finally, we put back the removed element from tmp to its right place."]);
         label.x = 30;
         label.y = 350;
-        stage.addVisu(label, "label")
+        stage.add(label, "label")
 
 
         var c = new inalan.VisuCode(["FOR i = 1 to 6",
@@ -43,7 +43,7 @@
                                      "END FOR"]);
         c.x = 310;
         c.y = 40;
-        stage.addVisu(c, "code"); // in code we can refer to this with id = "code"
+        stage.add(c, "code"); // in code we can refer to this with id = "code"
 
         // **********************************************
 
@@ -51,8 +51,8 @@
         // global vars need to be stored in stage.vars object...
 
         var setI = function () {
-            stage.get("a").items[0].setGreenColor();
-            stage.get("a").items[0].changable = false;
+            stage.get("a")[0].setGreenColor();
+            stage.get("a")[0].changeable = false;
             stage.vars.i = 1;
             stage.get("code").selected = [0];
             stage.get("a").setIndex("i", stage.vars.i);
@@ -68,23 +68,23 @@
 
         var moveToTmp = function () {
             stage.get("code").selected = [2];
-            stage.move(stage.get("a").items[stage.vars.i], stage.get("tmp"));
+            stage.move(stage.get("a")[stage.vars.i], stage.get("tmp"));
         }        
 
         var compare = function () {
             stage.get("code").selected = [3];
-            stage.get("tmp").changable = true;
-            stage.compare(stage.get("a").items[stage.vars.j], stage.get("tmp"));
+            stage.get("tmp").changeable = true;
+            stage.compare(stage.get("a")[stage.vars.j], stage.get("tmp"));
         }
 
         var move = function () {
-            if (stage.get("a").items[stage.vars.j].value > stage.get("tmp").value) {
+            if (stage.get("a")[stage.vars.j].value > stage.get("tmp").value) {
                 stage.vars.moved = true;
                 stage.get("code").selected = [4];
                 stage.get("a").setIndex("j+1", stage.vars.j + 1);
-                stage.get("tmp").maxValue = stage.get("a").items[stage.vars.j].value;
-                stage.get("tmp").changable = true;
-                stage.move(stage.get("a").items[stage.vars.j], stage.get("a").items[stage.vars.j + 1]);                
+                stage.get("tmp").maxValue = stage.get("a")[stage.vars.j].value;
+                stage.get("tmp").changeable = true;
+                stage.move(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j + 1]);                
             } else {
                 stage.vars.moved = false;
                 return 0;
@@ -106,11 +106,11 @@
         var moveFromTmp = function () {
             stage.get("code").selected = [7];            
             stage.get("a").setIndex("j+1", stage.vars.j + 1);
-            stage.move(stage.get("tmp"), stage.get("a").items[stage.vars.j + 1]);
+            stage.move(stage.get("tmp"), stage.get("a")[stage.vars.j + 1]);
         }
 
         var incI = function () {
-            stage.get("a").items[stage.vars.j + 1].setGreenColor();
+            stage.get("a")[stage.vars.j + 1].setGreenColor();
             stage.vars.i++;
             stage.get("a").deleteIndex("j");
             stage.get("a").deleteIndex("j+1");

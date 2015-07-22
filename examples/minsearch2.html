@@ -15,14 +15,14 @@
             var min = new inalan.VisuVariable("min", 0, false);
             min.x = 45;
             min.y = 220;
-            stage.addVisu(min, "min");
+            stage.add(min, "min");
 
             var a = new inalan.VisuArray("a", [0, 0, 0, 0, 0, 0, 0], true);
             a.setMinValue(5);
             a.randomize(30, 150);
             a.x = 100;
             a.y = 220;
-            stage.addVisu(a, "a");
+            stage.add(a, "a");
 
             var label = new inalan.VisuLabel(["This animation shows how to find the minimum and its index (mi) in an array. In the beginning, we",
                                           "set the index of the minimum (mi) to 0. Next, we compare every other element in the array with the",
@@ -30,7 +30,7 @@
                                           "place of the new minimum."]);
             label.x = 30;
             label.y = 330;
-            stage.addVisu(label, "label")
+            stage.add(label, "label")
 
             var c = new inalan.VisuCode(["mi = 0",
                                          "FOR i = 1 to 6",
@@ -41,7 +41,7 @@
                                          "min = a[mi]"]);
             c.x = 360;
             c.y = 60;
-            stage.addVisu(c, "code"); // in code we can refer to is with id = "code"
+            stage.add(c, "code"); // in code we can refer to is with id = "code"
 
             // **********************************************            
 
@@ -62,12 +62,12 @@
 
             var line2 = function () {
                 stage.get("code").selected = [2];
-                stage.compare(stage.get("a").items[stage.vars.i], stage.get("a").items[stage.vars.mi]);
+                stage.compare(stage.get("a")[stage.vars.i], stage.get("a")[stage.vars.mi]);
             }
 
 
             var line3 = function () {
-                if (stage.get("a").items[stage.vars.i].value < stage.get("a").items[stage.vars.mi].value) {
+                if (stage.get("a")[stage.vars.i].value < stage.get("a")[stage.vars.mi].value) {
                     stage.get("code").selected = [3];
                     stage.vars.mi = stage.vars.i;
                     stage.get("a").setIndex("mi", stage.vars.mi);
@@ -89,7 +89,7 @@
             var line6 = function () {
                 stage.get("code").selected = [6];
                 stage.get("a").deleteIndex("i");
-                stage.copy(stage.get("a").items[stage.vars.mi], stage.get("min"));
+                stage.copy(stage.get("a")[stage.vars.mi], stage.get("min"));
             }
 
             var finalStep = function () {

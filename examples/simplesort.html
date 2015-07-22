@@ -3,7 +3,7 @@
 <head>
     <title>Simplesort</title>
 
-    <script src="../build/inalan20150721.js"></script>
+    <script src="../build/inalan20150722.js"></script>
 
     <script>
 
@@ -17,13 +17,13 @@
         a.randomize(30, 150);
         a.x = 80;
         a.y = 220;
-        stage.addVisu(a, "a");
+        stage.add(a, "a");
 
         var label = new inalan.VisuLabel(["This animation shows the simplesort sorting algorithm. We compare every element with every other",
                                           "element located behind it. If the compared elements are not in ascending order, we exchange them."]);
         label.x = 30;
         label.y = 330;
-        stage.addVisu(label, "label")
+        stage.add(label, "label")
 
         var c = new inalan.VisuCode(["FOR i = 0 to 5",
                                      "   FOR j = i+1 to 6",
@@ -34,7 +34,7 @@
                                      "END FOR"]);
         c.x = 320;
         c.y = 60;
-        stage.addVisu(c, "code"); // in code we can refer to this with id = "code"
+        stage.add(c, "code"); // in code we can refer to this with id = "code"
 
         // **********************************************
 
@@ -57,32 +57,32 @@
 
         var compare = function () {
             stage.get("code").selected = [2];
-            stage.compare(stage.get("a").items[stage.vars.i], stage.get("a").items[stage.vars.j]);
+            stage.compare(stage.get("a")[stage.vars.i], stage.get("a")[stage.vars.j]);
         }
 
         var exchange = function () {
-            if (stage.get("a").items[stage.vars.i].value > stage.get("a").items[stage.vars.j].value) {
+            if (stage.get("a")[stage.vars.i].value > stage.get("a")[stage.vars.j].value) {
                 stage.get("code").selected = [3];
                 for (var k = stage.vars.i; k <= stage.vars.j; k++) {
-                    stage.get("a").items[k].minValue = stage.get("a").items[stage.vars.j].value;
+                    stage.get("a")[k].minValue = stage.get("a")[stage.vars.j].value;
                 }
-                stage.exchange(stage.get("a").items[stage.vars.i], stage.get("a").items[stage.vars.j]);
+                stage.exchange(stage.get("a")[stage.vars.i], stage.get("a")[stage.vars.j]);
             } else {
-                stage.get("a").items[stage.vars.j].minValue = stage.get("a").items[stage.vars.i].value;
+                stage.get("a")[stage.vars.j].minValue = stage.get("a")[stage.vars.i].value;
                 return 0;
             }
         }
 
         var incI = function () {
-            stage.get("a").items[stage.vars.i].setGreenColor();
+            stage.get("a")[stage.vars.i].setGreenColor();
             stage.vars.i++;
             if (checkI()) {
                 stage.get("code").selected = [0];
                 stage.get("a").setIndex("i", stage.vars.i);
                 return 200;
             } else {
-                stage.get("a").items[stage.vars.i].setGreenColor();
-                stage.get("a").items[stage.vars.i].changable = false;
+                stage.get("a")[stage.vars.i].setGreenColor();
+                stage.get("a")[stage.vars.i].changeable = false;
                 stage.get("a").deleteIndex("i");
                 return 0;
             }
@@ -100,17 +100,17 @@
             }
         }
 
-        var makeJChangable = function () {
-            stage.get("a").items[stage.vars.j].changable = true;
+        var makeJChangeable = function () {
+            stage.get("a")[stage.vars.j].changeable = true;
             return 0;
         }
 
         var checkI = function () {
-            return stage.vars.i < stage.get("a").items.length - 1;
+            return stage.vars.i < stage.get("a").length - 1;
         }
 
         var checkJ = function () {
-            return stage.vars.j < stage.get("a").items.length;
+            return stage.vars.j < stage.get("a").length;
         }
 
         var finalStep = function () {
@@ -125,7 +125,7 @@
                 [
                     compare,
                     exchange,
-                    makeJChangable,
+                    makeJChangeable,
                     incJ
                 ], checkJ,
                 incI

@@ -17,14 +17,14 @@
         a.randomize(30, 150);
         a.x = 80;
         a.y = 220;
-        stage.addVisu(a, "a");
+        stage.add(a, "a");
 
         var label = new inalan.VisuLabel(["This animation shows the minsort algorithm, which is one type of selectsort algorithms. First, we find",
                                           "the index of the smallest element (min) in the unsorted part of the array (red colored columns).",
                                           "Next, we exchanged the found element with the first element of the unsorted part."]);
         label.x = 30;
         label.y = 350;
-        stage.addVisu(label, "label")
+        stage.add(label, "label")
 
         var c = new inalan.VisuCode(["FOR i = 0 to 5",
                                      "   min = i",
@@ -37,7 +37,7 @@
                                      "END FOR"]);
         c.x = 320;
         c.y = 40;
-        stage.addVisu(c, "code"); // in code we can refer to this with id = "code"
+        stage.add(c, "code"); // in code we can refer to this with id = "code"
 
         // **********************************************
 
@@ -67,11 +67,11 @@
 
         var compare = function () {
             stage.get("code").selected = [3];
-            stage.compare(stage.get("a").items[stage.vars.j], stage.get("a").items[stage.vars.min]);
+            stage.compare(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.min]);
         }
 
         var changeMin = function () {
-            if (stage.get("a").items[stage.vars.j].value < stage.get("a").items[stage.vars.min].value) {                
+            if (stage.get("a")[stage.vars.j].value < stage.get("a")[stage.vars.min].value) {                
                 stage.vars.min = stage.vars.j;
                 stage.get("code").selected = [4];
                 stage.get("a").setIndex("min", stage.vars.min);
@@ -83,18 +83,18 @@
 
         var incI = function () {
             if (stage.vars.min != stage.vars.i) {
-                stage.get("a").items[stage.vars.min].changable = true;
+                stage.get("a")[stage.vars.min].changeable = true;
             }
             stage.get("a").deleteIndex("min");
-            stage.get("a").items[stage.vars.i].setGreenColor();
+            stage.get("a")[stage.vars.i].setGreenColor();
             stage.vars.i++;
             if (checkI()) {                
                 stage.get("code").selected = [0];
                 stage.get("a").setIndex("i", stage.vars.i);
                 return 200;
             } else {
-                stage.get("a").items[stage.vars.i].setGreenColor();
-                stage.get("a").items[stage.vars.i].changable = false;
+                stage.get("a")[stage.vars.i].setGreenColor();
+                stage.get("a")[stage.vars.i].changeable = false;
                 stage.get("a").deleteIndex("i");
                 return 0;
             }
@@ -102,12 +102,12 @@
 
         var incJ = function () {            
             if (stage.vars.min != stage.vars.j) {
-                stage.get("a").items[stage.vars.j].minValue = stage.get("a").items[stage.vars.min].value;
-                stage.get("a").items[stage.vars.j].changable = true;
+                stage.get("a")[stage.vars.j].minValue = stage.get("a")[stage.vars.min].value;
+                stage.get("a")[stage.vars.j].changeable = true;
             } else {
                 for (var k = stage.vars.i; k < stage.vars.min; k++) {
-                    stage.get("a").items[k].minValue = stage.get("a").items[stage.vars.min].value;
-                    stage.get("a").items[k].changable = true;
+                    stage.get("a")[k].minValue = stage.get("a")[stage.vars.min].value;
+                    stage.get("a")[k].changeable = true;
                 }
             }
             stage.vars.j++;
@@ -123,11 +123,11 @@
 
         var exchange = function () {
             stage.get("code").selected = [7];
-            stage.exchange(stage.get("a").items[stage.vars.i], stage.get("a").items[stage.vars.min]);
+            stage.exchange(stage.get("a")[stage.vars.i], stage.get("a")[stage.vars.min]);
         }
 
         var checkI = function () {
-            return stage.vars.i < stage.get("a").items.length - 1;
+            return stage.vars.i < stage.get("a").length - 1;
         }
 
         var checkJ = function () {

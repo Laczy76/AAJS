@@ -3,7 +3,7 @@
 <head>
     <title>Arraysum</title>
 
-    <script src="../build/inalan20150721.js"></script>
+    <script src="../build/inalan20150722.js"></script>
 
     <script>
 
@@ -15,7 +15,7 @@
             var sum = new inalan.VisuVariable("sum", 0, false);
             sum.x = 100;
             sum.y = 220;
-            stage.addVisu(sum, "sum");
+            stage.add(sum, "sum");
 
             var a = new inalan.VisuArray("a", [0, 0, 0, 0, 0], true);
             a.setMinValue(5);
@@ -24,13 +24,13 @@
             a.randomize(5, 40);
             a.x = 160;
             a.y = 220;
-            stage.addVisu(a, "a");
+            stage.add(a, "a");
 
             var label = new inalan.VisuLabel(["This animation shows how to sum numbers in an array. In the beginning the value of the sum",
                                               "variable is zero. We add the value of every element to the sum to get the sum of numbers."]);
             label.x = 30;
             label.y = 330;
-            stage.addVisu(label, "label")
+            stage.add(label, "label")
 
             var c = new inalan.VisuCode(["sum = 0",
                                          "FOR i = 0 to 4",
@@ -38,7 +38,7 @@
                                          "END FOR"]);
             c.x = 360;
             c.y = 150;
-            stage.addVisu(c, "code"); // in code we can refer to is with id = "code"
+            stage.add(c, "code"); // in code we can refer to is with id = "code"
 
             // **********************************************
 
@@ -59,7 +59,7 @@
 
             var sumAdd = function () {
                 stage.get("code").selected = [2];
-                stage.add(stage.get("a").items[stage.vars.index], stage.get("sum"));
+                stage.sum(stage.get("a")[stage.vars.index], stage.get("sum"));
             }
 
             var sumIncrease = function () {
@@ -74,7 +74,7 @@
             }
 
             var sumCheck = function () {
-                return stage.vars.index < stage.get("a").items.length;
+                return stage.vars.index < stage.get("a").length;
             }
 
             var sumFinalStep = function () {

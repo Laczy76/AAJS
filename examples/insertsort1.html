@@ -3,7 +3,7 @@
 <head>
     <title>Insertsort</title>
 
-    <script src="../build/inalan20150721.js"></script>
+    <script src="../build/inalan20150722.js"></script>
 
     <script>
 
@@ -17,12 +17,12 @@
         a.randomize(30, 150);
         a.x = 65;
         a.y = 220;
-        stage.addVisu(a, "a");
+        stage.add(a, "a");
 
         var label = new inalan.VisuLabel(["This animation shows the insertsort algorithm. We move every element to its place on the left."]);
         label.x = 30;
         label.y = 350;
-        stage.addVisu(label, "label")
+        stage.add(label, "label")
 
         var c = new inalan.VisuCode(["FOR i = 1 to 6",
                                      "   j = i-1",
@@ -33,7 +33,7 @@
                                      "END FOR"]);
         c.x = 270;
         c.y = 60;
-        stage.addVisu(c, "code"); // in code we can refer to this with id = "code"
+        stage.add(c, "code"); // in code we can refer to this with id = "code"
 
         // **********************************************
 
@@ -44,8 +44,8 @@
             stage.vars.i = 1;
             stage.get("code").selected = [0];
             stage.get("a").setIndex("i", stage.vars.i,1);
-            stage.get("a").items[0].setGreenColor();
-            stage.get("a").items[0].changable = false;
+            stage.get("a")[0].setGreenColor();
+            stage.get("a")[0].changeable = false;
             return 200;
         }
 
@@ -59,16 +59,16 @@
 
         var compare = function () {
             stage.get("code").selected = [2];
-            stage.get("a").items[stage.vars.j + 1].changable = true;
-            stage.compare(stage.get("a").items[stage.vars.j], stage.get("a").items[stage.vars.j+1]);
+            stage.get("a")[stage.vars.j + 1].changeable = true;
+            stage.compare(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
         }
 
         var exchange = function () {
-            if (stage.get("a").items[stage.vars.j].value > stage.get("a").items[stage.vars.j+1].value) {
+            if (stage.get("a")[stage.vars.j].value > stage.get("a")[stage.vars.j+1].value) {
                 stage.get("code").selected = [3];
-                stage.get("a").items[stage.vars.j+1].maxValue = stage.get("a").items[stage.vars.j].value;
+                stage.get("a")[stage.vars.j+1].maxValue = stage.get("a")[stage.vars.j].value;
                 stage.vars.exchange = true;
-                stage.exchange(stage.get("a").items[stage.vars.j], stage.get("a").items[stage.vars.j+1]);
+                stage.exchange(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
             } else {
                 stage.vars.exchange = false;
                 return 0;
@@ -76,7 +76,7 @@
         }
 
         var incI = function () {
-            stage.get("a").items[stage.vars.j + 1].setGreenColor();
+            stage.get("a")[stage.vars.j + 1].setGreenColor();
             stage.vars.i++;
             stage.get("a").deleteIndex("j");
             stage.get("a").deleteIndex("j+1");
@@ -94,7 +94,7 @@
             if (stage.vars.exchange) {
                 stage.vars.j--;
                 if (stage.vars.j<0) {
-                    stage.get("a").items[0].setGreenColor();
+                    stage.get("a")[0].setGreenColor();
                 }
                 stage.get("code").selected = [4];
                 stage.get("a").setIndex("j", stage.vars.j);

@@ -13,9 +13,9 @@
 
 var inalan = inalan || {};
 
-inalan.VisuVariable = function (name, value, changable) {
-    if (typeof (changable) == "undefined") {
-        changable = false;
+inalan.VisuVariable = function (name, value, changeable) {
+    if (typeof (changeable) == "undefined") {
+        changeable = false;
     }
     // create subclass VisuVariable from VisuData - set properties
     inalan.VisuData.call(this);
@@ -34,7 +34,7 @@ inalan.VisuVariable = function (name, value, changable) {
     this.strokeColor = "#000";
     this.width = 24; // width of the column    
     this.textRotation = 0;
-    this.changable = changable; // can be changed by mouse dragging
+    this.changeable = changeable; // can be changed by mouse dragging
     this.dragging = false; // dragging (changing the value) with mouse
     this.copy = false; // copiing or moving the variable (if true, it draws a rectangle to copyx, copyy coordinates)
     this.copyx = 0;
@@ -90,7 +90,7 @@ inalan.VisuVariable.prototype.render = function () {
     this.ctx.moveTo(this.x - this.width / 2 - 3, this.y - 0.5);
     this.ctx.lineTo(this.x - this.width / 2 + this.width + 2, this.y - 0.5);
     this.ctx.stroke();
-    if (this.changable) { // if changable, draw the mark on the top of the column
+    if (this.changeable) { // if changeable, draw the mark on the top of the column
         this.ctx.strokeStyle = "#BBB";
         this.ctx.beginPath();
         this.ctx.moveTo(this.x - this.width / 5, this.y - 0.5 - this.value - 3);
@@ -195,7 +195,7 @@ inalan.VisuVariable.prototype.stopComparing = function () {
         this.fillColor = this.originalFillColor;
         this.strokeColor = this.originalStrokeColor;
         this.compare = false;
-        this.changable = false;
+        this.changeable = false;
     }
 }
 

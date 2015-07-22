@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Minsearch</title>
+    <title>Mirroring</title>
 
     <script src="../build/inalan20150722.js"></script>
 
@@ -17,19 +17,19 @@
             a.randomize(30, 150);
             a.x = 80;
             a.y = 220;
-            stage.addVisu(a, "a");
+            stage.add(a, "a");
 
             var label = new inalan.VisuLabel(["This simple animation shows how to mirror the elements in an array."]);
             label.x = 30;
             label.y = 330;
-            stage.addVisu(label, "label")
+            stage.add(label, "label")
 
             var c = new inalan.VisuCode(["FOR i = 0 to 3",
                                          "   exchange a[i] a[7-i]",
                                          "END FOR"]);
             c.x = 360;
             c.y = 80;
-            stage.addVisu(c, "code"); // in code we can refer to is with id = "code"
+            stage.add(c, "code"); // in code we can refer to is with id = "code"
 
             // **********************************************            
 
@@ -44,12 +44,12 @@
 
             var line1 = function () {
                 stage.get("code").selected = [1];
-                stage.exchange(stage.get("a").items[stage.vars.i], stage.get("a").items[7-stage.vars.i]);
+                stage.exchange(stage.get("a")[stage.vars.i], stage.get("a")[7-stage.vars.i]);
             }
             
             var incI = function () {
-                stage.get("a").items[stage.vars.i].setGreenColor();
-                stage.get("a").items[7-stage.vars.i].setGreenColor();
+                stage.get("a")[stage.vars.i].setGreenColor();
+                stage.get("a")[7-stage.vars.i].setGreenColor();
                 stage.vars.i++;
                 return 0;
             }
