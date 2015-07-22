@@ -101,13 +101,18 @@ inalan.VisuArray.prototype.render = function () {
                 fixIndexPos = fixIndexPos.concat([this.indexes[name].pos]);
             }
         }
+        var indexNames = [];
         for (var name in this.indexes) {
-            if (this.indexes[name].value == i) {
+            indexNames = indexNames.concat([name]);
+        }        
+        indexNames.sort();
+        for (var j=0; j<indexNames.length; j++) {            
+            if (this.indexes[indexNames[j]].value == i) {
                 var indexPos = this.indexesPos;
-                if (this.indexes[name].pos >= 0) {
-                    indexPos = indexPos + 27 * this.indexes[name].pos;
+                if (this.indexes[indexNames[j]].pos >= 0) {
+                    indexPos = indexPos + 27 * this.indexes[indexNames[j]].pos;
                 } else {
-                    k = 0;
+                    var k = 0;
                     while (fixIndexPos.indexOf(k) > -1) {
                         k++;
                     }
@@ -133,11 +138,11 @@ inalan.VisuArray.prototype.render = function () {
                 this.ctx.textAlign = "center";
                 this.ctx.textBaseline = "alphabetic";
                 if (i >= 0 && i < this.items.length) {
-                    this.ctx.fillText(name, this.items[i].x - 0.5, this.items[i].y + 72 + indexPos);
+                    this.ctx.fillText(indexNames[j], this.items[i].x - 0.5, this.items[i].y + 72 + indexPos);
                 } else if (i==-1) {
-                    this.ctx.fillText(name, this.items[0].x - this.items[0].width - 0.5, this.items[0].y + 72 + indexPos);
+                    this.ctx.fillText(indexNames[j], this.items[0].x - this.items[0].width - 0.5, this.items[0].y + 72 + indexPos);
                 } else {
-                    this.ctx.fillText(name, this.items[this.items.length - 1].x - this.items[this.items.length - 1].width - 0.5, this.items[0].y + 72 + indexPos);
+                    this.ctx.fillText(indexNames[j], this.items[this.items.length - 1].x - this.items[this.items.length - 1].width - 0.5, this.items[0].y + 72 + indexPos);
                 }
             }
         }

@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Minsort</title>
+    <title>Maxsort</title>
 
     <script src="../build/inalan20150722.js"></script>
 
@@ -19,21 +19,21 @@
         a.y = 220;
         stage.addVisu(a, "a");
 
-        var label = new inalan.VisuLabel(["This animation shows the minsort algorithm, which is one type of selectsort algorithms. First, we find",
-                                          "the index of the smallest element (min) in the unsorted part of the array (red colored columns).",
-                                          "Next, we exchanged the found element with the first element of the unsorted part."]);
+        var label = new inalan.VisuLabel(["This animation shows the maxsort algorithm, which is one type of selectsort algorithms. First, we find",
+                                          "the index of the biggest element (max) in the unsorted part of the array (red colored columns).",
+                                          "Next, we exchanged the found element with the last element of the unsorted part."]);
         label.x = 30;
-        label.y = 350;
+        label.y = 370;
         stage.addVisu(label, "label")
 
-        var c = new inalan.VisuCode(["FOR i = 0 to 5",
-                                     "   min = i",
-                                     "   FOR j = i+1 to 6",
-                                     "      IF a[min] > a[j] THEN",
-                                     "         min = j",
+        var c = new inalan.VisuCode(["FOR i = 6 downto 1",
+                                     "   max = 0",
+                                     "   FOR j = 1 to i",
+                                     "      IF a[max] < a[j] THEN",
+                                     "         max = j",
                                      "      END IF",
                                      "   END FOR",
-                                     "   exchange a[i] a[min]",
+                                     "   exchange a[i] a[max]",
                                      "END FOR"]);
         c.x = 320;
         c.y = 40;
@@ -45,21 +45,21 @@
         // global vars need to be stored in stage.vars object...
 
         var setI = function () {
-            stage.vars.i = 0;
+            stage.vars.i = 6;
             stage.get("code").selected = [0];
             stage.get("a").setIndex("i", stage.vars.i);
             return 200;
         }
 
-        var setMin = function () {
-            stage.vars.min = stage.vars.i;
+        var setMax = function () {
+            stage.vars.max = 0;
             stage.get("code").selected = [1];
-            stage.get("a").setIndex("min", stage.vars.min);
+            stage.get("a").setIndex("max", stage.vars.max);
             return 200;
         }
 
         var setJ = function () {
-            stage.vars.j = stage.vars.i + 1;
+            stage.vars.j = 1;
             stage.get("code").selected = [2];
             stage.get("a").setIndex("j", stage.vars.j);
             return 200;
@@ -67,46 +67,46 @@
 
         var compare = function () {
             stage.get("code").selected = [3];
-            stage.compare(stage.get("a").items[stage.vars.j], stage.get("a").items[stage.vars.min]);
+            stage.compare(stage.get("a").items[stage.vars.max], stage.get("a").items[stage.vars.j]);
         }
 
-        var changeMin = function () {
-            if (stage.get("a").items[stage.vars.j].value < stage.get("a").items[stage.vars.min].value) {                
-                stage.vars.min = stage.vars.j;
+        var changeMax = function () {
+            if (stage.get("a").items[stage.vars.j].value > stage.get("a").items[stage.vars.max].value) {                
+                stage.vars.max = stage.vars.j;
                 stage.get("code").selected = [4];
-                stage.get("a").setIndex("min", stage.vars.min);
+                stage.get("a").setIndex("max", stage.vars.max);
                 return 200;
             } else {
                 return 0;
             }
         }
 
-        var incI = function () {
-            if (stage.vars.min != stage.vars.i) {
-                stage.get("a").items[stage.vars.min].changable = true;
+        var decI = function () {
+            if (stage.vars.max != stage.vars.i) {
+                stage.get("a").items[stage.vars.max].changable = true;
             }
-            stage.get("a").deleteIndex("min");
+            stage.get("a").deleteIndex("max");
             stage.get("a").items[stage.vars.i].setGreenColor();
-            stage.vars.i++;
+            stage.vars.i--;
             if (checkI()) {                
                 stage.get("code").selected = [0];
                 stage.get("a").setIndex("i", stage.vars.i);
                 return 200;
             } else {
-                stage.get("a").items[stage.vars.i].setGreenColor();
-                stage.get("a").items[stage.vars.i].changable = false;
+                stage.get("a").items[0].setGreenColor();
+                stage.get("a").items[0].changable = false;
                 stage.get("a").deleteIndex("i");
                 return 0;
             }
         }
 
         var incJ = function () {            
-            if (stage.vars.min != stage.vars.j) {
-                stage.get("a").items[stage.vars.j].minValue = stage.get("a").items[stage.vars.min].value;
+            if (stage.vars.max != stage.vars.j) {
+                stage.get("a").items[stage.vars.j].maxValue = stage.get("a").items[stage.vars.max].value;
                 stage.get("a").items[stage.vars.j].changable = true;
             } else {
-                for (var k = stage.vars.i; k < stage.vars.min; k++) {
-                    stage.get("a").items[k].minValue = stage.get("a").items[stage.vars.min].value;
+                for (var k = 0; k < stage.vars.max; k++) {
+                    stage.get("a").items[k].maxValue = stage.get("a").items[stage.vars.max].value;
                     stage.get("a").items[k].changable = true;
                 }
             }
@@ -123,15 +123,15 @@
 
         var exchange = function () {
             stage.get("code").selected = [7];
-            stage.exchange(stage.get("a").items[stage.vars.i], stage.get("a").items[stage.vars.min]);
+            stage.exchange(stage.get("a").items[stage.vars.i], stage.get("a").items[stage.vars.max]);
         }
 
         var checkI = function () {
-            return stage.vars.i < stage.get("a").items.length - 1;
+            return stage.vars.i > 0;
         }
 
         var checkJ = function () {
-            return stage.vars.j < 7;
+            return stage.vars.j <= stage.vars.i;
         }
 
         var finalStep = function () {
@@ -142,15 +142,15 @@
         stage.setSteps([
             setI,
             [
-                setMin,
+                setMax,
                 setJ,
                 [
                     compare,
-                    changeMin,
+                    changeMax,
                     incJ
                 ], checkJ,
                 exchange,
-                incI
+                decI
             ], checkI,
             finalStep
         ]);
@@ -163,7 +163,7 @@
 </head>
 <body onload="init();">
 
-    <canvas id="myCanvas" width="700" height="500" style="border:1px solid black"></canvas>
+    <canvas id="myCanvas" width="700" height="520" style="border:1px solid black"></canvas>
 
 </body>
 </html>
