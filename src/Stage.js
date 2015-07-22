@@ -53,7 +53,7 @@ inalan.Stage = function (canvasId) {
                 }
             }
         }
-        // show arrow(s) after copying 
+        // show arrow(s) after copying, moving or exchanging 
         if (self.showArrow.length > 0) {
             self.ctx.fillStyle = "#055";
             self.ctx.globalAlpha = 0.1;
@@ -77,10 +77,60 @@ inalan.Stage = function (canvasId) {
             }
             self.ctx.globalAlpha = 1;
         }
+        // show bended arrow after copying or moving to itself
+        if (self.showBendedArrow.length > 0) {
+            self.ctx.fillStyle = "#055";
+            self.ctx.globalAlpha = 0.1;
+            for (var i = 0; i < self.showBendedArrow.length / 2; i++) {
+                var x = self.showBendedArrow[i] - 0.5;
+                var y = self.showBendedArrow[i + 1] + 3;
+                self.ctx.beginPath();
+                self.ctx.moveTo(x - 4, y - 22.5); // upper arrow
+                self.ctx.lineTo(x - 4, y + 1.5);
+                self.ctx.lineTo(x + 9, y - 10.5);
+                self.ctx.lineTo(x - 4, y - 22.5);
+                self.ctx.moveTo(x, y - 7.5); // upper circle
+                self.ctx.lineTo(x, y - 15.5);
+                self.ctx.arc(x, y - 0.5, 14, 1.5 * Math.PI, 1.8 * Math.PI, true);
+                self.ctx.arc(x, y - 0.5, 8, 1.85 * Math.PI, 1.5 * Math.PI);               
+                self.ctx.fill();
+            }
+            self.ctx.globalAlpha = 1;
+        }
+        // show double arrow after exchanging with itself
+        if (self.showDoubleArrow.length > 0) {
+            self.ctx.fillStyle = "#055";
+            self.ctx.globalAlpha = 0.1;
+            for (var i = 0; i < self.showDoubleArrow.length / 2; i++) {         
+                var x = self.showDoubleArrow[i] - 0.5;
+                var y = self.showDoubleArrow[i+1];
+                self.ctx.beginPath();                
+                self.ctx.moveTo(x - 4, y - 22.5); // upper arrow
+                self.ctx.lineTo(x - 4, y + 1.5);
+                self.ctx.lineTo(x + 9, y - 10.5);
+                self.ctx.lineTo(x - 4, y - 22.5);
+                self.ctx.moveTo(x, y - 7.5); // upper circle
+                self.ctx.lineTo(x, y - 15.5);
+                self.ctx.arc(x, y - 0.5, 14, 1.5 * Math.PI, 0.8 * Math.PI, true);
+                self.ctx.arc(x, y - 0.5, 8, 0.85 * Math.PI, 1.5 * Math.PI);
+                self.ctx.moveTo(x + 4, y + 225); // bottom arrow
+                self.ctx.lineTo(x + 4, y - 1.5);
+                self.ctx.lineTo(x - 9, y + 10.5);
+                self.ctx.lineTo(x + 4, y + 22.5);
+                self.ctx.moveTo(x, y + 7.5); // bottom circle
+                self.ctx.lineTo(x, y + 15.5);
+                self.ctx.arc(x, y + 0.5, 14, 0.5 * Math.PI, 1.8 * Math.PI, true);
+                self.ctx.arc(x, y + 0.5, 8, 1.85 * Math.PI, 0.5 * Math.PI);
+                self.ctx.fill();
+            }
+            self.ctx.globalAlpha = 1;
+        }
     }
     setInterval(this.render, 1000 / this.fps);
     // time for animations (copy/move/exchange/..) *****
-    this.showArrow = []; // copied or moved objects' coordinates (x1, y1, x2, y2 - an arrow will be shown);
+    this.showArrow = []; // copied, moved (or exchanged) objects' coordinates (x1, y1, x2, y2 - an arrow will be shown);
+    this.showBendedArrow = []; // copy or moved with itself - object's coordinates (x, y - a bended arrow will be shown);
+    this.showDoubleArrow = []; // exchange with itself - object's coordinates (x, y - a double arrow in circle will be shown);    
     this.animating = 0; // how many objects are animating?
     this.time = 1000; // speed of animation
 }
@@ -425,7 +475,11 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject) {
             secondObject.fillColor = c2;
             clearInterval(intervalId);
             stage.animating--;
-            stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
+            if (firstObject != secondObject) {
+                stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
+            } else {
+                stage.showBendedArrow = stage.showBendedArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2]);
+            }            
         }
     }
 }
@@ -447,7 +501,9 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
     var y = firstObject.y;
     var c1 = firstObject.strokeColor;
     var c2 = firstObject.fillColor;
-    firstObject.setGrayColor();
+    if (firstObject != secondObject) {
+        firstObject.setGrayColor();
+    }
     firstObject.startCopying();    
     var copyFnc = function () {
         frames--;
@@ -464,7 +520,11 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
             secondObject.fillColor = c2;
             clearInterval(intervalId);
             stage.animating--;
-            stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
+            if (firstObject != secondObject) {
+                stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
+            } else {
+                stage.showBendedArrow = stage.showBendedArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2]);
+            }
         }
     }
 }
@@ -530,12 +590,7 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
                     stage.showArrow = stage.showArrow.concat([secondObject.x, secondObject.y - middle - 16, firstObject.x, firstObject.y - middle - 16]);
                 }
             } else {
-                // ************** TODO ****************** ha sajat magaval cserelunk ki egy elemet milyen nyilak legyenek rajta ?????????????????
-
-
-
-
-
+                stage.showDoubleArrow = stage.showDoubleArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2]);
             }
         }
     }

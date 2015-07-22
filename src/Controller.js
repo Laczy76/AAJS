@@ -71,6 +71,8 @@ inalan.Controller = function () {
         self.fncIndex = JSON.parse(self.undo[stepNumber][3]);
         // restore arrow
         stage.showArrow = JSON.parse(self.undo[stepNumber][4]);
+        stage.showBendedArrow = JSON.parse(self.undo[stepNumber][5]);
+        stage.showDoubleArrow = JSON.parse(self.undo[stepNumber][6]);      
     }
     // reset animation (restore the first step from undo array)
     var resetAnimationWhenPossible = false;
@@ -173,9 +175,13 @@ inalan.Controller = function () {
                 self.undo[i][2] = JSON.stringify(stage.visuItems);
                 self.undo[i][3] = JSON.stringify(self.fncIndex);
                 self.undo[i][4] = JSON.stringify(stage.showArrow);
+                self.undo[i][5] = JSON.stringify(stage.showBendedArrow);
+                self.undo[i][6] = JSON.stringify(stage.showDoubleArrow);                
             }
             // step animation...
             stage.showArrow = [];
+            stage.showBendedArrow = [];
+            stage.showDoubleArrow = [];            
             stage.stopCopyingAndComparing();
             // determine stepsArray and stepsCheck (every element in these arrays are new repeats inside the previous repeats)
             var i = 0;

@@ -56,7 +56,8 @@
                 stage.vars.i = 0;
                 stage.get("code").selected = [0];
                 stage.get("a").setIndex("i", stage.vars.i, 0);
-                return 200;
+
+                //return 200;
             }
 
             var setMin = function () {
@@ -66,7 +67,7 @@
                 return 200;
             }
 
-            var setJ = function () {
+            var setJ = function () {                
                 stage.vars.j = stage.vars.i + 1;
                 stage.get("code").selected = [2];
                 stage.get("a").setIndex("j", stage.vars.j, 0);
