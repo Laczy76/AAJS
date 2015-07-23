@@ -19,15 +19,18 @@ inalan.Controller = function () {
     this.stepFncsArray = null; // array of functions for every step
     this.playingAnimation = false; // playing animation (Start/Stop button)
     this.waitingAnimation = false; // animation is waiting (animation is waiting im delay between steps when automatically playing)   
-    this.nextStepAuto = -1; // automatically play the next step    
+    this.nextStepAuto = -1; // automatically play the next step   
+    this.singleStep = false; // single step or more steps together
     this.undo = []; // undo array to save steps (object properties and variables)
     var self = this;
     // variables for button labels
     this.resetLabel = "Reset";
-    this.startLabel = "Start";
+    this.startLabel = "Play";
     this.stopLabel = "Stop";
-    this.prevLabel = "Previous step";
-    this.nextLabel = "Next step";
+    this.prevLabel = "◄◄";
+    this.prevSingleLabel = "◄";
+    this.nextSingleLabel = "►";
+    this.nextLabel = "►►";
     this.speedLabel = "Speed of animation:";    
     // restore a step from undo array
     var restoreStepFromUndo = function (stepNumber) {
@@ -72,7 +75,9 @@ inalan.Controller = function () {
         // restore arrow
         stage.showArrow = JSON.parse(self.undo[stepNumber][4]);
         stage.showBendedArrow = JSON.parse(self.undo[stepNumber][5]);
-        stage.showDoubleArrow = JSON.parse(self.undo[stepNumber][6]);      
+        stage.showDoubleArrow = JSON.parse(self.undo[stepNumber][6]);
+        // restore nextStepAuto value
+        self.nextStepAuto = self.undo[stepNumber][7]
     }
     // reset animation (restore the first step from undo array)
     var resetAnimationWhenPossible = false;
@@ -87,6 +92,8 @@ inalan.Controller = function () {
             self.undo = [];
             self.reset.enabled = false;
             self.startStop.enabled = true;
+            self.prevSingleStep.enabled = false;
+            self.nextSingleStep.enabled = true;
             self.prevStep.enabled = false;            
             self.nextStep.enabled = true;            
         } else if (stage.animating>0 || self.waitingAnimation) {
@@ -98,25 +105,36 @@ inalan.Controller = function () {
         var stage = self.ctx.canvas.parent;
         if (stage.animating == 0 && !self.waitingAnimation) {
             var i = self.undo.length - 1;
+            if (!self.singleStep) {
+                while (self.undo[i][7] > 0) {
+                    i--;
+                }
+            }
+
             // restore step from undo array
             restoreStepFromUndo(i);
-            // remove the last element from undo array
+            // remove the last element(s) from undo array
             self.undo = self.undo.slice(0,i);
             if (self.undo.length == 0) {
                 self.reset.enabled = false;
+                self.prevSingleStep.enabled = false;
                 self.prevStep.enabled = false;
             }
             self.startStop.enabled = true;
+            self.nextSingleStep.enabled = true;
             self.nextStep.enabled = true;
         }
     }
     // functions to control the animation...     
     var startStopAnimation = function () { // starts/stops animation
         var stage = self.ctx.canvas.parent;
+        self.singleStep = false;
         if (!self.playingAnimation) {
             // start animation
             self.playingAnimation = true;
             self.startStop.text = self.stopLabel;
+            self.prevSingleStep.enabled = false;
+            self.nextSingleStep.enabled = false;
             self.prevStep.enabled = false;
             self.nextStep.enabled = false;
             if (stage.animating==0) {
@@ -127,8 +145,10 @@ inalan.Controller = function () {
             self.playingAnimation = false;
             self.startStop.text = self.startLabel;
             if (self.undo.length > 0) {
+                self.prevSingleStep.enabled = true;
                 self.prevStep.enabled = true;
             }
+            self.nextSingleStep.enabled = true;
             self.nextStep.enabled = true;
         }
     }
@@ -149,7 +169,7 @@ inalan.Controller = function () {
                 resetAnimation();
             } else if (self.nextStepAuto==0) {
                 nextStepAnimation();
-            } else if (self.nextStepAuto > 0) {
+            } else if (self.nextStepAuto > 0 && !self.singleStep) {
                 self.waitingAnimation = true;
                 setTimeout(waitAnimationDone, stage.time/1000*self.nextStepAuto);
             } else if (self.playingAnimation) {
@@ -162,10 +182,11 @@ inalan.Controller = function () {
         var stage = self.ctx.canvas.parent;
         if (stage.animating==0 && !self.waitingAnimation && self.stepFncsArray != null) {            
             // saving objects on stage to undo array (stage.visuItems, stage.vars, self.fncIndex)
-            if (self.nextStepAuto<0) {
+            if (self.nextStepAuto != 0) {
                 // enable reset, and enable prevStep button if not autoplaying the animation
                 self.reset.enabled = true;
                 if (!self.playingAnimation) {
+                    self.prevSingleStep.enabled = true;
                     self.prevStep.enabled = true;
                 }
                 // save object properties and vars into undo array
@@ -176,7 +197,8 @@ inalan.Controller = function () {
                 self.undo[i][3] = JSON.stringify(self.fncIndex);
                 self.undo[i][4] = JSON.stringify(stage.showArrow);
                 self.undo[i][5] = JSON.stringify(stage.showBendedArrow);
-                self.undo[i][6] = JSON.stringify(stage.showDoubleArrow);                
+                self.undo[i][6] = JSON.stringify(stage.showDoubleArrow);
+                self.undo[i][7] = self.nextStepAuto; // -1 (if animation should stops), or >0 if waits for some millisecond
             }
             // step animation...
             stage.showArrow = [];
@@ -222,8 +244,10 @@ inalan.Controller = function () {
                         self.nextStepAuto = -1;
                         self.playingAnimation = false;
                         if (self.undo.length > 0) {
+                            self.prevSingleStep.enabled = true;
                             self.prevStep.enabled = true;
                         }
+                        self.nextSingleStep.enabled = false;
                         self.nextStep.enabled = false;
                         self.startStop.enabled = false;
                         self.startStop.text = self.startLabel;
@@ -237,13 +261,32 @@ inalan.Controller = function () {
         var stage = self.ctx.canvas.parent;
         stage.time = 2000 - position;
     }
+    var prevStep = function () {
+        self.singleStep = false;
+        prevStepAnimation();
+    }
+    var nextStep = function () {
+        self.singleStep = false;
+        nextStepAnimation();
+    }
+    var prevSingleStep = function () {
+        self.singleStep = true;
+        prevStepAnimation();
+    }
+    var nextSingleStep = function () {
+        self.singleStep = true;
+        nextStepAnimation();
+    }
     // buttons...
-    this.reset = new inalan.VisuButton(this.resetLabel, 80, resetAnimation);    
+    this.reset = new inalan.VisuButton(this.resetLabel, 70, resetAnimation);    
     this.startStop = new inalan.VisuButton(this.startLabel, 0, startStopAnimation);
-    this.prevStep = new inalan.VisuButton(this.prevLabel, 120, prevStepAnimation);    
-    this.nextStep = new inalan.VisuButton(this.nextLabel, 120, nextStepAnimation);
+    this.prevStep = new inalan.VisuButton(this.prevLabel, 70, prevStep);
+    this.prevSingleStep = new inalan.VisuButton(this.prevSingleLabel, 0, prevSingleStep);
+    this.nextSingleStep = new inalan.VisuButton(this.nextSingleLabel, 0, nextSingleStep);
+    this.nextStep = new inalan.VisuButton(this.nextLabel, 70, nextStep);
     this.reset.enabled = false;
     this.prevStep.enabled = false;
+    this.prevSingleStep.enabled = false;
     // scrollbar...
     this.speed = new inalan.VisuScrollbar(this.speedLabel, 150, 200, 1800, 1000, changeSpeedOfAnimation);
 }
@@ -251,10 +294,12 @@ inalan.Controller = function () {
 // show all buttons (reset, startStop, step, speed),
 // in default mode the startStop button is hidden
 inalan.Controller.prototype.showAllButtons = function () {
-    this.reset.width = 80;
-    this.startStop.width = 80;
-    this.prevStep.width = 120;
-    this.nextStep.width = 120;
+    this.reset.width = 70;
+    this.startStop.width = 70;
+    this.prevStep.width = 70;
+    this.prevSingleStep.width = 70;
+    this.nextSingleStep.width = 70;
+    this.nextStep.width = 70;
     this.speed.width = 150;    
 }
 
@@ -287,10 +332,22 @@ inalan.Controller.prototype.render = function () {
         this.prevStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width / 2 + spaceWidth;
         this.prevStep.y = this.y;
         this.prevStep.render();
-    } 
+    }
+    if (this.prevSingleStep.width > 0) {
+        this.prevSingleStep.ctx = this.ctx;
+        this.prevSingleStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.prevSingleStep.width / 2 + spaceWidth;
+        this.prevSingleStep.y = this.y;
+        this.prevSingleStep.render();
+    }
+    if (this.nextSingleStep.width > 0) {
+        this.nextSingleStep.ctx = this.ctx;
+        this.nextSingleStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.prevSingleStep.width + this.nextSingleStep.width / 2 + spaceWidth;
+        this.nextSingleStep.y = this.y;
+        this.nextSingleStep.render();
+    }
     if (this.nextStep.width > 0) {
         this.nextStep.ctx = this.ctx;
-        this.nextStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.nextStep.width / 2 + spaceWidth;
+        this.nextStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.prevSingleStep.width + this.nextSingleStep.width + this.nextStep.width / 2 + spaceWidth;
         this.nextStep.y = this.y;
         this.nextStep.render();
     }
@@ -298,7 +355,7 @@ inalan.Controller.prototype.render = function () {
     if (this.speed.width > 0) {
         spaceWidth += 30;
         this.speed.ctx = this.ctx;
-        this.speed.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.nextStep.width + this.speed.width / 2 + spaceWidth;
+        this.speed.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.prevSingleStep.width + this.nextSingleStep.width + this.nextStep.width + this.speed.width / 2 + spaceWidth;
         this.speed.y = this.y;
         this.speed.render();
     }
