@@ -30,9 +30,12 @@ inalan.VisuArray = function (name, values, changeable) {
     // set indexes
     this.showIndexes = true; // show index numbers under the array
     this.indexes = {};
+    this.loopMarks = {};
     this.indexesPos = 0;
     this.indexStrokeColor = "#CDD";
     this.indexFillColor = "#DEE";
+    this.loopMarkStrokeColor = "#D8E8E8";
+    this.loopMarkFillColor = "#FAFAFA";
 }
 
 // create subclass VisuArray from VisuData - set methods
@@ -53,9 +56,18 @@ inalan.VisuArray.prototype.setIndex = function (name, value, pos) {
     }
     this.indexes[name] = { "value": value, "pos": pos};
 }
-// delete label from VisuArray
+// delete index from VisuArray
 inalan.VisuArray.prototype.deleteIndex = function (name) {
     delete (this.indexes[name]);
+}
+
+// add/set loopMark to the VisuArray
+inalan.VisuArray.prototype.setLoopMarker = function (indexName, from, to) {
+    this.loopMarks[indexName] = { "from": from, "to": to };
+}
+// delete loopMark from VisuArray
+inalan.VisuArray.prototype.deleteLoopMarker = function (indexName) {
+    delete (this.loopMarks[indexName]);
 }
 
 // redner the array by calling the render function of every element (visuVariable)
@@ -76,6 +88,65 @@ inalan.VisuArray.prototype.render = function () {
         this.ctx.textBaseline = "alphabetic";
         for (var k = 0; k < this.length; k++) {
             this.ctx.fillText(k, this[k].x - 0.5, this[k].y + 50 + this.indexesPos);
+        }
+    }
+    // draw loopmarks
+    for (var name in this.loopMarks) {
+        if (this.indexes.hasOwnProperty(name)) {
+            // find the y position of the loopmark (0,1,2,...)
+            var pos = 0;
+            if (this.indexes[name].pos >= 0) {
+                pos = this.indexes[name].pos;
+            } else {
+                var fixIndexPos = [];
+                for (var name2 in this.indexes) {
+                    if (this.indexes[name].value == this.indexes[name2].value && this.indexes[name].pos >= 0) {
+                        fixIndexPos = fixIndexPos.concat([this.indexes[name2].pos]);
+                    }
+                }
+                for (var name2 in this.indexes) {
+                    if (this.indexes[name].value == this.indexes[name2].value && this.indexes[name].pos < 0 && name > name2) {
+                        while (fixIndexPos.indexOf(pos) > -1) {                            
+                            pos++;
+                        }
+                        fixIndexPos = fixIndexPos.concat([pos]);
+                    }
+                }
+                while (fixIndexPos.indexOf(pos) > -1) {
+                    pos++;
+                }
+            }
+            // draw the loopmark rectangle
+            var X = this[this.loopMarks[name].from].x;
+            var Y = this[this.loopMarks[name].from].y + 72 + this.indexesPos - 4 + 27 * pos;
+            var down = this[this.loopMarks[name].from].x > this[this.loopMarks[name].to].x;
+            if (down) {
+                var X = this[this.loopMarks[name].to].x;
+            }
+            var width = Math.abs(this[this.loopMarks[name].from].x - this[this.loopMarks[name].to].x);
+            this.ctx.strokeStyle = this.loopMarkStrokeColor;
+            this.ctx.fillStyle = this.loopMarkFillColor;
+            this.ctx.beginPath();
+            this.ctx.rect(X - 11, Y - 7.5, width + 22, 16);
+            this.ctx.fill();
+            this.ctx.stroke();
+            // draw the loopmark arrows          
+            this.ctx.fillStyle = this.loopMarkStrokeColor;
+            this.ctx.font = "16px Comic Sans MS";
+            this.ctx.textAlign = "center";
+            this.ctx.textBaseline = "middle";
+            var s = ">";
+            if (down) {
+                s = "<";
+            }
+            while (this.ctx.measureText(s+" >").width < width + 12) {
+                if (!down) {
+                    s = s + " >";
+                } else {
+                    s = s + " <";
+                }
+            }
+            this.ctx.fillText(s, X + width/2, Y);
         }
     }
     // go through all elements in array

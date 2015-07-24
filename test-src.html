@@ -75,8 +75,8 @@
         var line0 = function () {
             stage.get("code").lines[0] = "QUICKSORT (beg=" + stage.vars.beg + ", end=" + stage.vars.end + "):";
             stage.get("code").selected = [0];
-            stage.get("a").setIndex("beg", stage.vars.beg);
-            stage.get("a").setIndex("end", stage.vars.end);
+            stage.get("a").setIndex("beg", stage.vars.beg, 0);
+            stage.get("a").setIndex("end", stage.vars.end, 0);
             stage.get("a").deleteIndex("i");
             stage.get("a").deleteIndex("j");
             return 200;
@@ -85,14 +85,14 @@
         var line1 = function () {
             stage.get("code").selected = [2];
             stage.vars.i = stage.vars.beg;
-            stage.get("a").setIndex("i", stage.vars.i);
+            stage.get("a").setIndex("i", stage.vars.i, 1);
             return 200;
         }
 
         var line2 = function () {
             stage.get("code").selected = [3];
             stage.vars.j = stage.vars.end;
-            stage.get("a").setIndex("j", stage.vars.j);
+            stage.get("a").setIndex("j", stage.vars.j, 2);
             return 200;
         }
 
@@ -123,7 +123,7 @@
                 stage.get("code").selected = [7];
                 stage.get("a")[stage.vars.i].maxValue = stage.get("pivot").value;
                 stage.vars.i++;
-                stage.get("a").setIndex("i", stage.vars.i);
+                stage.get("a").setIndex("i", stage.vars.i, 1);
                 return 200;
             } else {
                 stage.vars.repeat = false;
@@ -149,7 +149,7 @@
                 stage.get("code").selected = [10];
                 stage.get("a")[stage.vars.j].minValue = stage.get("pivot").value;
                 stage.vars.j--;
-                stage.get("a").setIndex("j", stage.vars.j);
+                stage.get("a").setIndex("j", stage.vars.j, 2);
                 return 200;
             } else {
                 stage.vars.repeat = false;
@@ -184,7 +184,7 @@
                 stage.get("a")[stage.vars.j].changeable = true;
                 stage.get("code").selected = [14];
                 stage.vars.i++;
-                stage.get("a").setIndex("i", stage.vars.i);
+                stage.get("a").setIndex("i", stage.vars.i, 1);
                 return 200;
             } else {
                 return 0;
@@ -195,7 +195,7 @@
             if (stage.vars.if) {
                 stage.get("code").selected = [15];
                 stage.vars.j--;
-                stage.get("a").setIndex("j", stage.vars.j);
+                stage.get("a").setIndex("j", stage.vars.j, 2);
                 return 200;
             } else {
                 return 0;
