@@ -279,7 +279,7 @@ inalan.Controller = function () {
     }
     // buttons...
     this.reset = new inalan.VisuButton(this.resetLabel, 70, resetAnimation);    
-    this.startStop = new inalan.VisuButton(this.startLabel, 0, startStopAnimation);
+    this.startStop = new inalan.VisuButton(this.startLabel, 70, startStopAnimation);
     this.prevStep = new inalan.VisuButton(this.prevLabel, 70, prevStep);
     this.prevSingleStep = new inalan.VisuButton(this.prevSingleLabel, 0, prevSingleStep);
     this.nextSingleStep = new inalan.VisuButton(this.nextSingleLabel, 0, nextSingleStep);

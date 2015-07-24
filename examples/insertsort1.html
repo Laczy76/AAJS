@@ -3,7 +3,7 @@
 <head>
     <title>Insertsort</title>
 
-    <script src="../build/inalan20150722.js"></script>
+    <script src="../build/inalan20150723.js"></script>
 
     <script>
 
@@ -28,11 +28,9 @@
                                      "   j = i-1",
                                      "   WHILE (j >= 0) and (a[j] > a[j+1])",
                                      "      exchange a[j] a[j+1]",
-                                     "      j = j-1",
-                                     "   END WHILE",
-                                     "END FOR"]);
+                                     "      j = j-1"]);
         c.x = 270;
-        c.y = 60;
+        c.y = 80;
         stage.add(c, "code"); // in code we can refer to this with id = "code"
 
         // **********************************************
@@ -52,14 +50,14 @@
         var setJ = function () {
             stage.vars.j = stage.vars.i - 1;
             stage.get("code").selected = [1];
-            stage.get("a").setIndex("j", stage.vars.j);
-            stage.get("a").setIndex("j+1", stage.vars.j+1);
+            stage.get("a").setIndex("j", stage.vars.j);            
             return 200;
         }
 
         var compare = function () {
             stage.get("code").selected = [2];
-            stage.get("a")[stage.vars.j + 1].changeable = true;
+            stage.get("a").setIndex("j+1", stage.vars.j + 1);
+            stage.get("a")[stage.vars.j + 1].changeable = true;            
             stage.compare(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
         }
 

@@ -3,7 +3,7 @@
 <head>
     <title>Bubblesort</title>
 
-    <script src="../build/inalan20150722.js"></script>
+    <script src="../build/inalan20150723.js"></script>
 
     <script>
 
@@ -28,12 +28,9 @@
         var c = new inalan.VisuCode(["FOR i = 6 downto 1",
                                      "   FOR j = 0 to i-1",
                                      "      IF a[j] > a[j+1] THEN",
-                                     "         exchange a[j] a[j+1]",
-                                     "      END IF",
-                                     "   END FOR",
-                                     "END FOR"]);
+                                     "         exchange a[j] a[j+1]"]);
         c.x = 310;
-        c.y = 60;
+        c.y = 80;
         stage.add(c, "code"); // in code we can refer to this with id = "code"
 
         // **********************************************
@@ -51,13 +48,13 @@
         var setJ = function () {
             stage.vars.j = 0;
             stage.get("code").selected = [1];
-            stage.get("a").setIndex("j", stage.vars.j, 0);
-            stage.get("a").setIndex("j+1", stage.vars.j+1, 0);
+            stage.get("a").setIndex("j", stage.vars.j, 0);            
             return 200;
         }
 
         var compare = function () {
             stage.get("code").selected = [2];
+            stage.get("a").setIndex("j+1", stage.vars.j + 1, 0);
             stage.compare(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
         }
 
@@ -91,15 +88,14 @@
         }
 
         var incJ = function () {
-            stage.vars.j++;
+            stage.get("a").deleteIndex("j+1");
+            stage.vars.j++;            
             if (checkJ()) {
                 stage.get("code").selected = [1];
                 stage.get("a").setIndex("j", stage.vars.j, 0);
-                stage.get("a").setIndex("j+1", stage.vars.j + 1, 0);
                 return 200;
             } else {
-                stage.get("a").deleteIndex("j");
-                stage.get("a").deleteIndex("j+1");
+                stage.get("a").deleteIndex("j");                
                 return 0;
             }
         }

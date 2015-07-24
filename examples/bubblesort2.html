@@ -3,7 +3,7 @@
 <head>
     <title>Bubblesort</title>
 
-    <script src="../build/inalan20150722.js"></script>
+    <script src="../build/inalan20150723.js"></script>
 
     <script>
 
@@ -33,12 +33,9 @@
                                      "      IF a[j] > a[j+1]",
                                      "         exchange a[j] a[j+1]",
                                      "         ch = j",
-                                     "      END IF",
-                                     "   END FOR",
-                                     "   i = ch",
-                                     "END WHILE"]);
-        c.x = 330;
-        c.y = 35;
+                                     "   i = ch"]);
+        c.x = 320;
+        c.y = 50;
         stage.add(c, "code"); // in code we can refer to this with id = "code"
 
         // **********************************************
@@ -68,13 +65,13 @@
         var setJ = function () {
             stage.vars.j = 0;
             stage.get("code").selected = [3];
-            stage.get("a").setIndex("j", stage.vars.j, 0);
-            stage.get("a").setIndex("j+1", stage.vars.j+1, 0);
+            stage.get("a").setIndex("j", stage.vars.j, 0);            
             return 200;
         }
 
         var compare = function () {
             stage.get("code").selected = [4];
+            stage.get("a").setIndex("j+1", stage.vars.j + 1, 0);
             stage.compare(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
         }
 
@@ -110,21 +107,20 @@
                 stage.get("a")[k].changeable = false;
             }
             stage.vars.i = stage.vars.ch;
-            stage.get("code").selected = [9];
+            stage.get("code").selected = [7];
             stage.get("a").setIndex("i", stage.vars.i, 2);
             return 200;            
         }
 
         var incJ = function () {
+            stage.get("a").deleteIndex("j+1");
             stage.vars.j++;
             if (checkJ()) {
                 stage.get("code").selected = [3];
                 stage.get("a").setIndex("j", stage.vars.j, 0);
-                stage.get("a").setIndex("j+1", stage.vars.j + 1, 0);
                 return 200;
             } else {
-                stage.get("a").deleteIndex("j");
-                stage.get("a").deleteIndex("j+1");
+                stage.get("a").deleteIndex("j");                
                 return 0;
             }
         }

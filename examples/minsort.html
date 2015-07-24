@@ -3,7 +3,7 @@
 <head>
     <title>Minsort</title>
 
-    <script src="../build/inalan20150722.js"></script>
+    <script src="../build/inalan20150723.js"></script>
 
     <script>
 
@@ -31,10 +31,7 @@
                                      "   FOR j = i+1 to 6",
                                      "      IF a[min] > a[j] THEN",
                                      "         min = j",
-                                     "      END IF",
-                                     "   END FOR",
-                                     "   exchange a[i] a[min]",
-                                     "END FOR"]);
+                                     "   exchange a[i] a[min]"]);
         c.x = 320;
         c.y = 40;
         stage.add(c, "code"); // in code we can refer to this with id = "code"
@@ -122,7 +119,7 @@
         }
 
         var exchange = function () {
-            stage.get("code").selected = [7];
+            stage.get("code").selected = [5];
             stage.exchange(stage.get("a")[stage.vars.i], stage.get("a")[stage.vars.min]);
         }
 

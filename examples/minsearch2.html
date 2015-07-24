@@ -3,7 +3,7 @@
 <head>
     <title>Minsearch</title>
 
-    <script src="../build/inalan20150722.js"></script>
+    <script src="../build/inalan20150723.js"></script>
 
     <script>
 
@@ -34,10 +34,8 @@
 
             var c = new inalan.VisuCode(["mi = 0",
                                          "FOR i = 1 to 6",
-                                         "   IF a[i] < a[mi] THEN",
+                                         "   IF a[mi] > a[i] THEN",
                                          "      mi = i",
-                                         "   END IF",
-                                         "END FOR",
                                          "min = a[mi]"]);
             c.x = 360;
             c.y = 60;
@@ -87,7 +85,7 @@
             }
 
             var line6 = function () {
-                stage.get("code").selected = [6];
+                stage.get("code").selected = [4];
                 stage.get("a").deleteIndex("i");
                 stage.copy(stage.get("a")[stage.vars.mi], stage.get("min"));
             }
