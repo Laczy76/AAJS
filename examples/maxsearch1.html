@@ -3,7 +3,7 @@
 <head>
     <title>Maxsearch</title>
 
-    <script src="../build/inalan20150723.js"></script>
+    <script src="../build/inalan20150724.js"></script>
 
     <script>
 
@@ -50,6 +50,18 @@
                 stage.copy(stage.get("a")[0], stage.get("max"));
             }
 
+            var findMaxIncrease = function () {
+                stage.vars.index++;
+                stage.get("a").setIndex("i", stage.vars.index);
+                stage.get("a").setLoopMarker("i", 1, 6);
+                if (findMaxCheck()) {
+                    stage.get("code").selected = [1];
+                    return 200;
+                } else {
+                    return 0;
+                }
+            }
+
             var findMaxCompare = function () {
                 stage.get("code").selected = [2];
                 stage.compare(stage.get("max"), stage.get("a")[stage.vars.index]);
@@ -59,17 +71,6 @@
                 if (stage.get("max").value < stage.get("a")[stage.vars.index].value) {
                     stage.get("code").selected = [3];
                     stage.copy(stage.get("a")[stage.vars.index], stage.get("max"));
-                } else {
-                    return 0;
-                }
-            }
-
-            var findMaxIncrease = function () {
-                stage.vars.index++;
-                stage.get("a").setIndex("i", stage.vars.index);
-                if (findMaxCheck()) {
-                    stage.get("code").selected = [1];
-                    return 200;
                 } else {
                     return 0;
                 }

@@ -62,8 +62,8 @@ inalan.VisuArray.prototype.deleteIndex = function (name) {
 }
 
 // add/set loopMark to the VisuArray
-inalan.VisuArray.prototype.setLoopMarker = function (indexName, from, to) {
-    this.loopMarks[indexName] = { "from": from, "to": to };
+inalan.VisuArray.prototype.setLoopMarker = function (indexName, from, to, backward) {
+    this.loopMarks[indexName] = { "from": from, "to": to, "backward": backward };
 }
 // delete loopMark from VisuArray
 inalan.VisuArray.prototype.deleteLoopMarker = function (indexName) {
@@ -120,6 +120,9 @@ inalan.VisuArray.prototype.render = function () {
             var X = this[this.loopMarks[name].from].x;
             var Y = this[this.loopMarks[name].from].y + 72 + this.indexesPos - 4 + 27 * pos;
             var down = this[this.loopMarks[name].from].x > this[this.loopMarks[name].to].x;
+            if (this.loopMarks[name].from == this.loopMarks[name].to) {
+                down = this.loopMarks[name].backward;
+            }
             if (down) {
                 var X = this[this.loopMarks[name].to].x;
             }

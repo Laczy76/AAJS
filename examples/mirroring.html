@@ -3,7 +3,7 @@
 <head>
     <title>Mirroring</title>
 
-    <script src="../build/inalan20150723.js"></script>
+    <script src="../build/inalan20150724.js"></script>
 
     <script>
 
@@ -36,7 +36,8 @@
 
             var line0 = function () {
                 stage.get("code").selected = [0];
-                stage.get("a").setIndex("i", stage.vars.i);                
+                stage.get("a").setIndex("i", stage.vars.i);
+                stage.get("a").setLoopMarker("i", 0, 3);
                 return 200;
             }
 

@@ -3,7 +3,7 @@
 <head>
     <title>Bubblesort</title>
 
-    <script src="../build/inalan20150723.js"></script>
+    <script src="../build/inalan20150724.js"></script>
 
     <script>
 
@@ -46,32 +46,34 @@
         var setI = function () {
             stage.vars.i = 6;
             stage.get("code").selected = [0];
-            stage.get("a").setIndex("i", stage.vars.i, 2);
+            stage.get("a").setIndex("i", stage.vars.i, 0);            
             return 200;
         }
 
         var beginWhile = function () {
             stage.get("code").selected = [1];
+            stage.get("a").setLoopMarker("i", 6, 1);
             return 200;
         }
 
         var setCh = function () {
             stage.vars.ch = -1;
             stage.get("code").selected = [2];
-            stage.get("a").setIndex("ch", stage.vars.ch, 1);
+            stage.get("a").setIndex("ch", stage.vars.ch, 2);
             return 200;
         }
 
         var setJ = function () {
             stage.vars.j = 0;
             stage.get("code").selected = [3];
-            stage.get("a").setIndex("j", stage.vars.j, 0);            
+            stage.get("a").setIndex("j", stage.vars.j, 1);
+            stage.get("a").setLoopMarker("j", 0, stage.vars.i - 1);
             return 200;
         }
 
         var compare = function () {
             stage.get("code").selected = [4];
-            stage.get("a").setIndex("j+1", stage.vars.j + 1, 0);
+            stage.get("a").setIndex("j+1", stage.vars.j + 1, 1);
             stage.compare(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
         }
 
@@ -90,7 +92,7 @@
             if (stage.vars.exchange) {
                 stage.vars.ch = stage.vars.j;
                 stage.get("code").selected = [6];
-                stage.get("a").setIndex("ch", stage.vars.ch, 1);
+                stage.get("a").setIndex("ch", stage.vars.ch, 2);
                 for (var k = 0; k <= stage.vars.ch; k++) {
                     stage.get("a")[k].maxValue = stage.get("a")[stage.vars.j + 1].value;
                     stage.get("a")[k].changeable = true;
@@ -108,7 +110,7 @@
             }
             stage.vars.i = stage.vars.ch;
             stage.get("code").selected = [7];
-            stage.get("a").setIndex("i", stage.vars.i, 2);
+            stage.get("a").setIndex("i", stage.vars.i, 0);
             return 200;            
         }
 
@@ -117,7 +119,7 @@
             stage.vars.j++;
             if (checkJ()) {
                 stage.get("code").selected = [3];
-                stage.get("a").setIndex("j", stage.vars.j, 0);
+                stage.get("a").setIndex("j", stage.vars.j, 1);
                 return 200;
             } else {
                 stage.get("a").deleteIndex("j");                

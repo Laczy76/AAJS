@@ -3,7 +3,7 @@
 <head>
     <title>Insertsort</title>
 
-    <script src="../build/inalan20150723.js"></script>
+    <script src="../build/inalan20150724.js"></script>
 
     <script>
 
@@ -41,23 +41,24 @@
         var setI = function () {
             stage.vars.i = 1;
             stage.get("code").selected = [0];
-            stage.get("a").setIndex("i", stage.vars.i,1);
+            stage.get("a").setIndex("i", stage.vars.i, 0);
+            stage.get("a").setLoopMarker("i", 1, 6);
             stage.get("a")[0].setGreenColor();
             stage.get("a")[0].changeable = false;
             return 200;
         }
 
         var setJ = function () {
-            stage.vars.j = stage.vars.i - 1;
+            stage.vars.j = stage.vars.i - 1;            
             stage.get("code").selected = [1];
-            stage.get("a").setIndex("j", stage.vars.j);            
+            stage.get("a").setIndex("j", stage.vars.j, 1);
+            stage.get("a").setLoopMarker("j", stage.vars.j, stage.vars.j, true);
             return 200;
         }
 
         var compare = function () {
             stage.get("code").selected = [2];
-            stage.get("a").setIndex("j+1", stage.vars.j + 1);
-            stage.get("a")[stage.vars.j + 1].changeable = true;            
+            stage.get("a").setIndex("j+1", stage.vars.j + 1, 1);                        
             stage.compare(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
         }
 
@@ -80,7 +81,7 @@
             stage.get("a").deleteIndex("j+1");
             if (checkI()) {
                 stage.get("code").selected = [0];
-                stage.get("a").setIndex("i", stage.vars.i,1);
+                stage.get("a").setIndex("i", stage.vars.i, 0);
                 return 200;
             } else {
                 stage.get("a").deleteIndex("i");                
@@ -88,15 +89,20 @@
             }
         }
 
-        var decJ = function () {
-            if (stage.vars.exchange) {
+        var decJ = function () {            
+            if (stage.vars.exchange) {                
                 stage.vars.j--;
                 if (stage.vars.j<0) {
                     stage.get("a")[0].setGreenColor();
+                } else {
+                    stage.get("a")[stage.vars.j+1].changeable = true;
                 }
                 stage.get("code").selected = [4];
-                stage.get("a").setIndex("j", stage.vars.j);
-                stage.get("a").setIndex("j+1", stage.vars.j+1);
+                stage.get("a").setIndex("j", stage.vars.j, 1);                
+                if (stage.vars.j >= 0) {
+                    stage.get("a").setLoopMarker("j", stage.vars.i - 1, stage.vars.j);
+                }
+                stage.get("a").deleteIndex("j+1");
                 return 200;
             } else {
                 return 0;

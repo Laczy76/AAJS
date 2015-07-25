@@ -3,7 +3,7 @@
 <head>
     <title>Minsearch</title>
 
-    <script src="../build/inalan20150723.js"></script>
+    <script src="../build/inalan20150724.js"></script>
 
     <script>
 
@@ -29,7 +29,7 @@
                                           "element at the minimum index (mi). If we find a new minimum, we set the minimum index (mi) to the",
                                           "place of the new minimum."]);
             label.x = 30;
-            label.y = 330;
+            label.y = 350;
             stage.add(label, "label")
 
             var c = new inalan.VisuCode(["mi = 0",
@@ -46,7 +46,7 @@
             var line0 = function () {
                 stage.get("code").selected = [0];
                 stage.vars.mi = 0;
-                stage.get("a").setIndex("mi", stage.vars.mi);
+                stage.get("a").setIndex("mi", stage.vars.mi, 1);
                 return 200;
             }
 
@@ -54,7 +54,8 @@
 
             var line1 = function () {
                 stage.get("code").selected = [1];
-                stage.get("a").setIndex("i", stage.vars.i);
+                stage.get("a").setIndex("i", stage.vars.i, 0);
+                stage.get("a").setLoopMarker("i", 1, 6);
                 return 200;
             }
 
@@ -68,7 +69,7 @@
                 if (stage.get("a")[stage.vars.i].value < stage.get("a")[stage.vars.mi].value) {
                     stage.get("code").selected = [3];
                     stage.vars.mi = stage.vars.i;
-                    stage.get("a").setIndex("mi", stage.vars.mi);
+                    stage.get("a").setIndex("mi", stage.vars.mi, 1);
                     return 200;
                 } else {
                     return 0;
@@ -114,7 +115,7 @@
 </head>
 <body onload="init();">
 
-    <canvas id="myCanvas" width="700" height="500" style="border:1px solid black"></canvas>
+    <canvas id="myCanvas" width="700" height="520" style="border:1px solid black"></canvas>
 
 </body>
 </html>

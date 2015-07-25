@@ -3,7 +3,7 @@
 <head>
     <title>Minsort</title>
 
-    <script src="../build/inalan20150723.js"></script>
+    <script src="../build/inalan20150724.js"></script>
 
     <script>
 
@@ -23,7 +23,7 @@
                                           "the index of the smallest element (min) in the unsorted part of the array (red colored columns).",
                                           "Next, we exchanged the found element with the first element of the unsorted part."]);
         label.x = 30;
-        label.y = 350;
+        label.y = 370;
         stage.add(label, "label")
 
         var c = new inalan.VisuCode(["FOR i = 0 to 5",
@@ -44,21 +44,23 @@
         var setI = function () {
             stage.vars.i = 0;
             stage.get("code").selected = [0];
-            stage.get("a").setIndex("i", stage.vars.i);
+            stage.get("a").setIndex("i", stage.vars.i, 0);
+            stage.get("a").setLoopMarker("i", 0, 5);
             return 200;
         }
 
         var setMin = function () {
             stage.vars.min = stage.vars.i;
             stage.get("code").selected = [1];
-            stage.get("a").setIndex("min", stage.vars.min);
+            stage.get("a").setIndex("min", stage.vars.min, 2);
             return 200;
         }
 
         var setJ = function () {
             stage.vars.j = stage.vars.i + 1;
             stage.get("code").selected = [2];
-            stage.get("a").setIndex("j", stage.vars.j);
+            stage.get("a").setIndex("j", stage.vars.j, 1);
+            stage.get("a").setLoopMarker("j", stage.vars.j, 6);
             return 200;
         }
 
@@ -71,7 +73,7 @@
             if (stage.get("a")[stage.vars.j].value < stage.get("a")[stage.vars.min].value) {                
                 stage.vars.min = stage.vars.j;
                 stage.get("code").selected = [4];
-                stage.get("a").setIndex("min", stage.vars.min);
+                stage.get("a").setIndex("min", stage.vars.min, 2);
                 return 200;
             } else {
                 return 0;
@@ -87,7 +89,7 @@
             stage.vars.i++;
             if (checkI()) {                
                 stage.get("code").selected = [0];
-                stage.get("a").setIndex("i", stage.vars.i);
+                stage.get("a").setIndex("i", stage.vars.i, 0);
                 return 200;
             } else {
                 stage.get("a")[stage.vars.i].setGreenColor();
@@ -110,7 +112,7 @@
             stage.vars.j++;
             if (checkJ()) {
                 stage.get("code").selected = [2];
-                stage.get("a").setIndex("j", stage.vars.j);                
+                stage.get("a").setIndex("j", stage.vars.j, 1);                
                 return 200;
             } else {
                 stage.get("a").deleteIndex("j");
@@ -160,7 +162,7 @@
 </head>
 <body onload="init();">
 
-    <canvas id="myCanvas" width="700" height="500" style="border:1px solid black"></canvas>
+    <canvas id="myCanvas" width="700" height="520" style="border:1px solid black"></canvas>
 
 </body>
 </html>

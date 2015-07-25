@@ -3,7 +3,7 @@
 <head>
     <title>Arraysum</title>
 
-    <script src="../build/inalan20150723.js"></script>
+    <script src="../build/inalan20150724.js"></script>
 
     <script>
 
@@ -53,6 +53,7 @@
             var sumStep2 = function () {
                 stage.get("code").selected = [1];
                 stage.get("a").setIndex("i", stage.vars.index);
+                stage.get("a").setLoopMarker("i", 0, 4);
                 return 200;
             }
 

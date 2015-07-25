@@ -3,7 +3,7 @@
 <head>
     <title>Maxsort</title>
 
-    <script src="../build/inalan20150723.js"></script>
+    <script src="../build/inalan20150724.js"></script>
 
     <script>
 
@@ -33,7 +33,7 @@
                                      "         max = j",
                                      "   exchange a[i] a[max]"]);
         c.x = 320;
-        c.y = 40;
+        c.y = 80;
         stage.add(c, "code"); // in code we can refer to this with id = "code"
 
         // **********************************************
@@ -44,21 +44,23 @@
         var setI = function () {
             stage.vars.i = 6;
             stage.get("code").selected = [0];
-            stage.get("a").setIndex("i", stage.vars.i);
+            stage.get("a").setIndex("i", stage.vars.i,0);
+            stage.get("a").setLoopMarker("i", 6, 1);
             return 200;
         }
 
         var setMax = function () {
             stage.vars.max = 0;
             stage.get("code").selected = [1];
-            stage.get("a").setIndex("max", stage.vars.max);
+            stage.get("a").setIndex("max", stage.vars.max,2);
             return 200;
         }
 
         var setJ = function () {
             stage.vars.j = 1;
             stage.get("code").selected = [2];
-            stage.get("a").setIndex("j", stage.vars.j);
+            stage.get("a").setIndex("j", stage.vars.j,1);
+            stage.get("a").setLoopMarker("j", 1, stage.vars.i);
             return 200;
         }
 
@@ -71,7 +73,7 @@
             if (stage.get("a")[stage.vars.j].value > stage.get("a")[stage.vars.max].value) {                
                 stage.vars.max = stage.vars.j;
                 stage.get("code").selected = [4];
-                stage.get("a").setIndex("max", stage.vars.max);
+                stage.get("a").setIndex("max", stage.vars.max,2);
                 return 200;
             } else {
                 return 0;
@@ -87,7 +89,7 @@
             stage.vars.i--;
             if (checkI()) {                
                 stage.get("code").selected = [0];
-                stage.get("a").setIndex("i", stage.vars.i);
+                stage.get("a").setIndex("i", stage.vars.i,0);
                 return 200;
             } else {
                 stage.get("a")[0].setGreenColor();
@@ -110,7 +112,7 @@
             stage.vars.j++;
             if (checkJ()) {
                 stage.get("code").selected = [2];
-                stage.get("a").setIndex("j", stage.vars.j);                
+                stage.get("a").setIndex("j", stage.vars.j,1);                
                 return 200;
             } else {
                 stage.get("a").deleteIndex("j");
