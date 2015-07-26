@@ -23,7 +23,7 @@ inalan.VisuArray = function (name, values, changeable) {
     this.name = name;
     // create VisuVariables as VisuArray elements
     this.length = values.length;
-    for (var i=0; i<values.length; i++) {
+    for (var i = 0; i < values.length; i++) {
         this[i] = new inalan.VisuVariable(name + "[" + i + "]", values[i], changeable);
         this[i].textRotation = 45;
     }
@@ -43,9 +43,9 @@ inalan.VisuArray.prototype = Object.create(inalan.VisuData.prototype);
 inalan.VisuArray.prototype.constructor = inalan.VisuArray;
 
 // randomize the array
-inalan.VisuArray.prototype.randomize = function (min,max) {
+inalan.VisuArray.prototype.randomize = function (min, max) {
     for (var i = 0; i < this.length; i++) {
-        this[i].randomize(min,max);
+        this[i].randomize(min, max);
     }
 }
 
@@ -54,7 +54,7 @@ inalan.VisuArray.prototype.setIndex = function (name, value, pos) {
     if (typeof (pos) == "undefined") {
         pos = -1;
     }
-    this.indexes[name] = { "value": value, "pos": pos};
+    this.indexes[name] = { "value": value, "pos": pos };
 }
 // delete index from VisuArray
 inalan.VisuArray.prototype.deleteIndex = function (name) {
@@ -81,7 +81,7 @@ inalan.VisuArray.prototype.render = function () {
     }
     var xpos = this.x;
     // write the numbers under indexes
-    if (this.showIndexes || Object.keys(this.indexes).length>0) {
+    if (this.showIndexes || Object.keys(this.indexes).length > 0) {
         this.ctx.fillStyle = "#BBB";
         this.ctx.font = "bold 12px Courier New";
         this.ctx.textAlign = "center";
@@ -106,7 +106,7 @@ inalan.VisuArray.prototype.render = function () {
                 }
                 for (var name2 in this.indexes) {
                     if (this.indexes[name].value == this.indexes[name2].value && this.indexes[name].pos < 0 && name > name2) {
-                        while (fixIndexPos.indexOf(pos) > -1) {                            
+                        while (fixIndexPos.indexOf(pos) > -1) {
                             pos++;
                         }
                         fixIndexPos = fixIndexPos.concat([pos]);
@@ -117,16 +117,34 @@ inalan.VisuArray.prototype.render = function () {
                 }
             }
             // draw the loopmark rectangle
-            var X = this[this.loopMarks[name].from].x;
-            var Y = this[this.loopMarks[name].from].y + 72 + this.indexesPos - 4 + 27 * pos;
-            var down = this[this.loopMarks[name].from].x > this[this.loopMarks[name].to].x;
+            var X;
+            var Y;
+            if (this.loopMarks[name].from >= 0 && this.loopMarks[name].from < this.length) {
+                X = this[this.loopMarks[name].from].x;
+                Y = this[this.loopMarks[name].from].y + 72 + this.indexesPos - 4 + 27 * pos;
+            } else if (this.loopMarks[name].from == -1) {
+                X = this[0].x - this[0].width - 2;
+                Y = this[0].y + 72 + this.indexesPos - 4 + 27 * pos;
+            } else {
+                X = this[this.length - 1].x + this[this.length - 1].width + 2
+                Y = this[this.length - 1].y + 72 + this.indexesPos - 4 + 27 * pos;
+            }
+            var Xto;
+            if (this.loopMarks[name].to >= 0 && this.loopMarks[name].to < this.length) {
+                Xto = this[this.loopMarks[name].to].x;
+            } else if (this.loopMarks[name].to == -1) {
+                Xto = this[0].x - this[0].width - 2;
+            } else {
+                Xto = this[this.length - 1].x + this[this.length - 1].width + 2
+            }
+            var width = Math.abs(X - Xto);
+            var down = this.loopMarks[name].from > this.loopMarks[name].to;
             if (this.loopMarks[name].from == this.loopMarks[name].to) {
                 down = this.loopMarks[name].backward;
             }
             if (down) {
-                var X = this[this.loopMarks[name].to].x;
-            }
-            var width = Math.abs(this[this.loopMarks[name].from].x - this[this.loopMarks[name].to].x);
+                X = Xto;
+            }            
             this.ctx.strokeStyle = this.loopMarkStrokeColor;
             this.ctx.fillStyle = this.loopMarkFillColor;
             this.ctx.beginPath();
@@ -142,14 +160,14 @@ inalan.VisuArray.prototype.render = function () {
             if (down) {
                 s = "<";
             }
-            while (this.ctx.measureText(s+" >").width < width + 12) {
+            while (this.ctx.measureText(s + " >").width < width + 12) {
                 if (!down) {
                     s = s + " >";
                 } else {
                     s = s + " <";
                 }
             }
-            this.ctx.fillText(s, X + width/2, Y);
+            this.ctx.fillText(s, X + width / 2, Y);
         }
     }
     // go through all elements in array
@@ -168,16 +186,16 @@ inalan.VisuArray.prototype.render = function () {
         // render indexes
         var fixIndexPos = [];
         for (var name in this.indexes) {
-            if (this.indexes[name].value == i && this.indexes[name].pos>=0) {
+            if (this.indexes[name].value == i && this.indexes[name].pos >= 0) {
                 fixIndexPos = fixIndexPos.concat([this.indexes[name].pos]);
             }
         }
         var indexNames = [];
         for (var name in this.indexes) {
             indexNames = indexNames.concat([name]);
-        }        
+        }
         indexNames.sort();
-        for (var j=0; j<indexNames.length; j++) {            
+        for (var j = 0; j < indexNames.length; j++) {
             if (this.indexes[indexNames[j]].value == i) {
                 var indexPos = this.indexesPos;
                 if (this.indexes[indexNames[j]].pos >= 0) {
@@ -196,7 +214,7 @@ inalan.VisuArray.prototype.render = function () {
                 this.ctx.beginPath();
                 if (i >= 0 && i < this.length) {
                     this.ctx.arc(this[i].x, this[i].y + 72 + indexPos - 4, 11.5, 0, 2 * Math.PI);
-                } else if (i==-1) {
+                } else if (i == -1) {
                     this.ctx.arc(this[0].x - this[0].width - 2, this[0].y + 72 + indexPos - 4, 11.5, 0, 2 * Math.PI);
                 } else {
                     this.ctx.arc(this[this.length - 1].x + this[this.length - 1].width + 2, this[0].y + 72 + indexPos - 4, 11.5, 0, 2 * Math.PI);
@@ -210,10 +228,10 @@ inalan.VisuArray.prototype.render = function () {
                 this.ctx.textBaseline = "alphabetic";
                 if (i >= 0 && i < this.length) {
                     this.ctx.fillText(indexNames[j], this[i].x - 0.5, this[i].y + 72 + indexPos);
-                } else if (i==-1) {
+                } else if (i == -1) {
                     this.ctx.fillText(indexNames[j], this[0].x - this[0].width - 0.5 - 2, this[0].y + 72 + indexPos);
                 } else {
-                    this.ctx.fillText(indexNames[j], this[this.length - 1].x - this[this.length - 1].width - 0.5 + 2, this[0].y + 72 + indexPos);
+                    this.ctx.fillText(indexNames[j], this[this.length - 1].x + this[this.length - 1].width - 0.5 + 2, this[0].y + 72 + indexPos);
                 }
             }
         }
