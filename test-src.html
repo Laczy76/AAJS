@@ -28,7 +28,7 @@
         var a = new inalan.VisuArray("a", [0, 0, 0, 0, 0, 0, 0], true);
         a.setMinValue(5);
         a.randomize(30, 150);
-        a.x = 130;
+        a.x = 120;
         a.y = 220;
         stage.add(a, "a");
 
@@ -55,7 +55,7 @@
                                      "      QUICKSORT (beg, j)",
                                      "   IF i < end THEN",
                                      "      QUICKSORT (i, end)"]);
-        c.x = 350;
+        c.x = 340;
         c.y = 30;
         stage.add(c, "code"); // in code we can refer to is with id = "code"
 
@@ -67,7 +67,6 @@
         stage.vars.end = 6;        
 
         var line0 = function () {
-            stage.get("code").lines[0] = "QUICKSORT (beg=" + stage.vars.beg + ", end=" + stage.vars.end + "):";
             stage.get("code").selected = [0];
             stage.get("a").setIndex("beg", stage.vars.beg, 0);
             stage.get("a").setIndex("end", stage.vars.end, 0);
@@ -258,6 +257,15 @@
             }
         }
 
+        var recCall = function () {
+            if (stage.vars.recCall) {
+                var newLines = stage.get("code").lines.slice();
+                newLines[0] = "QUICKSORT (beg=" + stage.vars.beg + ", end=" + stage.vars.end + "):";
+                stage.get("code").functionCall(newLines);
+            }
+            return 0;
+        }
+
         var recRepeat1 = function () {
             return stage.vars.recCall;
         }
@@ -275,8 +283,8 @@
             if (stage.vars.where == 1) {
                 stage.vars.where = 2;
                 if (stage.vars.i < stage.vars.end) {
-                    stage.vars.recCall = true;
-                    stage.get("code").selected = [17];
+                    stage.vars.recCall = true;                    
+                    stage.get("code").selected = [17];                    
                     // save variables before recursive call - beg, end, i, j
                     var n = stage.vars.saved.length;
                     stage.vars.saved[n] = new Array();
@@ -304,6 +312,13 @@
             return stage.vars.recCall;
         }
 
+        var recReturn = function () {
+            if (stage.vars.saved.length > 0) {
+                stage.get("code").functionReturn();
+            }
+            return 0;
+        }
+
         var loadSaved = function () {
             if (stage.vars.saved.length > 0) {
                 n = stage.vars.saved.length - 1;
@@ -313,12 +328,7 @@
                 stage.vars.j = stage.vars.saved[n][3];
                 stage.vars.iTo = stage.vars.saved[n][4];
                 stage.vars.jTo = stage.vars.saved[n][5];
-                stage.vars.where = stage.vars.saved[n][6]; // 1 or 2
-                if (stage.vars.where == 1) {
-                    stage.get("code").selected = [15];
-                } else {
-                    stage.get("code").selected = [17];
-                }
+                stage.vars.where = stage.vars.saved[n][6]; // back from 1st or 2nd recursive call?
                 stage.vars.saved = stage.vars.saved.slice(0, n);
                 stage.get("a").setIndex("beg", stage.vars.beg, 0);
                 stage.get("a").setIndex("end", stage.vars.end, 0);
@@ -326,7 +336,6 @@
                 stage.get("a").setLoopMarker("i", stage.vars.beg, stage.vars.iTo);
                 stage.get("a").setIndex("j", stage.vars.j, 2);
                 stage.get("a").setLoopMarker("j", stage.vars.end, stage.vars.jTo);
-                stage.get("code").lines[0] = "QUICKSORT (beg=" + stage.vars.beg + ", end=" + stage.vars.end + "):";
                 stage.vars.recCall = false;
             }
         }
@@ -368,16 +377,20 @@
                         ], while3,
                         makePivotGreen,
                         line13,
-                        line14
+                        line14,
+                        recCall
                     ], recRepeat1, // 1st recursive call
                     line15,
                     line16,
+                    recCall
                 ], recRepeat2, // 2nd recursive call
                 [
+                    recReturn,
                     loadSaved, // back from recursion
                     line15,
                     line16
                 ], recRepeat3,
+                recCall
             ], recRepeat4,
             finalStep
         ]);
