@@ -20,49 +20,53 @@
             var stage = new inalan.Stage("myCanvas");
             stage.showAllButtons();
 
-            var pivot = new inalan.VisuVariable("pivot", 0, false);
-            pivot.x = 60;
-            pivot.y = 220;
-            stage.add(pivot, "pivot");
-
-            var a = new inalan.VisuArray("a", [0, 0, 0, 0, 0, 0, 0], true);
+            var a = new inalan.VisuArray("a", [0, 0, 0, 0, 0, 0, 0, 0], true);
             a.setMinValue(5);
-            a.randomize(30, 150);
-            a.x = 120;
-            a.y = 220;
+            a.setHeight(100);
+            a.randomize(30, 70);
+            a.x = 80;
+            a.y = 140;
             stage.add(a, "a");
 
-            var label = new inalan.VisuLabel(["This animation shows how quicksort works.",
-                                              "First we choose a pivot (middle element). Next,",
-                                              "we exchange the elements in the beginning of",
-                                              "the array with the elements in the end, until in the beginning of the array will be only those elements,",
-                                              "which are less or equal than the pivot; and in the end of the array will remain only those elements,",
-                                              "which are greater or equal than the pivot. Finally, if in the beginning or in the end is more than one",
-                                              "element, we repeat the whole process for those parts."]);
-            label.x = 30;
-            label.y = 400;
+            var x = new inalan.VisuArray("x", [0, 0, 0, 0, 0, 0, 0, 0], false);
+            x.setHeight(100);
+            x.x = 80;
+            x.y = 390;            
+            stage.add(x, "x");
+
+            var label = new inalan.VisuLabel(["This animation shows how mergesort works...",
+                                              "",
+                                              "",
+                                              "",
+                                              "",
+                                              "",
+                                              ""]);
+            label.x = 50;
+            label.y = 540;
             stage.add(label, "label")
 
-            var c = new inalan.VisuCode(["QUICKSORT (beg=0, end=6):",
+            var c = new inalan.VisuCode(["MERGESORT (beg=0, end=7):",
                                          "",
-                                         "   i = beg",
-                                         "   j = end",
-                                         "   pivot = a[(i+j)/2]",
-                                         "   WHILE i <= j",
-                                         "      WHILE pivot > a[i]",
-                                         "         increase i",
-                                         "      WHILE pivot < a[j]",
-                                         "         decrease j",
-                                         "      IF i <= j THEN",
-                                         "         exchange a[i] a[j]",
-                                         "         increase i",
-                                         "         decrease j",
-                                         "   IF beg < j THEN",
-                                         "      QUICKSORT (beg, j)",
-                                         "   IF i < end THEN",
-                                         "      QUICKSORT (i, end)"]);
-            c.x = 340;
-            c.y = 30;
+                                         "   IF beg < end THEN",
+                                         "      mid = (beg+end)/2",
+                                         "      MERGESORT (beg, mid)",
+                                         "      MERGESORT (mid+1, end)",
+                                         "      FOR i = beg TO mid",
+                                         "         x[i] = a[i]",
+                                         "      FOR i = mid+1 TO end",
+                                         "         j = end + mid+1 - i",
+                                         "         x[j] = a[i]",
+                                         "      i = beg",
+                                         "      j = end",
+                                         "      FOR k = beg TO end",
+                                         "         IF x[i] < x[j] THEN",
+                                         "            a[k] = x[i]",
+                                         "            increase i",
+                                         "         ELSE",
+                                         "            a[k] = x[j]",
+                                         "            decrease j"]);            
+            c.x = 320;
+            c.y = 50;
             stage.add(c, "code"); // in code we can refer to is with id = "code"
 
             // **********************************************
@@ -418,7 +422,7 @@
 </head>
 <body onload="init();">
 
-    <canvas id="myCanvas" width="700" height="620" style="border:1px solid black"></canvas>
+    <canvas id="myCanvas" width="700" height="700" style="border:1px solid black"></canvas>
 
 </body>
 </html>
