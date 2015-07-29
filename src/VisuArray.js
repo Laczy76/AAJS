@@ -31,6 +31,7 @@ inalan.VisuArray = function (name, values, changeable) {
     this.showIndexes = true; // show index numbers under the array
     this.indexes = {};
     this.loopMarks = {};
+    this.markers = []; // horizontal lines (marked parts of array) under the indexes
     this.indexesPos = 0;
     this.indexStrokeColor = "#CDD";
     this.indexFillColor = "#DEE";
@@ -61,13 +62,45 @@ inalan.VisuArray.prototype.deleteIndex = function (name) {
     delete (this.indexes[name]);
 }
 
-// add/set loopMark to the VisuArray
+// add/set loopMarker to the VisuArray
 inalan.VisuArray.prototype.setLoopMarker = function (indexName, from, to, backward) {
     this.loopMarks[indexName] = { "from": from, "to": to, "backward": backward };
 }
-// delete loopMark from VisuArray
+// delete loopMarker from VisuArray
 inalan.VisuArray.prototype.deleteLoopMarker = function (indexName) {
     delete (this.loopMarks[indexName]);
+}
+
+// add/set Marker to the VisuArray
+inalan.VisuArray.prototype.setMarker = function (from, to, color) {
+    var n = this.markers.length;
+    var found = false;
+    for (var i = 0; i < n; i++) {
+        if (this.markers[i].from == from && this.markers[i].to == to) {
+            found = true;
+            this.markers[i].color = color;
+        }
+    }
+    if (!found) {
+        this.markers[n] = { "from": from, "to": to, "color": color };
+    }
+}
+// delete Marker from VisuArray
+inalan.VisuArray.prototype.deleteMarker = function (from, to) {
+    var n = this.markers.length;
+    var foundPlace = -1;
+    for (var i = 0; i < n; i++) {
+        if (this.markers[i].from == from && this.markers[i].to == to) {
+            foundPlace = i;
+        }
+    }
+    if (foundPlace >= 0) {
+        this.markers.splice(foundPlace, 1);
+    }
+}
+
+inalan.VisuArray.prototype.deleteAllMarkers = function () {
+    this.markers = [];
 }
 
 // redner the array by calling the render function of every element (visuVariable)
@@ -80,7 +113,7 @@ inalan.VisuArray.prototype.render = function () {
         }
     }
     var xpos = this.x;
-    // write the numbers under indexes
+    // write the numbers above indexes
     if (this.showIndexes || Object.keys(this.indexes).length > 0) {
         this.ctx.fillStyle = "#BBB";
         this.ctx.font = "bold 12px Courier New";
@@ -90,7 +123,7 @@ inalan.VisuArray.prototype.render = function () {
             this.ctx.fillText(k, this[k].x - 0.5, this[k].y + 50 + this.indexesPos);
         }
     }
-    // draw loopmarks
+    // draw loopMarkers
     for (var name in this.loopMarks) {
         if (this.indexes.hasOwnProperty(name)) {
             // find the y position of the loopmark (0,1,2,...)
@@ -171,6 +204,7 @@ inalan.VisuArray.prototype.render = function () {
         }
     }
     // go through all elements in array
+    var maxIndexPos = -1;
     for (var i = -1; i <= this.length; i++) {
         if (i >= 0 && i < this.length) {
             // draw the element
@@ -219,6 +253,9 @@ inalan.VisuArray.prototype.render = function () {
                 } else {
                     this.ctx.arc(this[this.length - 1].x + this[this.length - 1].width + 2, this[0].y + 72 + indexPos - 4, 11.5, 0, 2 * Math.PI);
                 }
+                if (indexPos > maxIndexPos) {
+                    maxIndexPos = indexPos;
+                }
                 this.ctx.fill();
                 this.ctx.stroke();
                 // write index name into circle
@@ -235,6 +272,70 @@ inalan.VisuArray.prototype.render = function () {
                 }
             }
         }
+    }
+    // markers (horizontal lines under indexes)
+    var markerYPos;
+    if (maxIndexPos == -1) {
+        markerYPos = this[0].y + 55; 
+    } else {
+        markerYPos = this[0].y + 55 + maxIndexPos + 27;
+    }
+    // determine the maximum number of markers above/under each other
+    var m = []
+    for (var i = -1; i <= this.length; i++) {
+        m[i] = 0;
+    }
+    for (var i = 0; i < this.markers.length; i++) {
+        var max = 0;
+        for (var j = this.markers[i].from; j <= this.markers[i].to; j++) {
+            if (m[j] > max) {
+                max = m[j];
+            }
+        }
+        for (var j = this.markers[i].from; j <= this.markers[i].to; j++) {
+            m[j] = max + 1;
+        }
+    }
+    var maxMarkers = 0;
+    for (var i = -1; i <= this.length; i++) {
+        if (m[i] > maxMarkers) {
+            maxMarkers = m[i];
+        }
+    }
+    // draw the markers
+    for (var i = -1; i <= this.length; i++) {
+        m[i] = 0;
+    }
+    for (var i = 0; i < this.markers.length; i++) {
+        var max = 0;
+        for (var j = this.markers[i].from; j <= this.markers[i].to; j++) {
+            if (m[j] > max) {
+                max = m[j];
+            }
+        }
+        for (var j = this.markers[i].from; j <= this.markers[i].to; j++) {
+            m[j] = max + 1;
+        }
+
+        var markerX1Pos;
+        if (this.markers[i].from >= 0) {
+            markerX1Pos = this[this.markers[i].from].x - this[this.markers[i].from].width / 2;            
+        } else {
+            markerX1Pos = this[this.markers[0].from].x - this[this.markers[0].from].width * 1.5;
+        }
+        var markerX2Pos;
+        if (this.markers[i].to < this.length) {
+            markerX2Pos = this[this.markers[i].to].x + this[this.markers[i].to].width / 2;
+        } else {
+            markerX2Pos = this[this.markers[this.length-1].to].x + this[this.markers[this.length-1].to].width * 1.5;
+        }
+        this.ctx.strokeStyle = this.markers[i].color;
+        this.ctx.beginPath();
+        this.ctx.moveTo(markerX1Pos + 0.5, markerYPos + (maxMarkers - max) * 6 - 4);
+        this.ctx.lineTo(markerX1Pos + 0.5, markerYPos + (maxMarkers - max) * 6);
+        this.ctx.lineTo(markerX2Pos - 0.5, markerYPos + (maxMarkers - max) * 6);
+        this.ctx.lineTo(markerX2Pos - 0.5, markerYPos + (maxMarkers - max) * 6 - 4);
+        this.ctx.stroke();
     }
 }
 

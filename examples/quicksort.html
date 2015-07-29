@@ -1,17 +1,9 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Test page</title>
+    <title>Quicksort</title>
 
-    <script src="src/Stage.js"></script>
-    <script src="src/Controller.js"></script>
-    <script src="src/VisuData.js"></script>
-    <script src="src/VisuVariable.js"></script>
-    <script src="src/VisuArray.js"></script>
-    <script src="src/VisuButton.js"></script>
-    <script src="src/VisuScrollbar.js"></script>
-    <script src="src/VisuLabel.js"></script>
-    <script src="src/VisuCode.js"></script>
+    <script src="../build/inalan20150729.js"></script>
 
     <script>
 
@@ -49,9 +41,9 @@
                                          "   j = end",
                                          "   pivot = a[(i+j)/2]",
                                          "   WHILE i <= j",
-                                         "      WHILE pivot > a[i]",
+                                         "      WHILE a[i] < pivot",
                                          "         increase i",
-                                         "      WHILE pivot < a[j]",
+                                         "      WHILE a[j] > pivot",
                                          "         decrease j",
                                          "      IF i <= j THEN",
                                          "         exchange a[i] a[j]",
@@ -269,7 +261,7 @@
             }
 
             var recCall = function () {
-                if (stage.vars.recCall) {                    
+                if (stage.vars.recCall) {
                     var newLines = stage.get("code").lines.slice();
                     newLines[0] = "QUICKSORT (beg=" + stage.vars.beg + ", end=" + stage.vars.end + "):";
                     stage.get("code").functionCall(newLines);
@@ -306,7 +298,7 @@
                         stage.vars.saved[n][4] = stage.vars.iTo;
                         stage.vars.saved[n][5] = stage.vars.jTo;
                         stage.vars.saved[n][6] = stage.vars.where; // where was the recursive function called (1st or 2nd QUICKSORT)
-                        // change beg          
+                        // change beg
                         stage.vars.oldBeg = stage.vars.beg;
                         stage.vars.oldEnd = stage.vars.end;
                         stage.vars.beg = stage.vars.i;
