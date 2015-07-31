@@ -437,7 +437,9 @@ inalan.Stage.prototype.get = function (id) {
 // animation of comparing two visuVariables (firstObject and secondObject)
 inalan.Stage.prototype.compare = function (firstObject, secondObject) {
     firstObject.startComparing();
-    secondObject.startComparing();
+    if (firstObject != secondObject) {
+        secondObject.startComparing();
+    }
     var stage = this;
 }
 
@@ -448,8 +450,11 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject) {
     secondObject.changeable = false;
     var stage = this;
     var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - secondObject.y, 2)); // distance between points
-    var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
     var fps = this.fps; // FPS
+    var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
+    if (time > this.time) {
+        time = this.time;
+    }
     var frames = Math.floor(time * fps / 1000); // how many frames
     var intervalId = setInterval(function () { copyFnc(); }, 1000 / fps);
     var dx = (secondObject.x - firstObject.x) / frames;
@@ -490,9 +495,12 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
     firstObject.changeable = false;
     secondObject.changeable = false;
     var stage = this;
-    var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - secondObject.y, 2)); // distance between points
-    var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
+    var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - (secondObject.y - secondObject.value), 2)); // distance between points
     var fps = this.fps; // FPS
+    var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
+    if (time > this.time) {
+        time = this.time;
+    }
     var frames = Math.floor(time * fps / 1000); // how many frames
     var intervalId = setInterval(function () { copyFnc(); }, 1000 / fps);
     var dx = (secondObject.x - firstObject.x) / frames;
@@ -536,8 +544,11 @@ inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
     secondObject.changeable = false;
     var stage = this;
     var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - secondObject.y, 2)); // distance between points
-    var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
     var fps = this.fps; // FPS
+    var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
+    if (time > this.time) {
+        time = this.time;
+    }
     var frames = Math.floor(time * fps / 1000); // how many frames
     var intervalId = setInterval(function () { copyFnc(); }, 1000 / fps);
     var dx = (secondObject.x - firstObject.x) / frames;
@@ -603,8 +614,11 @@ inalan.Stage.prototype.sum = function (firstObject, secondObject) {
     secondObject.changeable = false;
     var stage = this;
     var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - (secondObject.y - secondObject.value), 2)); // distance between points
-    var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
     var fps = this.fps; // FPS
+    var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
+    if (time > this.time) {
+        time = this.time;
+    }
     var frames = Math.floor(time * fps / 1000); // how many frames
     var intervalId = setInterval(function () { addFnc(); }, 1000 / fps);
     var dx = (secondObject.x - firstObject.x) / frames;

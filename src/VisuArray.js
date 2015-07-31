@@ -60,6 +60,12 @@ inalan.VisuArray.prototype.setIndex = function (name, value, pos) {
 // delete index from VisuArray
 inalan.VisuArray.prototype.deleteIndex = function (name) {
     delete (this.indexes[name]);
+    delete (this.loopMarks[name]);
+}
+
+inalan.VisuArray.prototype.deleteAllIndexes = function () {
+    this.indexes = {};
+    this.loopMarks = {};
 }
 
 // add/set loopMarker to the VisuArray
