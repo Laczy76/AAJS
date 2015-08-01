@@ -495,7 +495,7 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
     firstObject.changeable = false;
     secondObject.changeable = false;
     var stage = this;
-    var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - (secondObject.y - secondObject.value), 2)); // distance between points
+    var distance = Math.sqrt(Math.pow(firstObject.x - secondObject.x, 2) + Math.pow(firstObject.y - secondObject.y, 2)); // distance between points
     var fps = this.fps; // FPS
     var time = distance * this.time / 100; // time for animation (this.time ... 100 px)
     if (time > this.time) {
