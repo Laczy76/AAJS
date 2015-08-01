@@ -1,17 +1,9 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Test page</title>
+    <title>Mergesort</title>
 
-    <script src="src/Stage.js"></script>
-    <script src="src/Controller.js"></script>
-    <script src="src/VisuData.js"></script>
-    <script src="src/VisuVariable.js"></script>
-    <script src="src/VisuArray.js"></script>
-    <script src="src/VisuButton.js"></script>
-    <script src="src/VisuScrollbar.js"></script>
-    <script src="src/VisuLabel.js"></script>
-    <script src="src/VisuCode.js"></script>
+    <script src="../build/inalan20150731.js"></script>
 
     <script>
 
@@ -96,7 +88,7 @@
                     stage.get("code").selected = [3];
                     stage.vars.m = Math.floor((stage.vars.beg + stage.vars.end) / 2);
                     stage.get("a").setIndex("m", stage.vars.m);
-                    stage.get("a").setIndex("m+1", stage.vars.m+1);
+                    stage.get("a").setIndex("m+1", stage.vars.m + 1);
                     return 200;
                 } else {
                     stage.get("a")[stage.vars.beg].setGreenColor();
@@ -144,9 +136,9 @@
                     stage.vars.recBack = true;
                     stage.vars.oldBeg = stage.vars.beg;
                     stage.vars.oldEnd = stage.vars.end;
-                    // load variables            
+                    // load variables
                     stage.vars.beg = stage.vars.saved[n][0];
-                    stage.vars.end = stage.vars.saved[n][1];                    
+                    stage.vars.end = stage.vars.saved[n][1];
                     stage.vars.m = stage.vars.saved[n][2];
                     stage.vars.line1if = stage.vars.saved[n][3];
                     stage.vars.which = stage.vars.saved[n][4];
@@ -154,7 +146,7 @@
                     // code animation
                     stage.get("code").functionReturn();
                 } else {
-                    stage.vars.recBack = false;                    
+                    stage.vars.recBack = false;
                 }
                 return 0;
             }
@@ -177,7 +169,7 @@
             }
 
             var line4 = function () {
-                if (stage.vars.line1if && stage.vars.which==1) {
+                if (stage.vars.line1if && stage.vars.which == 1) {
                     stage.get("code").selected = [5];
                 } else {
                     return 0;
@@ -241,8 +233,8 @@
             }
 
             var incI = function () {
-                if ((stage.vars.i == stage.vars.beg && stage.vars.i == stage.vars.m) 
-                    || (stage.vars.i == stage.vars.m+1 && stage.vars.i == stage.vars.end)) {
+                if ((stage.vars.i == stage.vars.beg && stage.vars.i == stage.vars.m)
+                    || (stage.vars.i == stage.vars.m + 1 && stage.vars.i == stage.vars.end)) {
                     stage.get("x")[stage.vars.i].changeable = true;
                 }
                 stage.vars.i++;
@@ -266,7 +258,7 @@
                 } else {
                     stage.get("a").setIndex("i", stage.vars.i, 1);
                 }
-                stage.get("a").setLoopMarker("i", stage.vars.m+1, stage.vars.end);                
+                stage.get("a").setLoopMarker("i", stage.vars.m + 1, stage.vars.end);
                 return 200;
             }
 
@@ -274,9 +266,9 @@
                 stage.get("code").selected = [9];
                 stage.vars.j = stage.vars.end + stage.vars.m + 1 - stage.vars.i;
                 stage.get("x").setIndex("j", stage.vars.j, 0);
-                stage.get("x").setLoopMarker("j", stage.vars.end, stage.vars.m+1, true);
+                stage.get("x").setLoopMarker("j", stage.vars.end, stage.vars.m + 1, true);
                 return 200;
-            }            
+            }
 
             var line9 = function () {
                 stage.get("code").selected = [10];
@@ -293,15 +285,15 @@
                 stage.get("x").deleteIndex("j");
                 stage.vars.i = stage.vars.beg;
                 stage.get("x").setIndex("i", stage.vars.i, 0);
-                stage.get("x").setLoopMarker("i",stage.vars.beg, stage.vars.m);
+                stage.get("x").setLoopMarker("i", stage.vars.beg, stage.vars.m);
                 return 200;
             }
 
             var line11 = function () {
-                stage.get("code").selected = [12];                
+                stage.get("code").selected = [12];
                 stage.vars.j = stage.vars.end;
                 stage.get("x").setIndex("j", stage.vars.j, 1);
-                stage.get("x").setLoopMarker("j", stage.vars.end, stage.vars.m+1, true);
+                stage.get("x").setLoopMarker("j", stage.vars.end, stage.vars.m + 1, true);
                 return 200;
             }
 
@@ -309,7 +301,7 @@
                 stage.vars.k = stage.vars.beg;
                 return 0;
             }
-            
+
             var line12 = function () {
                 stage.get("code").selected = [13];
                 if (stage.vars.beg == stage.vars.m || stage.vars.m + 1 == stage.vars.end) {
@@ -323,7 +315,7 @@
 
             var line13 = function () {
                 stage.get("code").selected = [14];
-                stage.compare(stage.get("x")[stage.vars.i], stage.get("x")[stage.vars.j]);                
+                stage.compare(stage.get("x")[stage.vars.i], stage.get("x")[stage.vars.j]);
             }
 
             var line14 = function () {
@@ -418,7 +410,7 @@
                     ], recCheck2,
                     [
                         // osszefesules...
-                        // (kisebb reszeket rekurziv fuggvenyekben)                        
+                        // (kisebb reszeket rekurziv fuggvenyekben)
                         beginForI_1, // move first part to x
                         [
                             line5,
@@ -451,7 +443,7 @@
                         setIndexes,
                     ], recCheck3,
                     line4,
-                    recCall2 // 2nd rec call                    
+                    recCall2 // 2nd rec call
                 ], recCheck4,
                 // osszefesules...
                 // (utolso ket nagy reszt a foprogramban)
@@ -481,7 +473,7 @@
                     line18,
                     incK
                 ], endForK,
-                deleteIndexes,                
+                deleteIndexes,
                 // ...osszefesules vege
                 finalStep
             ]);
