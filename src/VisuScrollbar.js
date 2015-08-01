@@ -11,11 +11,11 @@
 
 var inalan = inalan || {};
 
-inalan.VisuScrollbar = function (label, width, min, max, position, onChange) {
+inalan.VisuScrollbar = function (text, width, min, max, position, onChange) {
     // create subclass VisuScrollbar from VisuData - set properties
     inalan.VisuData.call(this);
     // set new properties
-    this.label = label;
+    this.text = text;
     if (width < 30) {
         width = 30;
     }
@@ -64,7 +64,7 @@ inalan.VisuScrollbar.prototype.render = function () {
     this.ctx.font = "13px Arial";
     this.ctx.textAlign = "center";
     this.ctx.textBaseline = "alphabetic";
-    this.ctx.fillText(this.label, this.x, this.y - 17);
+    this.ctx.fillText(this.text, this.x, this.y - 17);
 }
 
 inalan.VisuScrollbar.prototype.isOver = function (x, y) {
