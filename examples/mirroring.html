@@ -3,7 +3,7 @@
 <head>
     <title>Mirroring</title>
 
-    <script src="../build/inalan20150801.js"></script>
+    <script src="../build/inalan20150802.js"></script>
 
     <script>
 
@@ -25,7 +25,7 @@
             stage.add(label, "label")
 
             var c = new inalan.VisuCode(["FOR i = 0 to 3",
-                                         "   exchange a[i] a[7-i]"]);
+                                         "   swap a[i] a[7-i]"]);
             c.x = 360;
             c.y = 80;
             stage.add(c, "code"); // in code we can refer to is with id = "code"
@@ -44,7 +44,7 @@
             var line1 = function () {
                 stage.get("code").selected = [1];
                 stage.get("a").setIndex("7-i", 7 - stage.vars.i);
-                stage.exchange(stage.get("a")[stage.vars.i], stage.get("a")[7-stage.vars.i]);
+                stage.swap(stage.get("a")[stage.vars.i], stage.get("a")[7-stage.vars.i]);
             }
             
             var incI = function () {

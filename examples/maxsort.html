@@ -3,7 +3,7 @@
 <head>
     <title>Maxsort</title>
 
-    <script src="../build/inalan20150801.js"></script>
+    <script src="../build/inalan20150802.js"></script>
 
     <script>
 
@@ -21,7 +21,7 @@
 
         var label = new inalan.VisuLabel(["This animation shows the maxsort algorithm, which is one type of selectsort algorithms. First, we find",
                                           "the index of the biggest element (max) in the unsorted part of the array (red colored columns).",
-                                          "Next, we exchanged the found element with the last element of the unsorted part."]);
+                                          "Next, we swapped the found element with the last element of the unsorted part."]);
         label.x = 30;
         label.y = 370;
         stage.add(label, "label")
@@ -31,7 +31,7 @@
                                      "   FOR j = 1 to i",
                                      "      IF a[max] < a[j] THEN",
                                      "         max = j",
-                                     "   exchange a[i] a[max]"]);
+                                     "   swap a[i] a[max]"]);
         c.x = 320;
         c.y = 80;
         stage.add(c, "code"); // in code we can refer to this with id = "code"
@@ -120,9 +120,9 @@
             }
         }
 
-        var exchange = function () {
+        var swap = function () {
             stage.get("code").selected = [5];
-            stage.exchange(stage.get("a")[stage.vars.i], stage.get("a")[stage.vars.max]);
+            stage.swap(stage.get("a")[stage.vars.i], stage.get("a")[stage.vars.max]);
         }
 
         var checkI = function () {
@@ -148,7 +148,7 @@
                     changeMax,
                     incJ
                 ], checkJ,
-                exchange,
+                swap,
                 decI
             ], checkI,
             finalStep

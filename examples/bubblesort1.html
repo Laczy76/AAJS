@@ -3,7 +3,7 @@
 <head>
     <title>Bubblesort</title>
 
-    <script src="../build/inalan20150801.js"></script>
+    <script src="../build/inalan20150802.js"></script>
 
     <script>
 
@@ -20,7 +20,7 @@
         stage.add(a, "a");
 
         var label = new inalan.VisuLabel(["This animation shows the bubblesort algorithm. We compare every element with its right neightbour.",
-                                          "If the compared elements are not in ascending order, we exchange them."]);
+                                          "If the compared elements are not in ascending order, we swap them."]);
         label.x = 30;
         label.y = 350;
         stage.add(label, "label")
@@ -28,7 +28,7 @@
         var c = new inalan.VisuCode(["FOR i = 6 downto 1",
                                      "   FOR j = 0 to i-1",
                                      "      IF a[j] > a[j+1] THEN",
-                                     "         exchange a[j] a[j+1]"]);
+                                     "         swap a[j] a[j+1]"]);
         c.x = 310;
         c.y = 80;
         stage.add(c, "code"); // in code we can refer to this with id = "code"
@@ -60,13 +60,13 @@
             stage.compare(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
         }
 
-        var exchange = function () {
+        var swap = function () {
             if (stage.get("a")[stage.vars.j].value > stage.get("a")[stage.vars.j+1].value) {
                 stage.get("code").selected = [3];
                 for (var k = 0; k <= stage.vars.j + 1; k++) {
                     stage.get("a")[k].maxValue = stage.get("a")[stage.vars.j].value;
                 }
-                stage.exchange(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
+                stage.swap(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
             } else {
                 for (var k = 0; k <= stage.vars.j + 1; k++) {
                     stage.get("a")[k].maxValue = stage.get("a")[stage.vars.j + 1].value;                    
@@ -128,7 +128,7 @@
                 setJ,
                 [
                     compare,
-                    exchange,
+                    swap,
                     makeChangeable,
                     incJ
                 ], checkJ,

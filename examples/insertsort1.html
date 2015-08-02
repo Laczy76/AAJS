@@ -3,7 +3,7 @@
 <head>
     <title>Insertsort</title>
 
-    <script src="../build/inalan20150801.js"></script>
+    <script src="../build/inalan20150802.js"></script>
 
     <script>
 
@@ -27,7 +27,7 @@
         var c = new inalan.VisuCode(["FOR i = 1 to 6",
                                      "   j = i-1",
                                      "   WHILE (j >= 0) and (a[j] > a[j+1])",
-                                     "      exchange a[j] a[j+1]",
+                                     "      swap a[j] a[j+1]",
                                      "      j = j-1"]);
         c.x = 270;
         c.y = 80;
@@ -62,14 +62,14 @@
             stage.compare(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
         }
 
-        var exchange = function () {
+        var swap = function () {
             if (stage.get("a")[stage.vars.j].value > stage.get("a")[stage.vars.j+1].value) {
                 stage.get("code").selected = [3];
                 stage.get("a")[stage.vars.j+1].maxValue = stage.get("a")[stage.vars.j].value;
-                stage.vars.exchange = true;
-                stage.exchange(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
+                stage.vars.swap = true;
+                stage.swap(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
             } else {
-                stage.vars.exchange = false;
+                stage.vars.swap = false;
                 return 0;
             }
         }
@@ -90,7 +90,7 @@
         }
 
         var decJ = function () {            
-            if (stage.vars.exchange) {                
+            if (stage.vars.swap) {                
                 stage.vars.j--;
                 if (stage.vars.j<0) {
                     stage.get("a")[0].setGreenColor();
@@ -114,7 +114,7 @@
         }
 
         var checkJ = function () {
-            return stage.vars.j>=0 && stage.vars.exchange;
+            return stage.vars.j>=0 && stage.vars.swap;
         }
 
         var finalStep = function () {            
@@ -128,7 +128,7 @@
                 setJ,
                 [
                     compare,
-                    exchange,
+                    swap,
                     decJ
                 ], checkJ,
                 incI

@@ -3,7 +3,7 @@
 <head>
     <title>Bubblesort</title>
 
-    <script src="../build/inalan20150801.js"></script>
+    <script src="../build/inalan20150802.js"></script>
 
     <script>
 
@@ -20,8 +20,8 @@
         stage.add(a, "a");
 
         var label = new inalan.VisuLabel(["This animation shows an improved bubblesort algorithm. In this algorithm, we remember the",
-                                          "place of the last exchange (ch) after each iterration. In next iteration we don't check again those",
-                                          "elements, which are already in sorted order (on the right from the place of the last exchange)."]);
+                                          "place of the last swap (ch) after each iterration. In next iteration we don't check again those",
+                                          "elements, which are already in sorted order (on the right from the place of the last swap)."]);
         label.x = 30;
         label.y = 370;
         stage.add(label, "label")
@@ -30,8 +30,8 @@
                                      "WHILE i >= 1",
                                      "   ch = -1",
                                      "   FOR j = 0 to i-1",
-                                     "      IF a[j] > a[j+1]",
-                                     "         exchange a[j] a[j+1]",
+                                     "      IF a[j] > a[j+1] THEN",
+                                     "         swap a[j] a[j+1]",
                                      "         ch = j",
                                      "   i = ch"]);
         c.x = 320;
@@ -77,19 +77,19 @@
             stage.compare(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
         }
 
-        var exchange = function () {
+        var swap = function () {
             if (stage.get("a")[stage.vars.j].value > stage.get("a")[stage.vars.j + 1].value) {
-                stage.vars.exchange = true;
+                stage.vars.swap = true;
                 stage.get("code").selected = [5];
-                stage.exchange(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
+                stage.swap(stage.get("a")[stage.vars.j], stage.get("a")[stage.vars.j+1]);
             } else {
-                stage.vars.exchange = false;
+                stage.vars.swap = false;
                 return 0;
             }
         }
 
         var changeCh = function () {
-            if (stage.vars.exchange) {
+            if (stage.vars.swap) {
                 stage.vars.ch = stage.vars.j;
                 stage.get("code").selected = [6];
                 stage.get("a").setIndex("ch", stage.vars.ch, 2);
@@ -152,7 +152,7 @@
                 setJ,
                 [                    
                     compare,
-                    exchange,
+                    swap,
                     changeCh,
                     incJ
                 ], checkJ,

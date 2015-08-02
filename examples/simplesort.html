@@ -3,7 +3,7 @@
 <head>
     <title>Simplesort</title>
 
-    <script src="../build/inalan20150801.js"></script>
+    <script src="../build/inalan20150802.js"></script>
 
     <script>
 
@@ -20,7 +20,7 @@
         stage.add(a, "a");
 
         var label = new inalan.VisuLabel(["This animation shows the simplesort sorting algorithm. We compare every element with every other",
-                                          "element located behind it. If the compared elements are not in ascending order, we exchange them."]);
+                                          "element located behind it. If the compared elements are not in ascending order, we swap them."]);
         label.x = 30;
         label.y = 350;
         stage.add(label, "label")
@@ -28,7 +28,7 @@
         var c = new inalan.VisuCode(["FOR i = 0 to 5",
                                      "   FOR j = i+1 to 6",
                                      "      IF a[i] > a[j] THEN",
-                                     "         exchange a[i] a[j]"]);
+                                     "         swap a[i] a[j]"]);
         c.x = 320;
         c.y = 60;
         stage.add(c, "code"); // in code we can refer to this with id = "code"
@@ -59,13 +59,13 @@
             stage.compare(stage.get("a")[stage.vars.i], stage.get("a")[stage.vars.j]);
         }
 
-        var exchange = function () {
+        var swap = function () {
             if (stage.get("a")[stage.vars.i].value > stage.get("a")[stage.vars.j].value) {
                 stage.get("code").selected = [3];
                 for (var k = stage.vars.i; k <= stage.vars.j; k++) {
                     stage.get("a")[k].minValue = stage.get("a")[stage.vars.j].value;
                 }
-                stage.exchange(stage.get("a")[stage.vars.i], stage.get("a")[stage.vars.j]);
+                stage.swap(stage.get("a")[stage.vars.i], stage.get("a")[stage.vars.j]);
             } else {
                 stage.get("a")[stage.vars.j].minValue = stage.get("a")[stage.vars.i].value;
                 return 0;
@@ -123,7 +123,7 @@
                 setJ,
                 [
                     compare,
-                    exchange,
+                    swap,
                     makeJChangeable,
                     incJ
                 ], checkJ,

@@ -3,7 +3,7 @@
 <head>
     <title>Quicksort</title>
 
-    <script src="../build/inalan20150801.js"></script>
+    <script src="../build/inalan20150802.js"></script>
 
     <script>
 
@@ -26,7 +26,7 @@
 
             var label = new inalan.VisuLabel(["This animation shows how quicksort works.",
                                               "First we choose a pivot (middle element). Next,",
-                                              "we exchange the elements in the beginning of",
+                                              "we swap the elements in the beginning of",
                                               "the array with the elements in the end, until in the beginning of the array will be only those elements,",
                                               "which are less or equal than the pivot; and in the end of the array will remain only those elements,",
                                               "which are greater or equal than the pivot. Finally, if in the beginning or in the end is more than one",
@@ -46,7 +46,7 @@
                                          "      WHILE a[j] > pivot",
                                          "         decrease j",
                                          "      IF i <= j THEN",
-                                         "         exchange a[i] a[j]",
+                                         "         swap a[i] a[j]",
                                          "         increase i",
                                          "         decrease j",
                                          "   IF beg < j THEN",
@@ -177,7 +177,7 @@
                     stage.get("code").selected = [11];
                     stage.vars.ch1 = stage.get("a")[stage.vars.i].changeable;
                     stage.vars.ch2 = stage.get("a")[stage.vars.j].changeable;
-                    stage.exchange(stage.get("a")[stage.vars.i], stage.get("a")[stage.vars.j]);
+                    stage.swap(stage.get("a")[stage.vars.i], stage.get("a")[stage.vars.j]);
                 } else {
                     stage.vars.if = false;
                     return 0;

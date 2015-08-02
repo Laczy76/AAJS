@@ -127,10 +127,10 @@ inalan.Stage = function (canvasId) {
         }
     }
     setInterval(this.render, 1000 / this.fps);
-    // time for animations (copy/move/exchange/..) *****
-    this.showArrow = []; // copied, moved (or exchanged) objects' coordinates (x1, y1, x2, y2 - an arrow will be shown);
+    // time for animations (copy/move/swap/..) *****
+    this.showArrow = []; // copied, moved (or swapped) objects' coordinates (x1, y1, x2, y2 - an arrow will be shown);
     this.showBendedArrow = []; // copy or moved with itself - object's coordinates (x, y - a bended arrow will be shown);
-    this.showDoubleArrow = []; // exchange with itself - object's coordinates (x, y - a double arrow in circle will be shown);    
+    this.showDoubleArrow = []; // swap with itself - object's coordinates (x, y - a double arrow in circle will be shown);    
     this.animating = 0; // how many objects are animating?
     this.time = 1000; // speed of animation
 }
@@ -538,7 +538,7 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
 }
 
 // animation of exchanging two visuVariables (firstObject and secondObject)
-inalan.Stage.prototype.exchange = function (firstObject, secondObject) {
+inalan.Stage.prototype.swap = function (firstObject, secondObject) {
     this.animating++;
     firstObject.changeable = false;
     secondObject.changeable = false;
@@ -643,7 +643,7 @@ inalan.Stage.prototype.sum = function (firstObject, secondObject) {
     }
 }
 
-// stop copying animations (hide all yellow marked objects which are on stage after copy/move/add/exchange) 
+// stop copying animations (hide all yellow marked objects which are on stage after copy/move/add/swap) 
 inalan.Stage.prototype.stopCopyingAndComparing = function () {
     // call stopCopying() for every VisuVariable and VisuArray on the stage;
     for (var index in this.visuItems) {
