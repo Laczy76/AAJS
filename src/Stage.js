@@ -13,7 +13,7 @@ var inalan = inalan || {};
 
 inalan.Stage = function (canvasId) {
     document.onselectstart = function () { return false; }; // prevention to select the document (e.g. accidentally by double clicking)
-    this.canvas = document.getElementById("myCanvas");
+    this.canvas = document.getElementById(canvasId);
     this.canvas.parent = this; // set canvas's parent property to this Stage object (needed in canvas's mouse events handling functions)
     this.ctx = this.canvas.getContext("2d");
     // elements on stage... *****************************
