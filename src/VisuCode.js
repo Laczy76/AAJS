@@ -154,9 +154,9 @@ inalan.VisuCode.prototype.functionCall = function (newLines) {
     var dWidth = (endWidth - this.recAnim[2]) / frames;
     var dHeight = (endHeight - this.recAnim[3]) / frames;
     // function to change the sizes
-    pauseFrames = stage.time / 100;
+    var pauseFrames = stage.time / 100;
     frames += pauseFrames;
-    self = this;
+    var self = this;
     var recursionAnim = function () {
         frames--;
         if (frames >= pauseFrames) {
@@ -230,7 +230,7 @@ inalan.VisuCode.prototype.functionReturn = function () {
     var dWidth = (this.recAnim[2] - endWidth) / frames;
     var dHeight = (this.recAnim[3] - endHeight) / frames;
     // function to change the sizes
-    self = this;
+    var self = this;
     var recursionAnim = function () {
         frames--;
         if (frames >= 0) {
