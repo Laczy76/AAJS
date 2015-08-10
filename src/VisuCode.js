@@ -233,7 +233,7 @@ inalan.VisuCode.prototype.functionReturn = function () {
     var self = this;
     var recursionAnim = function () {
         frames--;
-        if (frames >= 0) {
+        if (frames > 0) {
             self.recAnim[0] -= dX;
             self.recAnim[1] -= dY;
             self.recAnim[2] -= dWidth;
