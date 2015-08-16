@@ -11,7 +11,7 @@
 
 var inalan = inalan || {};
 
-inalan.VisuScrollbar = function (text, width, min, max, position, onChange) {
+inalan.VisuScrollbar = function (text, width, min, max, position, onChangeFnc) {
     // create subclass VisuScrollbar from VisuData - set properties
     inalan.VisuData.call(this);
     // set new properties
@@ -33,7 +33,7 @@ inalan.VisuScrollbar = function (text, width, min, max, position, onChange) {
     this.overColor = "#FB3";
     this.disabledColor = "#EEE";
     // onchange event handler
-    this.onChange = onChange;
+    this.onChange = onChangeFnc;
 }
 
 // create subclass VisuScrollbar from VisuData - set methods
