@@ -50,6 +50,26 @@ inalan.VisuVariable = function (name, value, changeable) {
     // remember the original color of the VisuVariable before start copying
     this.originalFillColor = "#C00";
     this.originalStrokeColor = "#000";
+    // the following code shows the registration point (X,Y) ...
+    /*
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = "#000";
+    this.ctx.lineWidth = 4;
+    this.ctx.moveTo(this.x - 6, this.y);
+    this.ctx.lineTo(this.x + 6, this.y);
+    this.ctx.moveTo(this.x, this.y - 6);
+    this.ctx.lineTo(this.x, this.y + 6);
+    this.ctx.stroke();
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = "#FF0";
+    this.ctx.lineWidth = 2;
+    this.ctx.moveTo(this.x - 5, this.y);
+    this.ctx.lineTo(this.x + 5, this.y);
+    this.ctx.moveTo(this.x, this.y - 5);
+    this.ctx.lineTo(this.x, this.y + 5);
+    this.ctx.stroke();
+    this.ctx.lineWidth = 1;
+    */
 }
 
 // create subclass VisuVariable from VisuData - set methods
@@ -162,6 +182,15 @@ inalan.VisuVariable.prototype.isOver = function (x, y) {
         return true;
     }
     return false;
+}
+
+// set height of the VisuVariable
+inalan.VisuVariable.prototype.setHeight = function (height) {
+    this.height = height;
+    this.maxValue = height;
+    if (this.value > this.maxValue) {
+        this.value = this.maxValue;
+    }
 }
 
 // set up copyx, copyy when starts copying the variable
