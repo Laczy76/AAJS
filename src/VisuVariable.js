@@ -89,6 +89,12 @@ inalan.VisuVariable.prototype.randomize = function (min, max) {
 
 // render the visuvariable (draw the column)
 inalan.VisuVariable.prototype.render = function () {
+    if (this.value < 0) {
+        this.value = 0;
+    }
+    if (this.minValue < 0) {
+        this.minValue = 0;
+    }
     // check if value is between minValue and maxValue
     if (this.value > this.maxValue) {
         this.value = this.maxValue;
@@ -187,7 +193,9 @@ inalan.VisuVariable.prototype.isOver = function (x, y) {
 // set height of the VisuVariable
 inalan.VisuVariable.prototype.setHeight = function (height) {
     this.height = height;
-    this.maxValue = height;
+    if (this.maxValue > this.height) {
+        this.maxValue = this.height;
+    }
     if (this.value > this.maxValue) {
         this.value = this.maxValue;
     }

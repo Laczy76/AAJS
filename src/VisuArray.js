@@ -367,7 +367,6 @@ inalan.VisuArray.prototype.setMaxValue = function (value) {
 // set height for all elements in array
 inalan.VisuArray.prototype.setHeight = function (height) {
     for (var i = 0; i < this.length; i++) {
-        this[i].height = height;
-        this[i].maxValue = height;
+        this[i].setHeight(height);
     }
 }
