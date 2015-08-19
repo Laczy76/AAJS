@@ -202,7 +202,7 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
                 }
                 // *** VisuScrollbar ***
                 if (obj instanceof inalan.VisuScrollbar) {
-                    if (obj.dragging) {
+                    if (obj.enabled && obj.dragging) {
                         // change the value of the object...
                         var pos = obj.min + (mouseX - (obj.x - obj.width / 2 + 10)) * (obj.max - obj.min + 1) / (obj.width - 20);
                         if (pos < obj.min) {
