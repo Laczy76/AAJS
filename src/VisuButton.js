@@ -34,28 +34,30 @@ inalan.VisuButton.prototype = Object.create(inalan.VisuData.prototype);
 inalan.VisuButton.prototype.constructor = inalan.VisuButton;
 
 inalan.VisuButton.prototype.render = function () {
-    // draw the VisuButton
-    if (this.enabled) {
-        this.ctx.fillStyle = this.color;
-    } else {
-        this.ctx.fillStyle = this.disabledColor;
+    if (this.width > 0) {
+        // draw the VisuButton
+        if (this.enabled) {
+            this.ctx.fillStyle = this.color;
+        } else {
+            this.ctx.fillStyle = this.disabledColor;
+        }
+        this.ctx.fillRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+        this.ctx.strokeStyle = "#000";
+        this.ctx.strokeRect(this.x - this.width / 2 - 0.5, this.y - this.height / 2 - 0.5, this.width + 1, this.height + 1);
+        if (this.enabled) {
+            this.ctx.fillStyle = "#000";
+        } else {
+            this.ctx.fillStyle = "#666";
+        }
+        this.ctx.font = this.font;
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "alphabetic";
+        this.ctx.fillText(this.text, this.x, this.y + 4.5);
     }
-    this.ctx.fillRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
-    this.ctx.strokeStyle = "#000";
-    this.ctx.strokeRect(this.x - this.width / 2 - 0.5, this.y - this.height / 2 - 0.5, this.width + 1, this.height + 1);
-    if (this.enabled) {
-        this.ctx.fillStyle = "#000";
-    } else {
-        this.ctx.fillStyle = "#666";
-    }    
-    this.ctx.font = this.font;
-    this.ctx.textAlign = "center";
-    this.ctx.textBaseline = "alphabetic";
-    this.ctx.fillText(this.text, this.x, this.y + 4.5);
 }
 
 inalan.VisuButton.prototype.isOver = function (x, y) {
-    if (Math.abs(x - this.x) <= this.width / 2 && Math.abs(y - this.y) <= this.height / 2) {
+    if (this.width>0 && Math.abs(x - this.x) <= this.width / 2 && Math.abs(y - this.y) <= this.height / 2) {
         return true;
     }
     return false
