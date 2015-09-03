@@ -95,8 +95,7 @@ inalan.Controller = function () {
             self.prevSingleStep.enabled = false;
             self.nextSingleStep.enabled = true;
             self.prevStep.enabled = false;            
-            self.nextStep.enabled = true;
-            self.startStop.marked = false;
+            self.nextStep.enabled = true;            
         } else if (stage.animating>0 || self.waitingAnimation) {
             resetAnimationWhenPossible = true;
         }
@@ -141,7 +140,6 @@ inalan.Controller = function () {
             if (stage.animating==0) {
                 nextStepAnimation();
             }
-            self.startStop.marked = true;
         } else {
             // stop animation
             self.playingAnimation = false;
@@ -152,7 +150,6 @@ inalan.Controller = function () {
             }
             self.nextSingleStep.enabled = true;
             self.nextStep.enabled = true;
-            self.startStop.marked = false;
         }
     }
     var waitAnimationDone = function () { // this function runs when the waiting is done
@@ -254,7 +251,6 @@ inalan.Controller = function () {
                         self.nextStep.enabled = false;
                         self.startStop.enabled = false;
                         self.startStop.text = self.startLabel;
-                        self.startStop.marked = false;
                     }
                 }
             } while (!ok);
