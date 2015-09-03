@@ -23,6 +23,7 @@ inalan.VisuButton = function (text, width, onClickFnc) {
     this.onClickFnc = onClickFnc;
     this.color = "#FE6";
     this.font = "bold 14px Arial"
+    this.marked = false;
     // color constants
     this.defaultColor = "#FE6";
     this.overColor = "#FB3";
@@ -53,6 +54,16 @@ inalan.VisuButton.prototype.render = function () {
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "alphabetic";
         this.ctx.fillText(this.text, this.x, this.y + 4.5);
+        if (this.marked) {
+            this.ctx.beginPath();
+            this.ctx.lineWidth = 2;
+            this.ctx.moveTo(this.x - this.width / 2 + 0.5, this.y - this.height / 2 - 3);
+            this.ctx.lineTo(this.x + this.width / 2 - 0.5, this.y - this.height / 2 - 3);
+            this.ctx.moveTo(this.x - this.width / 2 + 0.5, this.y + this.height / 2 + 3);
+            this.ctx.lineTo(this.x + this.width / 2 - 0.5, this.y + this.height / 2 + 3);
+            this.ctx.stroke();
+            this.ctx.lineWidth = 1;
+        }
     }
 }
 

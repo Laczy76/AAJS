@@ -31,7 +31,82 @@ inalan.Controller = function () {
     this.prevSingleLabel = "◄";
     this.nextSingleLabel = "►";
     this.nextLabel = "►►";
-    this.speedLabel = "Speed of animation:";    
+    this.speedLabel = "Speed of animation:";
+    // quiz
+    this.quiz = false; // quiz is displayed on the stage    
+    this.quizQuestion = []; // text lines to display the quiz question
+    this.quizFnc = null; // function to check the right answer
+    this.quizType = ""; // can be: TF (true-false), REQ (request)
+    // quiz labels
+    this.quizTrueLabel = "TRUE";
+    this.quizFalseLabel = "FALSE";
+    this.quizOkLabel = "DONE";
+    // quiz wrong answer animation (button shaking)
+    this.quizBtn1dx = 0; // how many should be added to X pos when the Btn1 is shaking (wrong answer)
+    this.quizBtn2dx = 0; // how many should be added to X pos when the Btn1 is shaking (wrong answer)
+    var quizBtn1plus = -10; // +1 or -1
+    var quizBtn2plus = -10; // +1 or -1
+    var quizBtn1AnimID = null; // id of the SetInterval function     
+    var quizBtn2AnimID = null; // id of the SetInterval function         
+    var quizBtn1Times = 0; // how many time was the button moved right or left
+    var quizBtn2Times = 0; // how many time was the button moved right or left
+    var quizBtn1Anim = function () {
+        self.quizBtn1dx += quizBtn1plus;
+        if (self.quizBtn1dx <= -10 || self.quizBtn1dx >= 10) {
+            quizBtn1plus = -quizBtn1plus;
+        } else if (self.quizBtn1dx == 0) {
+            quizBtn1Times++
+        }
+        if (quizBtn1Times >= 6) {
+            clearInterval(quizBtn1AnimID);
+            quizBtn1Times = 0;
+            quizBtn1AnimID = null;
+        }
+    }
+    var quizBtn2Anim = function () {
+        self.quizBtn2dx += quizBtn2plus;
+        if (self.quizBtn2dx <= -10 || self.quizBtn2dx >= 10) {
+            quizBtn2plus = -quizBtn2plus;
+        } else if (self.quizBtn2dx==0) {
+            quizBtn2Times++
+        }
+        if (quizBtn2Times >= 6) {
+            clearInterval(quizBtn2AnimID);
+            quizBtn2Times = 0;
+            quizBtn2AnimID = null;
+        }
+    }
+    // quiz buttons
+    this.quizBtn = new Array();
+    var quizBtn1Fnc = function () {
+        if (quizBtn1AnimID == null) {
+            if (self.quizType == "TF" && self.quizFnc()) {
+                // correct answer
+                self.quiz = false;
+            } else {
+                // incorrect answer
+                quizBtn1AnimID = setInterval(quizBtn1Anim, 40);
+            }
+        }
+    }    
+    this.quizBtn[1] = new inalan.VisuButton("Btn1", 100, quizBtn1Fnc);
+    this.quizBtn[1].height = 36;
+    this.quizBtn[1].enabled = false;
+    var quizBtn2Fnc = function () {
+        if (quizBtn2AnimID == null) {
+            if ((self.quizType == "TF" && !self.quizFnc()) 
+                || (self.quizType == "REQ" && self.quizFnc()))  {
+                // correct answer
+                self.quiz = false;
+            } else {
+                // incorrect answer
+                quizBtn2AnimID = setInterval(quizBtn2Anim, 40);
+            }            
+        }
+    }
+    this.quizBtn[2] = new inalan.VisuButton("Quiz", 100, quizBtn2Fnc);
+    this.quizBtn[2].height = 36;
+    this.quizBtn[2].enabled = false;
     // restore a step from undo array
     var restoreStepFromUndo = function (stepNumber) {
         var stage = self.ctx.canvas.parent;
@@ -95,7 +170,8 @@ inalan.Controller = function () {
             self.prevSingleStep.enabled = false;
             self.nextSingleStep.enabled = true;
             self.prevStep.enabled = false;            
-            self.nextStep.enabled = true;            
+            self.nextStep.enabled = true;
+            self.startStop.marked = false;            
         } else if (stage.animating>0 || self.waitingAnimation) {
             resetAnimationWhenPossible = true;
         }
@@ -110,7 +186,6 @@ inalan.Controller = function () {
                     i--;
                 }
             }
-
             // restore step from undo array
             restoreStepFromUndo(i);
             // remove the last element(s) from undo array
@@ -140,6 +215,9 @@ inalan.Controller = function () {
             if (stage.animating==0) {
                 nextStepAnimation();
             }
+            self.startStop.marked = true;
+            self.nextSingleStep.marked = false;
+            self.nextStep.marked = false;
         } else {
             // stop animation
             self.playingAnimation = false;
@@ -150,6 +228,7 @@ inalan.Controller = function () {
             }
             self.nextSingleStep.enabled = true;
             self.nextStep.enabled = true;
+            self.startStop.marked = false;
         }
     }
     var waitAnimationDone = function () { // this function runs when the waiting is done
@@ -163,7 +242,7 @@ inalan.Controller = function () {
     var nextStepAnimationDoneID; // the ID from setInterval for nextStepAnimationDone fuction
     var nextStepAnimationDone = function () { // this function checks every 1 ms if the animation is done
         var stage = self.ctx.canvas.parent;
-        if (stage.animating==0 && !self.waitingAnimation) {
+        if (stage.animating==0 && !self.waitingAnimation && !self.quiz) {
             clearInterval(nextStepAnimationDoneID);
             if (resetAnimationWhenPossible) {
                 resetAnimation();
@@ -251,6 +330,7 @@ inalan.Controller = function () {
                         self.nextStep.enabled = false;
                         self.startStop.enabled = false;
                         self.startStop.text = self.startLabel;
+                        self.startStop.marked = false;
                     }
                 }
             } while (!ok);
@@ -266,7 +346,7 @@ inalan.Controller = function () {
         prevStepAnimation();
     }
     var nextStep = function () {
-        self.singleStep = false;
+        self.singleStep = false;       
         nextStepAnimation();
     }
     var prevSingleStep = function () {
@@ -311,53 +391,98 @@ inalan.Controller.prototype.render = function () {
     this.ctx.moveTo(0, this.y - 40 + 0.5);
     this.ctx.lineTo(this.ctx.canvas.clientWidth, this.y - 40 + 0.5);
     this.ctx.stroke();
-    // draw the buttons
-    var spaceWidth = 0;
-    if (this.reset.width > 0) {
-        this.reset.ctx = this.ctx;
-        this.reset.x = this.x + this.reset.width / 2;
-        this.reset.y = this.y;
-        this.reset.render();
-        spaceWidth += 20;
-    }
-    if (this.startStop.width > 0) {
-        this.startStop.ctx = this.ctx;
-        this.startStop.x = this.x + this.reset.width + this.startStop.width / 2 + spaceWidth;
-        this.startStop.y = this.y;
-        this.startStop.render();
-        spaceWidth += 20;
-    }
-    if (this.prevStep.width > 0) {
-        this.prevStep.ctx = this.ctx;
-        this.prevStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width / 2 + spaceWidth;
-        this.prevStep.y = this.y;
-        this.prevStep.render();
-    }
-    if (this.prevSingleStep.width > 0) {
-        this.prevSingleStep.ctx = this.ctx;
-        this.prevSingleStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.prevSingleStep.width / 2 + spaceWidth;
-        this.prevSingleStep.y = this.y;
-        this.prevSingleStep.render();
-    }
-    if (this.nextSingleStep.width > 0) {
-        this.nextSingleStep.ctx = this.ctx;
-        this.nextSingleStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.prevSingleStep.width + this.nextSingleStep.width / 2 + spaceWidth;
-        this.nextSingleStep.y = this.y;
-        this.nextSingleStep.render();
-    }
-    if (this.nextStep.width > 0) {
-        this.nextStep.ctx = this.ctx;
-        this.nextStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.prevSingleStep.width + this.nextSingleStep.width + this.nextStep.width / 2 + spaceWidth;
-        this.nextStep.y = this.y;
-        this.nextStep.render();
-    }
-    // draw the scrollbar
-    if (this.speed.width > 0) {
-        spaceWidth += 30;
-        this.speed.ctx = this.ctx;
-        this.speed.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.prevSingleStep.width + this.nextSingleStep.width + this.nextStep.width + this.speed.width / 2 + spaceWidth;
-        this.speed.y = this.y;
-        this.speed.render();
+    if (!this.quiz) {
+        // draw the buttons
+        var spaceWidth = 0;
+        if (this.reset.width > 0) {
+            this.reset.ctx = this.ctx;
+            this.reset.x = this.x + this.reset.width / 2;
+            this.reset.y = this.y;
+            this.reset.render();
+            spaceWidth += 20;
+        }
+        if (this.startStop.width > 0) {
+            this.startStop.ctx = this.ctx;
+            this.startStop.x = this.x + this.reset.width + this.startStop.width / 2 + spaceWidth;
+            this.startStop.y = this.y;
+            this.startStop.render();
+            spaceWidth += 20;
+        }
+        if (this.prevStep.width > 0) {
+            this.prevStep.ctx = this.ctx;
+            this.prevStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width / 2 + spaceWidth;
+            this.prevStep.y = this.y;
+            this.prevStep.render();
+        }
+        if (this.prevSingleStep.width > 0) {
+            this.prevSingleStep.ctx = this.ctx;
+            this.prevSingleStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.prevSingleStep.width / 2 + spaceWidth;
+            this.prevSingleStep.y = this.y;
+            this.prevSingleStep.render();
+        }
+        if (this.nextSingleStep.width > 0) {
+            this.nextSingleStep.ctx = this.ctx;
+            this.nextSingleStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.prevSingleStep.width + this.nextSingleStep.width / 2 + spaceWidth;
+            this.nextSingleStep.y = this.y;
+            this.nextSingleStep.render();
+        }
+        if (this.nextStep.width > 0) {
+            this.nextStep.ctx = this.ctx;
+            this.nextStep.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.prevSingleStep.width + this.nextSingleStep.width + this.nextStep.width / 2 + spaceWidth;
+            this.nextStep.y = this.y;
+            this.nextStep.render();
+        }
+        // draw the scrollbar
+        if (this.speed.width > 0) {
+            spaceWidth += 30;
+            this.speed.ctx = this.ctx;
+            this.speed.x = this.x + this.reset.width + this.startStop.width + this.prevStep.width + this.prevSingleStep.width + this.nextSingleStep.width + this.nextStep.width + this.speed.width / 2 + spaceWidth;
+            this.speed.y = this.y;
+            this.speed.render();
+        }
+    } else {
+        // Draw the QUIZ...        
+        this.ctx.fillStyle = "#DEE";
+        this.ctx.fillRect(0, this.y - 40 + 1, this.ctx.canvas.clientWidth, 80)
+        this.ctx.fillStyle = "#009";               
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        this.ctx.font = "bold 48px Comic Sans MS";
+        this.ctx.fillText("?", this.x - 10, this.y - 5);
+        this.ctx.font = "bold 42px Comic Sans MS";
+        this.ctx.fillText("?", this.x + 15, this.y - 15);
+        this.ctx.font = "bold 50px Comic Sans MS";
+        this.ctx.fillText("?", this.x + 35, this.y + 5);
+        // QUIZ buttons...
+        var btnNumbers;
+        if (this.quizType == "TF") {
+            btnNumbers = 2;
+            this.quizBtn[1].text = this.quizTrueLabel;
+            this.quizBtn[2].text = this.quizFalseLabel;
+        } else { // this.quizQuestionType == "REQ"
+            btnNumbers = 1;
+            this.quizBtn[2].text = this.quizOkLabel;
+        }        
+        // write the question...
+        this.ctx.fillStyle = "#000";
+        this.ctx.font = "bold 14px Arial"
+        this.ctx.textAlign = "center";        
+        for (var i = 0; i < this.quizQuestion.length; i++) {
+            this.ctx.fillText(this.quizQuestion[i], this.ctx.canvas.clientWidth / 2 - 20 - 60 * (btnNumbers-1), this.y + i * 18 - (this.quizQuestion.length - 1) * 9 - 2);            
+        }
+        // draw the buttons...
+        if (btnNumbers > 1) {
+            this.quizBtn[1].ctx = this.ctx;
+            this.quizBtn[1].x = this.ctx.canvas.clientWidth - 190 + this.quizBtn1dx;
+            this.quizBtn[1].y = this.y - 2;
+            this.quizBtn[1].enabled = true;
+            this.quizBtn[1].render();
+        }
+        this.quizBtn[2].ctx = this.ctx;
+        this.quizBtn[2].x = this.ctx.canvas.clientWidth - 70 + this.quizBtn2dx;
+        this.quizBtn[2].y = this.y - 2;
+        this.quizBtn[2].enabled = true;
+        this.quizBtn[2].render();
     }
 }
 

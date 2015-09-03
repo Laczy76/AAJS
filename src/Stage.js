@@ -92,7 +92,7 @@ inalan.Stage = function (canvasId) {
                 self.ctx.moveTo(x, y - 7.5); // upper circle
                 self.ctx.lineTo(x, y - 15.5);
                 self.ctx.arc(x, y - 0.5, 14, 1.5 * Math.PI, 1.8 * Math.PI, true);
-                self.ctx.arc(x, y - 0.5, 8, 1.85 * Math.PI, 1.5 * Math.PI);               
+                self.ctx.arc(x, y - 0.5, 8, 1.85 * Math.PI, 1.5 * Math.PI);
                 self.ctx.fill();
             }
             self.ctx.globalAlpha = 1;
@@ -101,10 +101,10 @@ inalan.Stage = function (canvasId) {
         if (self.showDoubleArrow.length > 0) {
             self.ctx.fillStyle = "#055";
             self.ctx.globalAlpha = 0.1;
-            for (var i = 0; i < self.showDoubleArrow.length / 2; i++) {         
+            for (var i = 0; i < self.showDoubleArrow.length / 2; i++) {
                 var x = self.showDoubleArrow[i] - 0.5;
-                var y = self.showDoubleArrow[i+1];
-                self.ctx.beginPath();                
+                var y = self.showDoubleArrow[i + 1];
+                self.ctx.beginPath();
                 self.ctx.moveTo(x - 4, y - 22.5); // upper arrow
                 self.ctx.lineTo(x - 4, y + 1.5);
                 self.ctx.lineTo(x + 9, y - 10.5);
@@ -146,26 +146,28 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
     // is dragging any column?
     var dragging = false;
     if (evt.which == 1) { // left mouse button is pushed down...
-        // check all objects in controller               
-        for (var i in stage.controller) {
-            if (stage.controller.hasOwnProperty(i)) {
-                var obj2 = stage.controller[i];
-                // VisuScrollbar within the controller
-                if (obj2 instanceof inalan.VisuScrollbar) {
-                    if (obj2.dragging) {
-                        // change the value of the object...
-                        var pos = obj2.min + (mouseX - (obj2.x - obj2.width / 2 + 10)) * (obj2.max - obj2.min + 1) / (obj2.width - 20);
-                        if (pos < obj2.min) {
-                            pos = obj2.min;
+        // check all objects in controller
+        if (!stage.controller.quiz) {
+            for (var i in stage.controller) {
+                if (stage.controller.hasOwnProperty(i)) {
+                    var obj2 = stage.controller[i];
+                    // VisuScrollbar within the controller
+                    if (obj2 instanceof inalan.VisuScrollbar) {
+                        if (obj2.dragging) {
+                            // change the value of the object...
+                            var pos = obj2.min + (mouseX - (obj2.x - obj2.width / 2 + 10)) * (obj2.max - obj2.min + 1) / (obj2.width - 20);
+                            if (pos < obj2.min) {
+                                pos = obj2.min;
+                            }
+                            if (pos > obj2.max) {
+                                pos = obj2.max;
+                            }
+                            if (obj2.position != pos) {
+                                obj2.position = pos;
+                                obj2.onChange(pos);
+                            }
+                            dragging = true;
                         }
-                        if (pos > obj2.max) {
-                            pos = obj2.max;
-                        }
-                        if (obj2.position != pos) {
-                            obj2.position = pos;
-                            obj2.onChange(pos);
-                        }
-                        dragging = true;
                     }
                 }
             }
@@ -226,26 +228,39 @@ inalan.Stage.prototype.stageMouseMoveEvent = function (evt) {
     if (!dragging) {
         var mouseCursor = "default";
         // check all objects in controller
-        for (var i in stage.controller) {
-            if (stage.controller.hasOwnProperty(i)) {
-                var obj2 = stage.controller[i];
-                // VisuButton within the controller
-                if (obj2 instanceof inalan.VisuButton) {
-                    if (obj2.isOver(mouseX, mouseY) && obj2.enabled) {
-                        obj2.color = obj2.overColor;
-                        mouseCursor = "pointer";
-                    } else {
-                        obj2.color = obj2.defaultColor;
+        if (!stage.controller.quiz) {
+            for (var i in stage.controller) {
+                if (stage.controller.hasOwnProperty(i)) {
+                    var obj2 = stage.controller[i];
+                    // VisuButton within the controller
+                    if (obj2 instanceof inalan.VisuButton) {
+                        if (obj2.isOver(mouseX, mouseY) && obj2.enabled) {
+                            obj2.color = obj2.overColor;
+                            mouseCursor = "pointer";
+                        } else {
+                            obj2.color = obj2.defaultColor;
+                        }
+                    }
+                    // VisuScrollbar within the controller
+                    if (obj2 instanceof inalan.VisuScrollbar) {
+                        if (obj2.isOver(mouseX, mouseY) && obj2.enabled) {
+                            obj2.color = obj2.overColor;
+                            mouseCursor = "pointer";
+                        } else {
+                            obj2.color = obj2.defaultColor;
+                        }
                     }
                 }
-                // VisuScrollbar within the controller
-                if (obj2 instanceof inalan.VisuScrollbar) {
-                    if (obj2.isOver(mouseX, mouseY) && obj2.enabled) {
-                        obj2.color = obj2.overColor;
-                        mouseCursor = "pointer";
-                    } else {
-                        obj2.color = obj2.defaultColor;
-                    }
+            }
+        } else {
+            // check all buttons in quiz (inside controller)
+            for (var i = 1; i < stage.controller.quizBtn.length; i++) {
+                // QuizButtons within the controller
+                if (stage.controller.quizBtn[i].isOver(mouseX, mouseY) && stage.controller.quizBtn[i].enabled) {
+                    stage.controller.quizBtn[i].color = stage.controller.quizBtn[i].overColor;
+                    mouseCursor = "pointer";
+                } else {
+                    stage.controller.quizBtn[i].color = stage.controller.quizBtn[i].defaultColor;
                 }
             }
         }
@@ -300,21 +315,31 @@ inalan.Stage.prototype.stageMouseDownEvent = function (evt) {
         var mouseY = evt.clientY - canvasRect.top;
         // the stage object...
         var stage = evt.target.parent;
-        // check all objects in controller      
-        for (var i in stage.controller) {
-            if (stage.controller.hasOwnProperty(i)) {
-                var obj2 = stage.controller[i];
-                // VisuButton within the controller
-                if (obj2 instanceof inalan.VisuButton) {
-                    if (obj2.isOver(mouseX, mouseY) && obj2.enabled) {
-                        obj2.pressed = true;
+        // check all objects in controller  
+        if (!stage.controller.quiz) {
+            for (var i in stage.controller) {
+                if (stage.controller.hasOwnProperty(i)) {
+                    var obj2 = stage.controller[i];
+                    // VisuButton within the controller
+                    if (obj2 instanceof inalan.VisuButton) {
+                        if (obj2.isOver(mouseX, mouseY) && obj2.enabled) {
+                            obj2.pressed = true;
+                        }
+                    }
+                    // VisuScrollbar within the controller
+                    if (obj2 instanceof inalan.VisuScrollbar) {
+                        if (obj2.isOver(mouseX, mouseY)) {
+                            obj2.dragging = true;
+                        }
                     }
                 }
-                // VisuScrollbar within the controller
-                if (obj2 instanceof inalan.VisuScrollbar) {
-                    if (obj2.isOver(mouseX, mouseY)) {
-                        obj2.dragging = true;
-                    }
+            }
+        } else {
+            // check all buttons in quiz (inside controller)
+            for (var i = 1; i < stage.controller.quizBtn.length; i++) {
+                // QuizButtons within the controller
+                if (stage.controller.quizBtn[i].isOver(mouseX, mouseY) && stage.controller.quizBtn[i].enabled) {
+                    stage.controller.quizBtn[i].pressed = true;
                 }
             }
         }
@@ -363,20 +388,31 @@ inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
         // the stage object...
         var stage = evt.target.parent;
         // check all objects in controller
-        for (var i in stage.controller) {
-            if (stage.controller.hasOwnProperty(i)) {
-                var obj2 = stage.controller[i];
-                // VisuButton within the controller
-                if (obj2 instanceof inalan.VisuButton) {                    
-                    if (obj2.isOver(mouseX, mouseY) && obj2.enabled && obj2.pressed) {
-                        obj2.onClickFnc();
+        if (!stage.controller.quiz) {
+            for (var i in stage.controller) {
+                if (stage.controller.hasOwnProperty(i)) {
+                    var obj2 = stage.controller[i];
+                    // VisuButton within the controller
+                    if (obj2 instanceof inalan.VisuButton) {
+                        if (obj2.isOver(mouseX, mouseY) && obj2.enabled && obj2.pressed) {
+                            obj2.onClickFnc();
+                        }
+                        obj2.pressed = false;
                     }
-                    obj2.pressed = false;                   
+                    // VisuScrollbar within the controller
+                    if (obj2 instanceof inalan.VisuScrollbar) {
+                        obj2.dragging = false;
+                    }
                 }
-                // VisuScrollbar within the controller
-                if (obj2 instanceof inalan.VisuScrollbar) {
-                    obj2.dragging = false;
+            }
+        } else {
+            // check all buttons in quiz (inside controller)
+            for (var i = 1; i < stage.controller.quizBtn.length; i++) {
+                // QuizButtons within the controller
+                if (stage.controller.quizBtn[i].isOver(mouseX, mouseY) && stage.controller.quizBtn[i].enabled && stage.controller.quizBtn[i].pressed) {
+                    stage.controller.quizBtn[i].onClickFnc();
                 }
+                stage.controller.quizBtn[i].pressed = false;
             }
         }
         // check all objects in visuItems
@@ -395,10 +431,10 @@ inalan.Stage.prototype.stageMouseUpOrOutEvent = function (evt) {
                 }
                 // *** VisuButton ***
                 if (obj instanceof inalan.VisuButton) {
-                    if (obj.isOver(mouseX, mouseY) && obj.enabled && obj.pressed) {                        
+                    if (obj.isOver(mouseX, mouseY) && obj.enabled && obj.pressed) {
                         obj.onClickFnc();
                     }
-                    obj.pressed = false;                    
+                    obj.pressed = false;
                 }
                 // *** VisuScrollbar ***
                 if (obj instanceof inalan.VisuScrollbar) {
@@ -484,7 +520,7 @@ inalan.Stage.prototype.copy = function (firstObject, secondObject) {
                 stage.showArrow = stage.showArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2, secondObject.x, secondObject.y - secondObject.value / 2]);
             } else {
                 stage.showBendedArrow = stage.showBendedArrow.concat([firstObject.x, firstObject.y - firstObject.value / 2]);
-            }            
+            }
         }
     }
 }
@@ -512,7 +548,7 @@ inalan.Stage.prototype.move = function (firstObject, secondObject) {
     if (firstObject != secondObject) {
         firstObject.setGrayColor();
     }
-    firstObject.startCopying();    
+    firstObject.startCopying();
     var copyFnc = function () {
         frames--;
         if (frames > 0) {
@@ -670,5 +706,39 @@ inalan.Stage.prototype.stopCopyingAndComparing = function () {
                 }
             }
         }
+    }
+}
+
+// Ask a TRUE-FALSE quiz question.
+// whichMode = in which mode the quiz should be asked (0 = single step mode [default], 1 = multiple step mode, 2 = play mode)
+inalan.Stage.prototype.quizTFQuestion = function (questionLines, rightAnswerFnc, whichMode) {
+    if (typeof (whichMode) == "undefined") {
+        whichMode = [true, true, true];
+    }
+    if ((whichMode[2] && this.controller.singleStep) ||
+        (whichMode[1] && !this.controller.singleStep && !this.controller.playingAnimation) ||
+        (whichMode[0] && this.controller.playingAnimation)) {
+        // set the quiz
+        this.controller.quizType = "TF";
+        this.controller.quizQuestion = questionLines;
+        this.controller.quizFnc = rightAnswerFnc;
+        this.controller.quiz = true;
+    }
+}
+
+// Ask a request to do something, e.g. change the value of some variable.
+// whichMode = array: [showQuizOnPlayMode, showQuizOnMultipleStepMode, showQuizOnSingleStepMode] - in which mode the quiz should be asked
+inalan.Stage.prototype.quizRequest = function (questionLines, checkFnc, whichMode) {
+    if (typeof (whichMode) == "undefined") {
+        whichMode = [true,true,true];
+    }
+    if ((whichMode[2] && this.controller.singleStep) ||
+        (whichMode[1] && !this.controller.singleStep && !this.controller.playingAnimation) ||
+        (whichMode[0] && this.controller.playingAnimation)) {
+        // set the quiz
+        this.controller.quizType = "REQ";
+        this.controller.quizQuestion = questionLines;
+        this.controller.quizFnc = checkFnc;
+        this.controller.quiz = true;
     }
 }
