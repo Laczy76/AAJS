@@ -465,6 +465,42 @@ inalan.Stage.prototype.showAllButtons = function () {
     this.controller.showAllButtons();
 }
 
+inalan.Stage.prototype.showPlayStopButton = function () {
+    this.controller.startStop.width = 70;
+}
+
+inalan.Stage.prototype.hidePlayStopButton = function () {
+    this.controller.startStop.width = 0;
+}
+
+inalan.Stage.prototype.showSingleStepButtons = function () {
+    this.controller.prevSingleStep.width = 70;
+    this.controller.nextSingleStep.width = 70;    
+}
+
+inalan.Stage.prototype.hideSingleStepButtons = function () {
+    this.controller.prevSingleStep.width = 0;
+    this.controller.nextSingleStep.width = 0;
+}
+
+inalan.Stage.prototype.showMultipleStepButtons = function () {
+    this.controller.prevStep.width = 70;
+    this.controller.nextStep.width = 70;
+}
+
+inalan.Stage.prototype.hideMultipleStepButtons = function () {
+    this.controller.prevStep.width = 0;
+    this.controller.nextStep.width = 0;
+}
+
+inalan.Stage.prototype.showSpeedScrollbar = function () {
+    this.controller.speed.width = 150;
+}
+
+inalan.Stage.prototype.hideSpeedScrollbar = function () {
+    this.controller.speed.width = 0;
+}
+
 // get VisuVariable or VisuArray by name
 inalan.Stage.prototype.get = function (id) {
     return this.visuItems[id];
@@ -720,6 +756,23 @@ inalan.Stage.prototype.quizTFQuestion = function (questionLines, rightAnswerFnc,
         (whichMode[0] && this.controller.playingAnimation)) {
         // set the quiz
         this.controller.quizType = "TF";
+        this.controller.quizQuestion = questionLines;
+        this.controller.quizFnc = rightAnswerFnc;
+        this.controller.quiz = true;
+    }
+}
+
+// Ask a YES-NO quiz question.
+// whichMode = in which mode the quiz should be asked (0 = single step mode [default], 1 = multiple step mode, 2 = play mode)
+inalan.Stage.prototype.quizYNQuestion = function (questionLines, rightAnswerFnc, whichMode) {
+    if (typeof (whichMode) == "undefined") {
+        whichMode = [true, true, true];
+    }
+    if ((whichMode[2] && this.controller.singleStep) ||
+        (whichMode[1] && !this.controller.singleStep && !this.controller.playingAnimation) ||
+        (whichMode[0] && this.controller.playingAnimation)) {
+        // set the quiz
+        this.controller.quizType = "YN";
         this.controller.quizQuestion = questionLines;
         this.controller.quizFnc = rightAnswerFnc;
         this.controller.quiz = true;

@@ -36,10 +36,12 @@ inalan.Controller = function () {
     this.quiz = false; // quiz is displayed on the stage    
     this.quizQuestion = []; // text lines to display the quiz question
     this.quizFnc = null; // function to check the right answer
-    this.quizType = ""; // can be: TF (true-false), REQ (request)
+    this.quizType = ""; // can be: TF (true-false), YN (yes-no), REQ (request)
     // quiz labels
-    this.quizTrueLabel = "TRUE";
+    this.quizTrueLabel = "TRUE";    
     this.quizFalseLabel = "FALSE";
+    this.quizYesLabel = "YES";
+    this.quizNoLabel = "NO";
     this.quizOkLabel = "DONE";
     // quiz wrong answer animation (button shaking)
     this.quizBtn1dx = 0; // how many should be added to X pos when the Btn1 is shaking (wrong answer)
@@ -80,7 +82,8 @@ inalan.Controller = function () {
     this.quizBtn = new Array();
     var quizBtn1Fnc = function () {
         if (quizBtn1AnimID == null) {
-            if (self.quizType == "TF" && self.quizFnc()) {
+            if ((self.quizType == "TF" && self.quizFnc())
+                || (self.quizType == "YN" && self.quizFnc())) {
                 // correct answer
                 self.quiz = false;
             } else {
@@ -94,7 +97,8 @@ inalan.Controller = function () {
     this.quizBtn[1].enabled = false;
     var quizBtn2Fnc = function () {
         if (quizBtn2AnimID == null) {
-            if ((self.quizType == "TF" && !self.quizFnc()) 
+            if ((self.quizType == "TF" && !self.quizFnc())
+                || (self.quizType == "YN" && !self.quizFnc())
                 || (self.quizType == "REQ" && self.quizFnc()))  {
                 // correct answer
                 self.quiz = false;
@@ -459,10 +463,14 @@ inalan.Controller.prototype.render = function () {
             btnNumbers = 2;
             this.quizBtn[1].text = this.quizTrueLabel;
             this.quizBtn[2].text = this.quizFalseLabel;
+        } else if (this.quizType == "YN") {
+            btnNumbers = 2;
+            this.quizBtn[1].text = this.quizYesLabel;
+            this.quizBtn[2].text = this.quizNoLabel;
         } else { // this.quizQuestionType == "REQ"
             btnNumbers = 1;
             this.quizBtn[2].text = this.quizOkLabel;
-        }        
+        }
         // write the question...
         this.ctx.fillStyle = "#000";
         this.ctx.font = "bold 14px Arial"
