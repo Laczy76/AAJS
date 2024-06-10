@@ -10,6 +10,10 @@ GNU Make for Windows:<br/>
 http://gnuwin32.sourceforge.net/packages/make.htm
 </p>
 <p>
+MSYS2:<br/>
+https://www.msys2.org/#installation
+</p>
+<p>
 Java Runtime Environment (JRE):<br/>
-http://www.oracle.com/technetwork/java/javase/downloads/index.html
+https://www.java.com/en/download/
 </p>
